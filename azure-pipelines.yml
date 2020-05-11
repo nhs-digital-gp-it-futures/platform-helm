@@ -39,7 +39,7 @@ jobs:
     failOnStderr: true
     displayName: 'helm package'
   - bash: |      
-      chartPackage=$(ls src/buyingcatalogue/buyingcatalogue-*.tgz)
+      chartPackage=$(ls buyingcatalogue-*.tgz)
       echo "Chart Package $chartPackage"
       az acr helm push --force \
           -n gpitfuturesdevacr \
