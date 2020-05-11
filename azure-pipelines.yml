@@ -41,6 +41,7 @@ jobs:
   - bash: |      
       chartPackage=$(ls buyingcatalogue-*.tgz)
       echo "Chart Package $chartPackage"
+      az --version
       az acr helm push --force \
           -n gpitfuturesdevacr \
           -u gpitfuturesdevacr \
