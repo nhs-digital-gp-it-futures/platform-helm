@@ -27,7 +27,7 @@ jobs:
       versionSpec: '5.x'
   - script: echo semver $(GitVersion.SemVer), MajorMinorPatch $(GitVersion.MajorMinorPatch), Reason $(Build.Reason), Branch $(Build.SourceBranch), BranchName $(Build.SourceBranchName), PRID $(System.PullRequest.PullRequestId), PRNumber $(System.PullRequest.PullRequestNumber)
     name: echovar
-    - task: HelmInstaller@1
+  - task: HelmInstaller@1
     displayName: 'install helm'
     inputs:
       helmVersionToInstall: 'latest'
