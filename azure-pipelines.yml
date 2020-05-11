@@ -16,8 +16,8 @@ pool:
 jobs:
 - job: buyingcatalogue
   displayName: version and deploy buyingcatalogue
-  pool:
-    name: GP IT Futures AKS Build Agents
+  # pool:
+  #   name: GP IT Futures AKS Build Agents
   variables:
     - group: dev-acr-secrets
   steps:
