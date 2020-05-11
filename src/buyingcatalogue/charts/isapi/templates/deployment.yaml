@@ -1,0 +1,158 @@
+{{- $name := include "isapi.fullname" . -}}
+{{- $cfgname := printf "%s-%s" "cfg" $name -}}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ $name }}
+  labels:
+    {{- include "isapi.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  {{- if .Values.updateStrategy }}
+  strategy: {{ toYaml .Values.updateStrategy | nindent 4 }}
+  {{- end }}
+  minReadySeconds: {{ .Values.minReadySeconds }}
+  selector:
+    matchLabels:
+      {{- include "isapi.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "isapi.selectorLabels" . | nindent 8 }}
+    spec:
+    {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+      serviceAccountName: {{ include "isapi.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          {{- include "image.properties" . | nindent 10 }}
+          ports:
+            - name: http
+              containerPort: 80
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: identity/health/live
+              port: http
+          readinessProbe:
+            httpGet:
+              path: identity/health/ready
+              port: http
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          env:
+            - name: ASPNETCORE_ENVIRONMENT
+              value: Development
+            - name: ASPNETCORE_FORWARDEDHEADERS_ENABLED
+              value: "true"
+            - name: ASPNETCORE_URLS
+              value: http://0.0.0.0:80
+            - name: ISSUERURL
+              valueFrom: 
+                configMapKeyRef:
+                  name: {{ .Values.issuerUrlConfig.name | quote }}
+                  key: {{ .Values.issuerUrlConfig.key | quote }}
+            - name: CONNECTIONSTRINGS__CATALOGUEUSERS
+              valueFrom:
+                secretKeyRef:            
+                  name: {{ .Values.connectionStringSecret.name }}
+                  key: {{ .Values.connectionStringSecret.key }} 
+            {{- range $client_index, $client := .Values.clients }}            
+            - name: {{ printf "CLIENTS__%d__CLIENTID" ($client_index | int) }}
+              value: {{ $client.clientId | quote }}
+
+            - name: {{ printf "CLIENTS__%d__CLIENTNAME" ($client_index | int) }}
+              value: {{ $client.clientName | quote }}
+
+            - name: {{ printf "CLIENTS__%d__ALLOWEDGRANTTYPES" ($client_index | int) }}
+              value: {{ $client.allowedGrantTypes | quote }}
+              
+            - name: {{ printf "CLIENTS__%d__ALLOWOFFLINEACCESS" ($client_index | int) }}
+              value: {{ $client.allowOfflineAccess | quote }} 
+                            
+            - name: {{ printf "CLIENTS__%d__REQUIRECLIENTSECRET" ($client_index | int) }}
+              value: {{ $client.requireClientSecret | quote }} 
+              
+            - name: {{ printf "CLIENTS__%d__REQUIREPKCE" ($client_index | int) }}
+              value: {{ $client.requirePkce | quote }} 
+            
+            - name: {{ printf "CLIENTS__%d__SECRET" ($client_index | int) }}
+              valueFrom:
+                secretKeyRef:            
+                  name: {{ $client.secret.name }}
+                  key: {{ $client.secret.key }}
+
+            - name: {{ printf "CLIENTS__%d__REQUIRECONSENT" ($client_index | int) }}
+              value: {{ $client.requireConsent | quote }} # a bool in reality
+
+            {{- range $redirect_url_index, $redirect_url := $client.redirectUrls}}
+            - name: {{ printf "CLIENTS__%d__REDIRECTURLS__%d" ($client_index | int) ($redirect_url_index | int) }}
+              value: {{ $redirect_url | quote }}
+            {{- end -}}
+
+            {{- range $redirect_url_index, $redirect_url := $client.postLogoutRedirectUrls}}
+            - name: {{ printf "CLIENTS__%d__POSTLOGOUTREDIRECTURLS__%d" ($client_index | int) ($redirect_url_index | int) }}
+              value: {{ $redirect_url | quote }}
+            {{- end -}}
+
+            {{- range $scope_index, $scope := $client.allowedScopes}}
+            - name: {{ printf "CLIENTS__%d__ALLOWEDSCOPES__%d" ($client_index | int) ($scope_index | int) }}
+              value: {{ $scope | quote }}
+            {{- end -}}            
+            {{- end -}}
+
+            {{- with .Values.serviceDependencies.email }}
+            - name: SMTPSERVER__HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ .hostUriConfig.name | quote }}
+                  key: {{ .hostUriConfig.key | quote }}
+            - name: SMTPSERVER__PORT
+              value: {{ .port | quote }}
+            {{- end }}
+            - name: ALLOWINVALIDCERTIFICATE
+              value: {{ .Values.allowInvalidCertificate | quote }}
+            - name: DATAPROTECTION__APPLICATIONNAME
+              value: {{ .Values.dataProtection.applicationName | quote }}
+            {{- if .Values.env.values -}}
+            {{- range .Values.env.values }}
+              - name: {{ .name }}
+                value: {{ .value | quote }}
+            {{- end -}}
+            {{- end -}}
+            {{- if .Values.env.configmap -}}
+            {{- range .Values.env.configmap }}
+              - name: {{ .name }}
+                valueFrom:
+                  configMapKeyRef:
+                    name: {{ $cfgname }}
+                    key: {{ .key }}
+            {{- end -}}
+            {{- end }}
+            {{- if .Values.env.secrets -}}
+            {{- range .Values.env.secrets }}
+              - name: {{ .name }}
+                valueFrom:
+                  secretKeyRef:            
+                    name: {{ .valueFrom.secretKeyRef.name }}
+                    key: {{ .valueFrom.secretKeyRef.key }}            
+            {{- end -}}
+            {{- end }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}

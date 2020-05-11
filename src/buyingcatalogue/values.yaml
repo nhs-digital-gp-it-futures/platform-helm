@@ -1,0 +1,499 @@
+dbPassword:
+clientSecret:
+
+appBaseUrl: 
+baseIsapiEnabledUrl: 
+
+azurite:
+  enabled: true
+  disabledUrl: 
+  replicaCount: 1
+  image:
+    repository: mcr.microsoft.com/azure-storage/azurite  
+  useLocalImage: false
+  nameOverride: "azurite"
+  fullnameOverride: "gpitfutures-bc-azurite"
+  service:
+    type: ClusterIP
+    blobPort: 10000  
+    queuePort: 10001
+    tablePort: 10002
+
+dapi:
+  enabled: true
+  disabledUrl: 
+  replicaCount: 1
+  image:
+    repository: gpitfuturesdevacr.azurecr.io/nhsd/buying-catalogue/document-dapi
+  useLocalImage: false
+  imagePullSecrets: 
+  nameOverride: "dapi"
+  fullnameOverride: "gpitfutures-bc-dapi"
+  service:
+    type: ClusterIP
+    port: 5101
+  azureBlobStorage:    
+    connectionSecret: 
+      name: "bc-buyingcatalogue"
+      key: azure-blob-connection-string
+    containerName: container-1
+
+bapi-db:
+  enabled: true
+  disabledUrl: 
+  replicaCount: 1
+  image:
+    repository: gpitfuturesdevacr.azurecr.io/nhsd/buying-catalogue/debug-db
+  useLocalImage: false
+  imagePullSecrets: 
+  nameOverride: "bapi-sql"
+  fullnameOverride: "gpitfutures-bc-bapi-sql"
+  service:
+    type: ClusterIP
+    port: 1450
+  saPasswordSecret: 
+    name: "bc-buyingcatalogue"
+    key: sa-password    
+  dbName: buyingcatalogue
+  dbUser: NHSD
+  dbPasswordSecret: 
+    name: "bc-buyingcatalogue"
+    key: db-password    
+
+bapi:  
+  enabled: true
+  disabledUrl: 
+  replicaCount: 1
+  image:
+    repository: gpitfuturesdevacr.azurecr.io/nhsd/buying-catalogue/api
+  useLocalImage: false
+  imagePullSecrets: 
+  nameOverride: "bapi"
+  fullnameOverride: "gpitfutures-bc-bapi"
+  service:
+    type: ClusterIP
+    port: 5100
+  serviceDependencies:  
+    dapiUrlConfig:
+      name: "bc-buyingcatalogue"
+      key: dapi-url          
+  connectionStringSecret: 
+    name: "bc-buyingcatalogue"
+    key: bapi-db-connection-string  
+
+isapi-db:
+  enabled: false
+  disabledUrl: 
+  replicaCount: 1
+  image:
+    repository: gpitfuturesdevacr.azurecr.io/nhsd/buying-catalogue/identity-api-user-db
+  useLocalImage: false
+  imagePullSecrets: 
+  nameOverride: "isapi-sql"
+  fullnameOverride: "gpitfutures-bc-isapi-sql"
+  service:
+    type: ClusterIP
+    port: 1451  
+  saPasswordSecret: 
+    name: "bc-buyingcatalogue"
+    key: sa-password    
+  dbName: CatalogueUsers
+  dbUser: NHSD
+  dbPasswordSecret: 
+    name: "bc-buyingcatalogue"
+    key: db-password   
+  insertTestData: true
+  createEaUser: true
+  eaUser:
+    firstName: Agency
+    lastName: User
+    email: user@agency.com
+    passwordHash:
+      name: "bc-buyingcatalogue"
+      key: ea-user-password   
+    phone: "01234567890"
+ 
+
+isapi:
+  enabled: false
+  disabledUrl: 
+  feDisabledIssuerUrl:
+  replicaCount: 1
+  image:
+    repository: gpitfuturesdevacr.azurecr.io/nhsd/buying-catalogue/identity-isapi
+  useLocalImage: false
+  imagePullSecrets: 
+  nameOverride: "isapi"
+  fullnameOverride: "gpitfutures-bc-isapi"
+  service:
+    type: LoadBalancer
+    port: 5102      
+  connectionStringSecret: 
+    name: "bc-buyingcatalogue"
+    key: isapi-db-connection-string 
+  oidcClientSecret: 
+    name: "bc-buyingcatalogue"
+    key: oidc-client-secret 
+  issuerUrlConfig: 
+    name: "bc-buyingcatalogue"
+    key: issuer-url 
+  insertTestData: true
+  clients: 
+    - clientId: "NodeClient"
+      clientName: "Main Node Client"
+      allowedGrantTypes: "Code"
+      allowOfflineAccess : false
+      requireClientSecret : true
+      secret: 
+        name: "bc-buyingcatalogue"
+        key: oidc-client-secret 
+      requirePkce : true
+      requireConsent: true
+      redirectUrls: 
+      postLogoutRedirectUrls: 
+      allowedScopes: 
+        - openid
+        - email
+        - profile
+        - Organisation
+  serviceDependencies:
+    email:
+      hostUriConfig:
+        name: "bc-buyingcatalogue"
+        key: email-url      
+      port: 587
+  allowInvalidCertificate: false
+  dataProtection:
+    applicationName: "ISAPI Development"
+  ingress:
+    enabled: true
+    annotations: 
+      kubernetes.io/ingress.class: nginx
+      ingress.kubernetes.io/ssl-redirect: "false"
+      nginx.ingress.kubernetes.io/ssl-redirect: "false"
+    hosts:
+      - paths: 
+          - /.well-known
+          - /Account
+          - /connect
+
+oapi:
+  enabled: true
+  disabledUrl: 
+  replicaCount: 1
+  image:
+    repository: gpitfuturesdevacr.azurecr.io/nhsd/buying-catalogue/organisations-api
+  useLocalImage: false
+  imagePullSecrets: 
+  nameOverride: "oapi"
+  fullnameOverride: "gpitfutures-bc-oapi"
+  service:
+    type: LoadBalancer
+    port: 5103      
+  connectionStringSecret: 
+    name: "bc-buyingcatalogue"
+    key: isapi-db-connection-string 
+  serviceDependencies:
+    oidc:
+      baseUriConfig:
+        name: "bc-buyingcatalogue"
+        key: issuer-url
+    email:
+      hostUriConfig:
+        name: "bc-buyingcatalogue"
+        key: email-url      
+      port: 587
+  allowInvalidCertificate: false
+
+ordapi:
+  enabled: true
+  disabledUrl: 
+  replicaCount: 1
+  image:
+    repository: gpitfuturesdevacr.azurecr.io/nhsd/buying-catalogue/ordering-api
+  useLocalImage: false
+  imagePullSecrets: 
+  nameOverride: "ordapi"
+  fullnameOverride: "gpitfutures-bc-ordapi"
+  service:
+    type: LoadBalancer
+    port: 5104      
+  connectionStringSecret: 
+    name: "bc-buyingcatalogue"
+    key: ordapi-db-connection-string 
+
+ordapi-db:
+  enabled: true
+  disabledUrl: 
+  replicaCount: 1
+  image:
+    repository: gpitfuturesdevacr.azurecr.io/nhsd/buying-catalogue/ordering-api-ordering-db
+  useLocalImage: false
+  imagePullSecrets: 
+  nameOverride: "ordapi-sql"
+  fullnameOverride: "gpitfutures-bc-ordapi-sql"
+  service:
+    type: ClusterIP
+    port: 1452
+  saPasswordSecret: 
+    name: "bc-buyingcatalogue"
+    key: sa-password    
+  dbName: buyingcatalogue
+  dbUser: NHSD
+  dbPasswordSecret: 
+    name: "bc-buyingcatalogue"
+    key: db-password    
+
+email:
+  enabled: true
+  replicaCount: 1
+  image:
+    repository: gpitfuturesdevacr.azurecr.io/nhsd/buying-catalogue/smtp-server
+  useLocalImage: false
+  imagePullSecrets: 
+  nameOverride: "email"
+  fullnameOverride: "gpitfutures-bc-email"
+  service:
+    type: LoadBalancer
+    ports:
+      http: 1080
+      smtps: 587
+ 
+file-loader:
+  enabled: true
+  replicaCount: 1
+  image:
+    repository: gpitfuturesdevacr.azurecr.io/nhsd/buying-catalogue/file-uploader
+  useLocalImage: false
+  imagePullSecrets: 
+  nameOverride: "file-loader"
+  fullnameOverride: "gpitfutures-bc-file-loader"
+  azureBlobStorage:    
+    connectionSecret: 
+      name: "bc-buyingcatalogue"
+      key: azure-blob-connection-string
+    containerName: container-1
+
+mp:
+  enabled: true
+  replicaCount: 1
+  image:
+    repository: gpitfuturesdevacr.azurecr.io/nhsd/buying-catalogue/marketingpage
+  useLocalImage: false   
+  imagePullSecrets:   
+  nameOverride: "marketing-pages"
+  fullnameOverride: "gpitfutures-bc-mp"
+  service:
+    type: LoadBalancer
+    port: 3002
+  ingress:
+    enabled: true
+    annotations: 
+      kubernetes.io/ingress.class: nginx
+      ingress.kubernetes.io/ssl-redirect: "false"
+      nginx.ingress.kubernetes.io/ssl-redirect: "false"
+    hosts:
+      - paths: 
+          - /marketing
+  #custom variables
+  appBaseUri:
+    name: "bc-buyingcatalogue"
+    key: app-base-url
+  serviceDependencies:    
+    dapiUrlConfig:
+      name: "bc-buyingcatalogue"
+      key: dapi-url  
+    bapiUrlConfig:
+      name: "bc-buyingcatalogue"
+      key: bapi-url  
+
+pb: 
+  enabled: false
+  replicaCount: 1
+  image:
+    repository: gpitfuturesdevacr.azurecr.io/nhsd/buying-catalogue/publicbrowse 
+  useLocalImage: false    
+  imagePullSecrets: 
+  nameOverride: "public-browse"
+  fullnameOverride: "gpitfutures-bc-pb"
+  service:
+    type: LoadBalancer
+    port: 3000
+  ingress:
+    enabled: true
+    annotations: 
+      kubernetes.io/ingress.class: nginx
+      ingress.kubernetes.io/ssl-redirect: "false"
+      nginx.ingress.kubernetes.io/ssl-redirect: "false"
+    hosts:
+      - paths: 
+          - /
+    tls: []
+  appBaseUri:
+    name: "bc-buyingcatalogue"
+    key: app-base-url
+  baseUri: "/"
+  cookieSecret:
+    name: "bc-buyingcatalogue"
+    key: cookie-secret
+  featureFlags:
+    loginEnabled: "true"
+    useCapabilitiesSelector: "true"
+    showCovid19: "true"
+    showOrderForm: "true"
+  serviceDependencies:
+    adminUrlConfig:
+      name: "bc-buyingcatalogue"
+      key: admin-url    
+    bapiUrlConfig:
+      name: "bc-buyingcatalogue"
+      key: bapi-url 
+    dapiUrlConfig:
+      name: "bc-buyingcatalogue"
+      key: dapi-url   
+    oidc:
+      baseUriConfig:
+        name: "bc-buyingcatalogue"
+        key: issuer-url  
+      clientId: "SampleClient"
+      clientSecret: 
+        name: "bc-buyingcatalogue"
+        key: oidc-client-secret    
+    ofUrlConfig:
+      name: "bc-buyingcatalogue"
+      key:  of-url
+    redis:
+      urlConfig:
+        name: "bc-buyingcatalogue"
+        key: redis-url 
+      port: "6379"
+      tls: false
+      passSecret:
+        name: "bc-buyingcatalogue"
+        key:  "redis-password"
+
+admin: 
+  enabled: true
+  replicaCount: 1
+  image:
+    repository: gpitfuturesdevacr.azurecr.io/nhsd/buying-catalogue/admin
+  useLocalImage: false    
+  imagePullSecrets: 
+  nameOverride: "admin"
+  fullnameOverride: "gpitfutures-bc-admin"
+  service:
+    type: LoadBalancer
+    port: 3005
+  ingress:
+    enabled: true
+    annotations: 
+      kubernetes.io/ingress.class: nginx
+      ingress.kubernetes.io/ssl-redirect: "false"
+      nginx.ingress.kubernetes.io/ssl-redirect: "false"
+    hosts:
+      - paths: 
+          - /admin
+    tls: []
+  appBaseUri: 
+    name: "bc-buyingcatalogue"
+    key: "app-base-url"
+  baseUri: "/admin"
+  cookieSecret:
+    name: "bc-buyingcatalogue"
+    key: "cookie-secret"
+  serviceDependencies:
+    isapi: 
+      name: "bc-buyingcatalogue"
+      key: isapi-url
+    oidc:
+      baseUriConfig:
+        name: "bc-buyingcatalogue"
+        key: issuer-url
+      clientId: "SampleClient"
+      clientSecret: 
+        name: "bc-buyingcatalogue"
+        key: oidc-client-secret   
+    oapi:
+      name: "bc-buyingcatalogue"
+      key: oapi-url
+    pb:
+      name: "bc-buyingcatalogue"
+      key: pb-url
+    redis:
+      urlConfig:
+        name: "bc-buyingcatalogue"
+        key: redis-url 
+      port: "6379"
+      tls: false
+      passSecret:
+        name: "bc-buyingcatalogue"
+        key: "redis-password"
+
+of: 
+  enabled: true
+  replicaCount: 1
+  image:
+    repository: gpitfuturesdevacr.azurecr.io/nhsd/buying-catalogue/order-form
+  useLocalImage: false    
+  imagePullSecrets: 
+  nameOverride: "of"
+  fullnameOverride: "gpitfutures-bc-of"
+  service:
+    type: LoadBalancer
+    port: 3006
+  ingress:
+    enabled: true
+    annotations: 
+      kubernetes.io/ingress.class: nginx
+      ingress.kubernetes.io/ssl-redirect: "false"
+      nginx.ingress.kubernetes.io/ssl-redirect: "false"
+    hosts:
+      - paths: 
+          - /order
+    tls: []
+  appBaseUri: 
+    name: "bc-buyingcatalogue"
+    key: "app-base-url"
+  baseUri: "/order"
+  cookieSecret:
+    name: "bc-buyingcatalogue"
+    key: "cookie-secret"
+  serviceDependencies:
+    oidc:
+      baseUriConfig:
+        name: "bc-buyingcatalogue"
+        key: isapi-url  
+      clientId: "SampleClient"
+      clientSecret: 
+        name: "bc-buyingcatalogue"
+        key: oidc-client-secret   
+    ordapi:
+      name: "bc-buyingcatalogue"
+      key: ordapi-url
+    pb:
+      name: "bc-buyingcatalogue"
+      key: pb-url
+    redis:
+      urlConfig:
+        name: "bc-buyingcatalogue"
+        key: redis-url 
+      port: "6379"
+      tls: false
+      passSecret:
+        name: "bc-buyingcatalogue"
+        key: "redis-password"
+    
+redis:
+  enabled: true
+  disabledUrl: 
+  usePassword: true
+  existingSecret: "bc-buyingcatalogue"
+  existingSecretPasswordKey: "redis-password"
+  #See Redis Chart Values - https://github.com/bitnami/charts/tree/master/bitnami/redis
+
+redis-commander:
+  enabled: true
+  useLocalImage: false
+  redisHost:
+    name: "bc-buyingcatalogue"
+    key: redis-url

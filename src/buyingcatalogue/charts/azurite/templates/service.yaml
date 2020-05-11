@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "azurite.fullname" . }}
+  labels:
+    {{- include "azurite.labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - port: {{ .Values.service.blobPort }}
+      targetPort: 10000
+      protocol: TCP
+      name: blob-port
+    - port: {{ .Values.service.queuePort }}
+      targetPort: 10001
+      protocol: TCP
+      name: queue-port
+    - port: {{ .Values.service.tablePort }}
+      targetPort: 10002
+      protocol: TCP
+      name: table-port
+  selector:
+    {{- include "azurite.selectorLabels" . | nindent 4 }}

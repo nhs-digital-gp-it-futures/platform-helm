@@ -1,0 +1,6 @@
+Azurite is running on the following ports:
+
+- Blob  {{ .Values.service.blobPort }}
+- Queue {{ .Values.service.queuePort }}
+- Table {{ .Values.service.tablePort }}
+

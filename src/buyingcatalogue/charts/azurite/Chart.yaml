@@ -1,0 +1,8 @@
+apiVersion: v2
+name: azurite
+description: A Helm chart for deploying azurite locally
+type: application
+
+version: 0.1.0
+
+appVersion: latest

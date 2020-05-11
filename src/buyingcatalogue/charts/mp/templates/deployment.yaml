@@ -1,0 +1,107 @@
+{{- $name := include "mp.fullname" . -}}
+{{- $cfgname := printf "%s-%s" "cfg" $name -}}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "mp.fullname" . }}
+  labels:
+    {{- include "mp.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  strategy: {{ toYaml .Values.updateStrategy | nindent 4 }}  
+  selector:
+    matchLabels:
+      {{- include "mp.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "mp.selectorLabels" . | nindent 8 }}
+    spec:
+    {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+      serviceAccountName: {{ include "mp.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          {{- include "image.properties" . | nindent 10 }}
+          ports:
+            - name: http
+              containerPort: 3002
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /marketing/health/live
+              port: http
+          readinessProbe:
+            httpGet:
+              path: /marketing/health/ready
+              port: http
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          env:
+            - name: LOGGER_LEVEL
+              value: "info"   
+            - name: NODE_ENV
+              value: "production"
+            - name: APP_BASE_URI
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ .Values.appBaseUri.name | quote }}
+                  key: {{ .Values.appBaseUri.key | quote }}   
+            {{- if .Values.serviceDependencies }}            
+            {{- if .Values.serviceDependencies.bapiUrlConfig }}
+            - name: API_HOST              
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ .Values.serviceDependencies.bapiUrlConfig.name | quote }}
+                  key: {{ .Values.serviceDependencies.bapiUrlConfig.key | quote }}
+            {{- end -}}
+            {{- if .Values.serviceDependencies.dapiUrlConfig }}
+            - name: DOCUMENT_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ .Values.serviceDependencies.dapiUrlConfig.name | quote }}
+                  key: {{ .Values.serviceDependencies.dapiUrlConfig.key | quote }}
+            {{- end -}}
+            {{- end }}                        
+            {{- if .Values.env.values -}}
+            {{- range .Values.env.values }}
+              - name: {{ .name }}
+                value: {{ .value | quote }}
+            {{- end -}}
+            {{- end -}}
+            {{- if .Values.env.configmap -}}
+            {{- range .Values.env.configmap }}
+              - name: {{ .name }}
+                valueFrom:
+                  configMapKeyRef:
+                    name: {{ $cfgname }}
+                    key: {{ .key }}
+            {{- end -}}
+            {{- end }}
+            {{- if .Values.env.secrets -}}
+            {{- range .Values.env.secrets }}
+              - name: {{ .name }}
+                valueFrom:
+                  secretKeyRef:            
+                    name: {{ .valueFrom.secretKeyRef.name }}
+                    key: {{ .valueFrom.secretKeyRef.key }}            
+            {{- end -}}
+            {{- end }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}

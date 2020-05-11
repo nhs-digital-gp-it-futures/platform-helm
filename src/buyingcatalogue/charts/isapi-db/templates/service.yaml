@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "isapi-db.fullname" . }}
+  labels:
+    {{- include "isapi-db.labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - port: {{ .Values.service.port }}
+      targetPort: 1433
+      protocol: TCP      
+  selector:
+    {{- include "isapi-db.selectorLabels" . | nindent 4 }}

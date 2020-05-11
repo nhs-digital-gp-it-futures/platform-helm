@@ -1,0 +1,158 @@
+{{- $name := include "admin.fullname" . -}}
+{{- $cfgname := printf "%s-%s" "cfg" $name -}}
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "admin.fullname" . }}
+  labels:
+    {{- include "admin.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  strategy: {{ toYaml .Values.updateStrategy | nindent 4 }}  
+  selector:
+    matchLabels:
+      {{- include "admin.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "admin.selectorLabels" . | nindent 8 }}
+    spec:    
+    {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+      serviceAccountName: {{ include "admin.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}          
+          {{- include "image.properties" . | nindent 10 }}
+          ports:
+            - name: http
+              containerPort: 3005
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /admin/health/live
+              port: http            
+          readinessProbe:
+            httpGet:
+              path: /admin/health/ready
+              port: http
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          env:
+            - name: LOGGER_LEVEL
+              value: "info"
+            - name: NODE_ENV
+              value: production
+            - name: APP_BASE_URI
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ .Values.appBaseUri.name | quote }}
+                  key: {{ .Values.appBaseUri.key | quote }}              
+            - name: BASE_URL
+              value: {{ .Values.baseUri }}
+            - name: COOKIE_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.cookieSecret.name }}
+                  key: {{ .Values.cookieSecret.key }}
+            {{- if .Values.serviceDependencies }}   
+            {{- if .Values.serviceDependencies.redis.urlConfig }}
+            - name: REDIS_URL              
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ .Values.serviceDependencies.redis.urlConfig.name | quote }}
+                  key: {{ .Values.serviceDependencies.redis.urlConfig.key | quote }}
+            {{- end -}}       
+            {{- if .Values.serviceDependencies.redis.port }}
+            - name: REDIS_PORT
+              value: {{ .Values.serviceDependencies.redis.port | quote }}
+            {{- end -}} 
+            {{- if .Values.serviceDependencies.redis.tls }}
+            - name: REDIS_TLS
+              value: {{ .Values.serviceDependencies.redis.tls  | quote}}
+            {{- end -}} 
+            {{- if .Values.serviceDependencies.redis.passSecret }}
+            - name: REDIS_PASS             
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.serviceDependencies.redis.passSecret.name | quote }}
+                  key: {{ .Values.serviceDependencies.redis.passSecret.key | quote }}
+            {{- end -}}      
+            {{- with .Values.serviceDependencies.oidc }}
+            - name: OIDC_BASE_URI
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ .baseUriConfig.name | quote }}
+                  key: {{ .baseUriConfig.key | quote }}
+            - name: OIDC_CLIENT_ID
+              value: {{ .clientId | quote }}
+            - name: OIDC_CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .clientSecret.name }}
+                  key: {{ .clientSecret.key }}             
+            {{- end }}
+            {{- with .Values.serviceDependencies.isapi }}
+            - name: IDENTITY_SERVER
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ .name | quote }}
+                  key: {{ .key | quote }}                   
+            {{- end }}
+            {{- with .Values.serviceDependencies.oapi }}
+            - name: ORGANISATION_API_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ .name | quote }}
+                  key: {{ .key | quote }}            
+            {{- end }}          
+            {{- with .Values.serviceDependencies.pb }}
+            - name: PUBLIC_BROWSE_BASE_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ .name | quote }}
+                  key: {{ .key | quote }}            
+            {{- end }}          
+            {{- end }}                
+            {{- if .Values.env.values -}}
+            {{- range .Values.env.values }}
+            - name: {{ .name }}
+              value: {{ .value | quote }}
+            {{- end -}}
+            {{- end -}}
+            {{- if .Values.env.configmap -}}
+            {{- range .Values.env.configmap }}
+            - name: {{ .name }}
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ $cfgname }}
+                  key: {{ .key }}
+            {{- end -}}
+            {{- end }}
+            {{- if .Values.env.secrets -}}
+            {{- range .Values.env.secrets }}
+            - name: {{ .name }}
+              valueFrom:
+                secretKeyRef:            
+                  name: {{ .valueFrom.secretKeyRef.name }}
+                  key: {{ .valueFrom.secretKeyRef.key }}            
+            {{- end -}}
+            {{- end }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}

@@ -1,0 +1,32 @@
+{{- $dapiUrl:= ternary (printf "%s.%s" (include "call-nested" (list . "dapi" "dapi.fullname")) .Release.Namespace) .Values.dapi.disabledUrl .Values.dapi.enabled -}}
+{{- $bapiUrl:= ternary (printf "%s.%s" (include "call-nested" (list . "bapi" "bapi.fullname")) .Release.Namespace) .Values.bapi.disabledUrl .Values.bapi.enabled -}}
+{{- $oapiUrl:= ternary (printf "%s.%s" (include "call-nested" (list . "oapi" "oapi.fullname")) .Release.Namespace) .Values.oapi.disabledUrl .Values.oapi.enabled -}}
+{{- $ordapiUrl:= ternary (printf "%s.%s" (include "call-nested" (list . "ordapi" "ordapi.fullname")) .Release.Namespace) .Values.ordapi.disabledUrl .Values.ordapi.enabled -}}
+{{- $areAllFEComponentsEnabled:= and .Values.mp.enabled .Values.pb.enabled .Values.admin.enabled -}}
+{{- $isapiUrl:=  ternary (printf "%s.%s" (include "call-nested" (list . "isapi" "isapi.fullname")) .Release.Namespace) .Values.isapi.disabledUrl .Values.isapi.enabled -}}
+{{- $isapiIssuerUrl:= ternary (ternary .Values.baseIsapiEnabledUrl .Values.isapi.disabledUrl .Values.isapi.enabled) .Values.isapi.feDisabledIssuerUrl $areAllFEComponentsEnabled -}}
+{{- $adminUrl:= ternary .Values.admin.baseUri .Values.admin.disabledUrl .Values.admin.enabled -}}
+{{- $ofUrl:= ternary .Values.of.baseUri .Values.of.disabledUrl .Values.of.enabled -}}
+{{- $pbUrl:= ternary .Values.pb.baseUri .Values.pb.disabledUrl .Values.pb.enabled -}}
+{{- $emailUrl:= ternary (printf "%s.%s" (include "call-nested" (list . "email" "email.fullname")) .Release.Namespace) .Values.email.disabledUrl .Values.email.enabled -}}
+{{- $redisUrl:= ternary (printf "%s-master" (include "call-nested" (list . "redis" "redis.fullname"))) .Values.redis.disabledUrl .Values.redis.enabled -}}
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "buyingcatalogue.fullname" . }}
+  labels:     
+    {{- include "buyingcatalogue.labels" . | nindent 4 }}
+data:
+  dapi-url: {{ printf "http://%s:%d" $dapiUrl (.Values.dapi.service.port | int ) }}
+  bapi-url: {{ printf "http://%s:%d" $bapiUrl (.Values.bapi.service.port | int ) }}
+  oapi-url: {{ printf "http://%s:%d" $oapiUrl (.Values.oapi.service.port | int ) }}
+  ordapi-url: {{ printf "http://%s:%d" $ordapiUrl (.Values.ordapi.service.port | int ) }}  
+  isapi-url: {{ printf "http://%s:%d/identity" $isapiUrl (.Values.isapi.service.port | int ) }}
+  issuer-url: {{  $isapiIssuerUrl | quote }}  
+  admin-url: {{  $adminUrl | quote }}
+  of-url: {{  $ofUrl | quote }}
+  app-base-url: {{ .Values.appBaseUrl }}
+  email-url: {{ $emailUrl | quote }}  
+  redis-url: {{ $redisUrl | quote }}
+  pb-url: {{  $pbUrl | quote }}

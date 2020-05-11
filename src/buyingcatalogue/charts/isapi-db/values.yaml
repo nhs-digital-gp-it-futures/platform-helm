@@ -1,0 +1,86 @@
+# Default values for isapi-db.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicaCount: 1
+
+useLocalImage:
+
+image:
+  repository: gpitfuturesdevacr.azurecr.io/nhsd/buying-catalogue/identity-api-user-db 
+  pullPolicy: Always
+
+imagePullSecrets: 
+- name: regcredlocal
+nameOverride: "isapi-sql"
+fullnameOverride: "gpitfutures-bc-isapi-sql"
+
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: true
+  # Annotations to add to the service account
+  annotations: {}
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name:
+
+podSecurityContext: {}
+  # fsGroup: 2000
+
+securityContext: {}
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+  # runAsUser: 1000
+
+service:
+  type: LoadBalancer
+  port: 1451
+
+resources:
+  requests:
+    cpu: 25m
+    memory: 64Mi
+  limits:
+    cpu: 4000m
+    memory: 2048Mi
+
+nodeSelector: {}
+
+insertTestData: false
+
+tolerations: []
+
+affinity: {}
+
+env:
+  configmap:
+  secrets:
+  values:   
+
+dbName: CatalogueUsers
+dbUser: NHSD
+dbPasswordSecret: 
+  name:
+  key:
+
+insertTestData: false
+
+createEaUser: false
+eaUser:
+  firstName:
+  lastName:
+  email:
+  passwordHash: 
+    name: "bc-buyingcatalogue"
+    key: ea-user-password  
+  phone:
+
+livenessprobe:
+  initialDelaySeconds: 15
+  periodSeconds: 20
+readinessprobe:
+  initialDelaySeconds: 5
+  periodSeconds: 10

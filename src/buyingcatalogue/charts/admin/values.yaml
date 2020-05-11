@@ -1,0 +1,110 @@
+# Default values for admin.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicaCount: 1
+
+useLocalImage:
+
+image:
+  repository: gpitfuturesdevacr.azurecr.io/nhsd/buying-catalogue/admin
+  pullPolicy: Always
+
+imagePullSecrets: 
+- name: regcredlocal
+nameOverride: "admin"
+fullnameOverride: "gpitfutures-bc-admin"
+
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: true
+  # Annotations to add to the service account
+  annotations: {}
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name:
+
+podSecurityContext: {}
+  # fsGroup: 2000
+
+securityContext: {}
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+  # runAsUser: 1000
+
+service:
+  type: LoadBalancer
+  port: 3005
+
+ingress:
+  enabled: true
+  annotations: 
+    kubernetes.io/ingress.class: nginx
+    ingress.kubernetes.io/ssl-redirect: "false"
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+  hosts:
+    - paths: 
+        - /admin
+  tls: []
+  #  - secretName: chart-exapble-tls
+  #    hosts:
+  #      - chart-exapble.local
+
+resources: 
+  requests:
+    memory: 64Mi
+    cpu: 10m
+  limits:
+    cpu: 1000m
+    memory: 300Mi
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+appBaseUri:
+  name: 
+  key:
+baseUri: 
+cookieSecret:
+  name: 
+  key:
+
+serviceDependencies: 
+  isapi: # used for internal calls to isapi custom api
+    name:
+    key:
+  oidc: # used for external references to isapi for oidc use
+    baseUriConfig:
+      name: 
+      key:     
+    clientId :
+    clientSecret: 
+      name: 
+      key: 
+  oapi:
+    name:
+    key:
+  pb:
+    name:
+    key:
+  redis:
+    urlConfig:
+      name: 
+      key: 
+    port: "6379"
+    tls: false
+    passSecret:
+      name:
+      key:
+
+env:
+  configmap:
+  secrets:
+  values:
+
