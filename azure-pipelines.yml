@@ -58,7 +58,8 @@ jobs:
   dependsOn: packageAndPublish
   variables:
     - group: dev-acr-secrets
-    semVer: $[ dependencies.packageAndPublish.outputs['setVersionStep.semVer'] ]
+    - name: semVer
+      value: $[ dependencies.packageAndPublish.outputs['setVersionStep.semVer'] ]
   steps:
     # create namespace if it doesn't exist
   - task: Kubernetes@1
@@ -84,7 +85,7 @@ jobs:
       secretType: 'dockerRegistry'
       containerRegistryType: 'Azure Container Registry'
     # deploy chart to namespace
-    
+
 # - job: runAcceptanceTests
 #   dependsOn: packageAndPublish
 #   variables:
