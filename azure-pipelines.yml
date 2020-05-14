@@ -84,18 +84,12 @@ jobs:
       secretType: 'dockerRegistry'
       containerRegistryType: 'Azure Container Registry'
     # deploy chart to namespace
-  - bash: |      
-      helm package \
-          --version $(GitVersion.SemVer) \
-          --app-version $(GitVersion.SemVer) \
-          src/buyingcatalogue
-    failOnStderr: true
-    displayName: 'helm package'
-- job: runAcceptanceTests
-  dependsOn: packageAndPublish
-  variables:
-    - group: dev-acr-secrets
-  steps:
+    
+# - job: runAcceptanceTests
+#   dependsOn: packageAndPublish
+#   variables:
+#     - group: dev-acr-secrets
+#   steps:
     # public browse
     # marketing pages
     # admin
