@@ -104,7 +104,7 @@ spec:
                   key: {{ .baseUriConfig.key | quote }}             
             {{- end }}
             {{- with .Values.serviceDependencies.ordapi }}
-            - name: ORDER_FORM_API_URL
+            - name: ORDER_API_URL
               valueFrom:
                 configMapKeyRef:
                   name: {{ .name | quote }}

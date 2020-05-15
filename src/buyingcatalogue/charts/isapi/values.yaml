@@ -101,11 +101,17 @@ serviceDependencies:
       name:
       key:  
     port:
+  pb:
+    baseAddressConfig:
+      name:
+      key:
+    loginPath:
 # make sure its false if env == prod
 allowInvalidCertificate: false 
 dataProtection:
   applicationName: "ISAPI Development"
 
+pathBase: "identity"
 env:
   configmap:
   secrets:

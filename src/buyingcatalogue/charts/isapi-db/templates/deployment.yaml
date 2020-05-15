@@ -31,6 +31,18 @@ spec:
           ports:
             - name: mssql
               containerPort: {{ .Values.service.port }}
+          {{- with .Values.probes }}
+          livenessProbe:
+            tcpSocket:
+               port: {{ .port | int }}
+            initialDelaySeconds: {{ .liveness.initialDelaySeconds | int }}
+            periodSeconds: {{ .liveness.periodSeconds | int }}
+          readinessProbe:
+            tcpSocket:
+               port: {{ .port | int }}
+            initialDelaySeconds: {{ .readiness.initialDelaySeconds | int }}
+            periodSeconds: {{ .readiness.periodSeconds | int }}
+          {{- end }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           env:

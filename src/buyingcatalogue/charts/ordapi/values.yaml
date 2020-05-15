@@ -1,4 +1,4 @@
-# Default values for isapi-db.
+# Default values for ordapi.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
@@ -7,13 +7,13 @@ replicaCount: 1
 useLocalImage:
 
 image:
-  repository: gpitfuturesdevacr.azurecr.io/nhsd/buying-catalogue/identity-api-user-db 
+  repository: gpitfuturesdevacr.azurecr.io/nhsd/buying-catalogue/ordering-api
   pullPolicy: Always
 
 imagePullSecrets: 
 - name: regcredlocal
-nameOverride: "isapi-sql"
-fullnameOverride: "gpitfutures-bc-isapi-sql"
+nameOverride: "ordapi"
+fullnameOverride: "gpitfutures-bc-ordapi"
 
 serviceAccount:
   # Specifies whether a service account should be created
@@ -37,52 +37,53 @@ securityContext: {}
 
 service:
   type: LoadBalancer
-  port: 1451
+  port: 5104
 
-resources:
+ingress:
+  enabled: false
+  annotations: {}
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+  hosts:
+    - host: chart-example.local
+      paths: []
+  tls: []
+  #  - secretName: chart-example-tls
+  #    hosts:
+  #      - chart-example.local
+
+resources: 
   requests:
     cpu: 25m
     memory: 64Mi
   limits:
-    cpu: 4000m
-    memory: 2048Mi
+    cpu: 1000m
+    memory: 500Mi
 
 nodeSelector: {}
-
-insertTestData: false
 
 tolerations: []
 
 affinity: {}
 
+updateStrategy:
+  rollingUpdate:
+    maxSurge: 1
+    maxUnavailable: 1
+
+connectionStringSecret: 
+  name: 
+  key:   
+
+allowInvalidCertificate: false
+
+serviceDependencies:
+  oidc:
+    baseUriConfig:
+      name: 
+      key: 
+
 env:
   configmap:
   secrets:
-  values:   
-
-dbName: CatalogueUsers
-dbUser: NHSD
-dbPasswordSecret: 
-  name:
-  key:
-
-insertTestData: false
-
-createEaUser: false
-eaUser:
-  firstName:
-  lastName:
-  email:
-  passwordHash: 
-    name: "bc-buyingcatalogue"
-    key: ea-user-password  
-  phone:
-
-probes:
-  port: 1433
-  liveness:
-    initialDelaySeconds: 15
-    periodSeconds: 20
-  readiness:
-    initialDelaySeconds: 5
-    periodSeconds: 10
+  values:    

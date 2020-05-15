@@ -116,8 +116,7 @@ isapi-db:
 
 isapi:
   enabled: false
-  disabledUrl: 
-  feDisabledIssuerUrl:
+  disabledUrl:   
   replicaCount: 1
   image:
     repository: gpitfuturesdevacr.azurecr.io/nhsd/buying-catalogue/identity-isapi
@@ -162,20 +161,29 @@ isapi:
         name: "bc-buyingcatalogue"
         key: email-url      
       port: 587
+    pb:
+      baseAddressConfig:
+        name: "bc-buyingcatalogue"
+        key: pb-url
+      loginPath: /re-login
   allowInvalidCertificate: false
   dataProtection:
     applicationName: "ISAPI Development"
+  pathBase: "identity"
   ingress:
     enabled: true
     annotations: 
-      kubernetes.io/ingress.class: nginx
-      ingress.kubernetes.io/ssl-redirect: "false"
-      nginx.ingress.kubernetes.io/ssl-redirect: "false"
+      ingress.kubernetes.io/ssl-redirect: "true"
     hosts:
       - paths: 
-          - /.well-known
-          - /Account
-          - /connect
+          - /identity/health
+          - /identity/css  
+          - /identity/nhsuk-frontend
+          - /identity/Account
+          - /identity/Consent
+          - /identity/Error
+          - /identity/connect
+          - /identity/.well-known
 
 oapi:
   enabled: true
@@ -217,10 +225,16 @@ ordapi:
   fullnameOverride: "gpitfutures-bc-ordapi"
   service:
     type: LoadBalancer
-    port: 5104      
+    port: 5104     
+  allowInvalidCertificate: false
   connectionStringSecret: 
     name: "bc-buyingcatalogue"
     key: ordapi-db-connection-string 
+  serviceDependencies:
+    oidc:
+      baseUriConfig:
+        name: "bc-buyingcatalogue"
+        key: issuer-url
 
 ordapi-db:
   enabled: true
@@ -238,7 +252,7 @@ ordapi-db:
   saPasswordSecret: 
     name: "bc-buyingcatalogue"
     key: sa-password    
-  dbName: buyingcatalogue
+  dbName: CatalogueOrdering
   dbUser: NHSD
   dbPasswordSecret: 
     name: "bc-buyingcatalogue"
@@ -462,7 +476,7 @@ of:
     oidc:
       baseUriConfig:
         name: "bc-buyingcatalogue"
-        key: isapi-url  
+        key: issuer-url  
       clientId: "SampleClient"
       clientSecret: 
         name: "bc-buyingcatalogue"
