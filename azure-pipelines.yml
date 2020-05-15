@@ -60,7 +60,7 @@ jobs:
       value: $[ dependencies.packageAndPublish.outputs['setVersionStep.semVer'] ]
   steps:
   - bash: | 
-      namespace=echo 'buyingcatalogue-$(Build.SourceBranchName)' | sed 's/[[:punct:]]/-/g'
+      namespace=`echo 'buyingcatalogue-$(Build.SourceBranchName)' | sed 's/[[:punct:]]/-/g'`
       echo "##vso[task.setvariable variable=Namespace;isOutput=true]$namespace"
     name: DeployVars
     # create namespace if it doesn't exist
