@@ -59,6 +59,10 @@ jobs:
     - name: semVer
       value: $[ dependencies.packageAndPublish.outputs['setVersionStep.semVer'] ]
   steps:
+  - bash: | 
+      namespace=echo 'buyingcatalogue-$(Build.SourceBranchName)' | sed 's/[[:punct:]]/-/g'
+      ##vso[task.setvariable variable=Namespace;isOutput=true] $namespace
+    name: DeployVars
     # create namespace if it doesn't exist
   - task: Kubernetes@1
     inputs:
@@ -74,9 +78,9 @@ jobs:
           "apiVersion": "v1",
           "kind": "Namespace",
           "metadata": {
-            "name": "buyingcatalogue-$(semVer)",
+            "name": "$(DeployVars.Namespace)",
             "labels": {
-              "name": "buyingcatalogue-$(semVer)"
+              "name": "$(DeployVars.Namespace)"
             }
           }
         }
