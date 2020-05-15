@@ -61,7 +61,7 @@ jobs:
   steps:
   - bash: | 
       namespace=echo 'buyingcatalogue-$(Build.SourceBranchName)' | sed 's/[[:punct:]]/-/g'
-      ##vso[task.setvariable variable=Namespace;isOutput=true] $namespace
+      echo "##vso[task.setvariable variable=Namespace;isOutput=true]$namespace"
     name: DeployVars
     # create namespace if it doesn't exist
   - task: Kubernetes@1
