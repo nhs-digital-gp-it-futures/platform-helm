@@ -1,0 +1,348 @@
+dbPassword:
+clientSecret:
+appBaseUrl: "https://host.docker.internal"
+baseIsapiEnabledUrl: "https://host.docker.internal/identity"
+
+azurite:
+  enabled: true
+  disabledUrl: "host.docker.internal"
+  replicaCount: 1
+  image:
+    repository: mcr.microsoft.com/azure-storage/azurite  
+  useLocalImage: false
+  service:
+    type: LoadBalancer
+
+dapi:
+  enabled: true
+  disabledUrl: "host.docker.internal"
+  replicaCount: 1
+  image:
+    repository: gpitfuturesdevacr.azurecr.io/nhsd/buying-catalogue/document-dapi
+  useLocalImage: false
+  imagePullSecrets: 
+  - name: regcredlocal
+  service:
+    type: LoadBalancer
+  azureBlobStorage:    
+    containerName: container-1
+
+bapi-db:
+  enabled: true
+  disabledUrl: "host.docker.internal"
+  replicaCount: 1
+  image:
+    repository: gpitfuturesdevacr.azurecr.io/nhsd/buying-catalogue/debug-db
+  useLocalImage: false
+  imagePullSecrets: 
+  - name: regcredlocal
+  service:
+    type: LoadBalancer
+
+bapi:  
+  enabled: true
+  disabledUrl: "host.docker.internal"
+  replicaCount: 1
+  image:
+    repository: gpitfuturesdevacr.azurecr.io/nhsd/buying-catalogue/api
+  useLocalImage: false
+  imagePullSecrets: 
+  - name: regcredlocal
+  service:
+    type: LoadBalancer
+
+isapi-db:
+  enabled: false
+  disabledUrl: "host.docker.internal"
+  replicaCount: 1
+  image:
+    repository: gpitfuturesdevacr.azurecr.io/nhsd/buying-catalogue/identity-api-user-db
+  useLocalImage: false
+  imagePullSecrets: 
+  - name: regcredlocal  
+  service:
+    type: LoadBalancer
+  insertTestData: true
+  eaUser:
+    firstName: Agency
+    lastName: User
+    email: user@agency.com
+    passwordHash:
+      name: "bc-buyingcatalogue"
+      key: ea-user-password   
+    phone: "01234567890"
+
+isapi:
+  enabled: true
+  disabledUrl: "http://host.docker.internal:5102/identity"  
+  replicaCount: 1
+  image:
+    repository: gpitfuturesdevacr.azurecr.io/nhsd/buying-catalogue/identity-isapi
+  useLocalImage: false
+  imagePullSecrets: 
+  - name: regcredlocal
+  nameOverride: "isapi"
+  fullnameOverride: "gpitfutures-bc-isapi"  
+  service:
+    type: LoadBalancer
+  insertTestData: true
+  clients: 
+    - clientId: "SampleClient"
+      clientName: "Main Node Client"
+      allowedGrantTypes: "Code"
+      allowOfflineAccess : false
+      requireClientSecret : true
+      secret: 
+        name: "bc-buyingcatalogue"
+        key: oidc-client-secret 
+      requirePkce : true
+      requireConsent: true
+      redirectUrls:         
+        - https://host.docker.internal/oauth/callback
+        - https://docker.for.win.localhost/oauth/callback
+        - https://docker.for.mac.localhost/oauth/callback
+        - https://host.docker.internal/admin/oauth/callback
+        - https://docker.for.mac.localhost/admin/oauth/callback
+        - https://docker.for.win.localhost/admin/oauth/callback
+        - https://host.docker.internal/order/oauth/callback
+        - https://docker.for.mac.localhost/order/oauth/callback
+        - https://docker.for.win.localhost/order/oauth/callback
+        - http://docker.for.win.localhost:3000/oauth/callback
+        - http://docker.for.mac.localhost:3000/oauth/callback
+        - http://docker.for.win.localhost:3005/admin/oauth/callback
+        - http://docker.for.mac.localhost:3005/admin/oauth/callback
+        - http://docker.for.win.localhost:3006/order/oauth/callback
+        - http://docker.for.mac.localhost:3006/order/oauth/callback
+        - http://localhost:3000/oauth/callback
+        - http://localhost:3005/admin/oauth/callback
+        - http://localhost:3006/order/oauth/callback
+      postLogoutRedirectUrls: 
+        - https://host.docker.internal/signout-callback-oidc
+        - https://docker.for.win.localhost/signout-callback-oidc
+        - https://docker.for.mac.localhost/signout-callback-oidc
+        - https://host.docker.internal/admin/signout-callback-oidc
+        - https://docker.for.win.localhost/admin/signout-callback-oidc
+        - https://docker.for.mac.localhost/admin/signout-callback-oidc
+        - https://host.docker.internal/order/signout-callback-oidc
+        - https://docker.for.win.localhost/order/signout-callback-oidc
+        - https://docker.for.mac.localhost/order/signout-callback-oidc
+        - http://docker.for.win.localhost:3000/signout-callback-oidc
+        - http://docker.for.mac.localhost:3000/signout-callback-oidc
+        - http://docker.for.win.localhost:3005/admin/signout-callback-oidc
+        - http://docker.for.mac.localhost:3005/admin/signout-callback-oidc
+        - http://docker.for.win.localhost:3006/order/signout-callback-oidc
+        - http://docker.for.mac.localhost:3006/order/signout-callback-oidc           
+        - http://localhost:3000/signout-callback-oidc
+        - http://localhost:3005/admin/signout-callback-oidc
+        - http://localhost:3006/order/signout-callback-oidc
+      allowedScopes: 
+        - openid
+        - email
+        - profile
+        - SampleResource  
+        - Organisation
+  allowInvalidCertificate: true
+  dataProtection:
+    applicationName: "ISAPI Development"
+  ingress:
+    enabled: true
+    annotations: 
+      kubernetes.io/ingress.class: nginx
+      ingress.kubernetes.io/ssl-redirect: "true"
+      nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    hosts:
+      - paths: 
+          - /identity/health
+          - /identity/css  
+          - /identity/nhsuk-frontend
+          - /identity/Account
+          - /identity/account
+          - /identity/Consent
+          - /identity/consent
+          - /identity/Error
+          - /identity/error
+          - /identity/connect
+          - /identity/.well-known
+
+oapi:
+  enabled: true
+  disabledUrl: 
+  replicaCount: 1
+  image:
+    repository: gpitfuturesdevacr.azurecr.io/nhsd/buying-catalogue/organisations-api
+  useLocalImage: false
+  imagePullSecrets: 
+  - name: regcredlocal
+  nameOverride: "oapi"
+  fullnameOverride: "gpitfutures-bc-oapi"
+  service:
+    type: LoadBalancer
+    port: 5103      
+  allowInvalidCertificate: true
+
+ordapi:
+  enabled: true
+  disabledUrl: 
+  replicaCount: 1
+  image:
+    repository: gpitfuturesdevacr.azurecr.io/nhsd/buying-catalogue/ordering-api
+  useLocalImage: false
+  imagePullSecrets: 
+  nameOverride: "ordapi"
+  fullnameOverride: "gpitfutures-bc-ordapi"
+  service:
+    type: LoadBalancer
+    port: 5104   
+  allowInvalidCertificate: true
+
+ordapi-db:
+  service:
+    type: LoadBalancer
+    port: 1452
+
+email:
+  enabled: true
+  disabledUrl: ""  
+  replicaCount: 1
+  image:
+    repository: gpitfuturesdevacr.azurecr.io/nhsd/buying-catalogue/smtp-server
+  useLocalImage: false
+  imagePullSecrets: 
+  - name: regcredlocal
+  nameOverride: "email"
+  fullnameOverride: "gpitfutures-bc-email"
+  service:
+    type: LoadBalancer
+    ports:
+      http: 1080
+      smtps: 587
+
+file-loader:
+  enabled: true
+  replicaCount: 1
+  image:
+    repository: gpitfuturesdevacr.azurecr.io/nhsd/buying-catalogue/file-uploader
+  useLocalImage: false
+  imagePullSecrets: 
+  - name: regcredlocal
+  azureBlobStorage:    
+    containerName: container-1
+
+mp:
+  enabled: true
+  replicaCount: 1
+  image:
+    repository: gpitfuturesdevacr.azurecr.io/nhsd/buying-catalogue/marketingpage
+  useLocalImage: false   
+  imagePullSecrets: 
+  - name: regcredlocal
+  service:
+    type: LoadBalancer
+  ingress:
+    enabled: true
+    annotations: 
+      kubernetes.io/ingress.class: nginx
+      ingress.kubernetes.io/ssl-redirect: "true"
+      nginx.ingress.kubernetes.io/ssl-redirect: "true"
+
+pb: 
+  enabled: false
+  replicaCount: 1
+  image:
+    repository: gpitfuturesdevacr.azurecr.io/nhsd/buying-catalogue/publicbrowse 
+  useLocalImage: false    
+  imagePullSecrets: 
+  - name: regcredlocal
+  service:
+    type: LoadBalancer    
+  ingress:
+    enabled: true
+    annotations: 
+      kubernetes.io/ingress.class: nginx
+      ingress.kubernetes.io/ssl-redirect: "true"
+      nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    hosts:
+      - paths: 
+          - /
+    tls: []
+  baseUri: "https://host.docker.internal"
+  featureFlags:
+    loginEnabled : "true"
+    useCapabilitiesSelector: "true"
+    showCovid19: "true"
+  env:
+    values:
+      - name: NODE_TLS_REJECT_UNAUTHORIZED
+        value: "0"
+
+admin: 
+  enabled: true
+  disabledUrl: "host.docker.internal"
+  replicaCount: 1
+  image:
+    repository: gpitfuturesdevacr.azurecr.io/nhsd/buying-catalogue/admin
+  useLocalImage: false    
+  imagePullSecrets: 
+  - name: regcredlocal
+  nameOverride: "admin"
+  fullnameOverride: "gpitfutures-bc-admin"
+  service:
+    type: LoadBalancer
+    port: 3005
+  ingress:
+    enabled: true
+    annotations: 
+      kubernetes.io/ingress.class: nginx
+      ingress.kubernetes.io/ssl-redirect: "true"
+      nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    hosts:
+      - paths: 
+          - /admin
+    tls: []      
+  env:
+      values:
+        - name: NODE_TLS_REJECT_UNAUTHORIZED
+          value: "0"
+
+of: 
+  enabled: true
+  replicaCount: 1
+  image:
+    repository: gpitfuturesdevacr.azurecr.io/nhsd/buying-catalogue/order-form
+  useLocalImage: false    
+  imagePullSecrets: 
+  - name: regcredlocal
+  nameOverride: "of"
+  fullnameOverride: "gpitfutures-bc-of"
+  service:
+    type: LoadBalancer
+    port: 3006
+  ingress:
+    enabled: true
+    annotations: 
+      kubernetes.io/ingress.class: nginx
+      ingress.kubernetes.io/ssl-redirect: "false"
+      nginx.ingress.kubernetes.io/ssl-redirect: "false"
+    hosts:
+      - paths: 
+          - /order
+    tls: []  
+  baseUri: "/order"  
+  env:
+      values:
+        - name: NODE_TLS_REJECT_UNAUTHORIZED
+          value: "0"
+
+redis:
+  enabled: true
+  cluster:
+    enabled: false
+  usePassword: false
+  master:
+    service:
+      type: LoadBalancer
+
+redis-commander:
+  enabled: true
+  service:
+    port: 8181    

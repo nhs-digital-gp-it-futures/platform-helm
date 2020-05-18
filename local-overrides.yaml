@@ -1,0 +1,74 @@
+# Overrides to local kubernetes system to enable development against the system.
+# To work on a component, and have it wired into the system, set enabled=false
+# When disabled, the other components will be directed to use the disabledUrl, where applicable. 
+# This is normally set to host.docker.internal, so that it refers to components running directly on the host machine
+# If you wish to work with a locally compiled docker file running in k8s, instead of the latest from development, override per component, e.g. as below for dapi:
+# dapi: 
+#   useLocalImage: true
+# Please note that you need to build the local image yourself and it needs to follow the standard name specified in its docker-compose, custom tags are not supported yet.
+
+dbPassword: DisruptTheMarket1!
+clientSecret: SampleClientSecret
+
+azurite:
+  enabled: true
+  disabledUrl: "host.docker.internal"
+  
+dapi:
+  enabled: true
+  disabledUrl: "host.docker.internal"
+
+bapi-db:
+  enabled: true
+  disabledUrl: "host.docker.internal"
+
+bapi:  
+  enabled: true
+  disabledUrl: "host.docker.internal"
+
+isapi-db:
+  enabled: true
+  disabledUrl: "host.docker.internal"
+
+isapi:  
+  enabled: true
+  disabledUrl: "http://host.docker.internal:5102/identity"  
+
+oapi:  
+  enabled: true
+  disabledUrl: "host.docker.internal"  
+
+ordapi-db:
+  enabled: true
+  disabledUrl: "host.docker.internal"
+
+ordapi:  
+  enabled: true
+  disabledUrl: "host.docker.internal"
+
+email:
+  enabled: true
+  disabledUrl: ""
+  
+file-loader:
+  enabled: true
+
+mp:
+  enabled: true
+
+pb: 
+  enabled: true  
+
+admin:
+  enabled: true
+  disabledUrl: "http://localhost:3005/admin"
+
+of:
+  enabled: true
+  disabledUrl: "http://localhost:3006/order"
+
+redis:
+  enabled: true
+
+redis-commander:
+  enabled: true

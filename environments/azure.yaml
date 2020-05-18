@@ -1,0 +1,226 @@
+dbPassword:
+clientSecret:
+appBaseUrl: "https://<namespace>.dev.buyingcatalogue.digital.nhs.uk"
+baseIsapiEnabledUrl: "https://<namespace>.dev.buyingcatalogue.digital.nhs.uk/identity"
+
+azurite:
+  enabled: true #eventually set to false
+  disabledUrl: "<set to azure storage account>" 
+  
+dapi:
+  enabled: true  
+  replicaCount: 1  
+  azureBlobStorage:    
+    containerName: container-1  #set to release name-documents when using real storage
+
+bapi-db:
+  enabled: true #eventually set to false when using azure sql
+  disabledUrl: "gpitfutures-dev-sql-pri" #azure sql url
+  #dbName: "" #eventually set to dynamic name
+  # dbUser: NHSD  #eventually set to azure sql user
+  # dbPasswordSecret:  #eventually set to azure sql secret
+  #   name:
+  #   key:
+  replicaCount: 1
+  
+bapi:  
+  enabled: true  
+  replicaCount: 1
+  
+isapi-db:
+  enabled: true  #eventually set to false when using azure sql
+  disabledUrl: "gpitfutures-dev-sql-pri" #azure sql url
+  replicaCount: 1
+  insertTestData: true  #override to false in preprod / prod?
+  eaUser:               #how do we set these for preprod / prod?
+    firstName: Agency
+    lastName: User
+    email: user@agency.com
+    passwordHash:
+      name: "bc-buyingcatalogue"
+      key: ea-user-password   
+    phone: "01234567890"
+
+isapi:
+  enabled: true  
+  replicaCount: 1  
+  clients: 
+    - clientId: "NodeClient"
+      clientName: "Main Node Client"
+      allowedGrantTypes: "Code"
+      allowOfflineAccess : false
+      requireClientSecret : true
+      secret: 
+        name: "bc-buyingcatalogue"
+        key: oidc-client-secret 
+      requirePkce : true
+      requireConsent: true
+      redirectUrls:         
+        - https://<namespace>.dev.buyingcatalogue.digital.nhs.uk/oauth/callback          #To override from build
+        - https://<namespace>.dev.buyingcatalogue.digital.nhs.uk/admin/oauth/callback    #To override from build
+        - https://<namespace>.dev.buyingcatalogue.digital.nhs.uk/order/oauth/callback    #To override from build
+      postLogoutRedirectUrls: 
+        - https://<namespace>.dev.buyingcatalogue.digital.nhs.uk/signout-callback-oidc        #To override from build
+        - https://<namespace>.dev.buyingcatalogue.digital.nhs.uk/admin/signout-callback-oidc  #To override from build
+        - https://<namespace>.dev.buyingcatalogue.digital.nhs.uk/order/signout-callback-oidc  #To override from build
+      allowedScopes: 
+        - openid
+        - email
+        - profile        
+        - Organisation
+  allowInvalidCertificate: true  #set to false once we have dns / actual certs set up
+  dataProtection:
+    applicationName: "ISAPI Development"
+  ingress:
+    enabled: true
+    annotations: 
+      kubernetes.io/ingress.class: azure/application-gateway
+      appgw.ingress.kubernetes.io/appgw-ssl-certificate: buyingcataloguedev 
+      appgw.ingress.kubernetes.io/ssl-redirect: "true"    
+    hosts:
+      - host: https://<namespace>.dev.buyingcatalogue.digital.nhs.uk" #To override from build
+        paths: 
+          - /identity/health
+          - /identity/css  
+          - /identity/nhsuk-frontend
+          - /identity/Account
+          - /identity/account
+          - /identity/Consent
+          - /identity/consent
+          - /identity/Error
+          - /identity/error
+          - /identity/connect
+          - /identity/.well-known
+
+oapi:
+  enabled: true  
+  replicaCount: 1
+  allowInvalidCertificate: true #set to false once we have dns / actual certs set up
+
+ordapi:
+  enabled: true  
+  replicaCount: 1
+  allowInvalidCertificate: true #set to false once we have dns / actual certs set up
+
+ordapi-db:
+  enabled: true  #eventually set to false when using azure sql
+  disabledUrl: "gpitfutures-dev-sql-pri" #azure sql url
+  replicaCount: 1
+  insertTestData: true  #override to false in preprod / prod?
+
+email:
+  enabled: true  #probably leave enabled apart from prod  
+  replicaCount: 1
+ingress:
+    enabled: true
+    annotations: 
+      kubernetes.io/ingress.class: azure/application-gateway
+      appgw.ingress.kubernetes.io/appgw-ssl-certificate: buyingcataloguedev 
+      appgw.ingress.kubernetes.io/ssl-redirect: "true"
+    hosts:
+      - host: <namespace>.dev.buyingcatalogue.digital.nhs.uk #To override from build
+        paths: 
+          - /email
+
+file-loader:
+  enabled: true
+  replicaCount: 1
+  azureBlobStorage:    
+    containerName: container-1 #set to release name-documents when using real storage
+
+mp:
+  enabled: true
+  replicaCount: 1
+  ingress:
+    enabled: true
+    annotations: 
+      kubernetes.io/ingress.class: azure/application-gateway
+      appgw.ingress.kubernetes.io/appgw-ssl-certificate: buyingcataloguedev 
+      appgw.ingress.kubernetes.io/ssl-redirect: "true"
+    hosts:
+      - host: <namespace>.dev.buyingcatalogue.digital.nhs.uk #To override from build
+        paths: 
+          - /marketing
+
+pb: 
+  enabled: true
+  replicaCount: 1
+  ingress:
+    enabled: true
+    annotations: 
+      kubernetes.io/ingress.class: azure/application-gateway
+      appgw.ingress.kubernetes.io/appgw-ssl-certificate: buyingcataloguedev 
+      appgw.ingress.kubernetes.io/ssl-redirect: "true"
+    hosts:
+      - host: <namespace>.dev.buyingcatalogue.digital.nhs.uk #To override from build
+        paths: 
+          - /
+    tls: []
+  baseUri: https://<namespace>.dev.buyingcatalogue.digital.nhs.uk #To override from build
+  featureFlags:
+    loginEnabled : "true"
+    useCapabilitiesSelector: "true"
+    showCovid19: "true"
+  env:
+    values:
+      - name: NODE_TLS_REJECT_UNAUTHORIZED
+        value: "0"
+
+admin: 
+  enabled: true
+  replicaCount: 1
+  ingress:
+    enabled: true
+    annotations: 
+      kubernetes.io/ingress.class: azure/application-gateway
+      appgw.ingress.kubernetes.io/appgw-ssl-certificate: buyingcataloguedev 
+      appgw.ingress.kubernetes.io/ssl-redirect: "true"
+    hosts:
+      - host: <namespace>.dev.buyingcatalogue.digital.nhs.uk #To override from build
+        paths: 
+          - /admin
+    tls: []      
+  env:
+      values:
+        - name: NODE_TLS_REJECT_UNAUTHORIZED
+          value: "0"
+
+of: 
+  enabled: true
+  replicaCount: 1
+  ingress:
+    enabled: true
+    annotations: 
+      kubernetes.io/ingress.class: azure/application-gateway
+      appgw.ingress.kubernetes.io/appgw-ssl-certificate: buyingcataloguedev 
+      appgw.ingress.kubernetes.io/ssl-redirect: "true"
+    hosts:
+      - host: <namespace>.dev.buyingcatalogue.digital.nhs.uk #To override from build
+        paths: 
+          - /order
+    tls: []  
+  baseUri: "/order"  
+  env:
+      values:
+        - name: NODE_TLS_REJECT_UNAUTHORIZED
+          value: "0"
+
+redis:
+  enabled: true
+  cluster:
+    enabled: false
+  usePassword: false
+
+redis-commander:
+  enabled: true
+  urlPrefix: redis-commander
+  ingress:
+    enabled: true
+    annotations: 
+      kubernetes.io/ingress.class: azure/application-gateway
+      appgw.ingress.kubernetes.io/appgw-ssl-certificate: buyingcataloguedev 
+      appgw.ingress.kubernetes.io/ssl-redirect: "true"
+    hosts:
+      - host: <namespace>.dev.buyingcatalogue.digital.nhs.uk #To override from build
+        paths: 
+          - /redis-commander

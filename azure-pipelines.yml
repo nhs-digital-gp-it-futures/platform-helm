@@ -60,8 +60,14 @@ jobs:
       value: $[ dependencies.packageAndPublish.outputs['setVersionStep.semVer'] ]
   steps:
   - bash: | 
-      namespace=`echo 'buyingcatalogue-$(Build.SourceBranchName)' | sed 's/[[:punct:]]/-/g'`
+      namespace=`echo 'buyingcatalogue-$(Build.SourceBranchName)' | sed 's/[[:punct:]]/-/g'`      
+      basePath="$namespace.dev.buyingcatalogue.digital.nhs.uk"
+      baseUrl="https://$basePath"
+      baseIdentityUrl="$baseUrl/identity"
       echo "##vso[task.setvariable variable=Namespace;isOutput=true]$namespace"
+      echo "##vso[task.setvariable variable=BasePath;isOutput=true]$basePath"
+      echo "##vso[task.setvariable variable=BaseUrl;isOutput=true]$baseUrl"
+      echo "##vso[task.setvariable variable=BaseIdentityUrl;isOutput=true]$baseIdentityUrl"
     name: DeployVars
     # create namespace if it doesn't exist
   - task: Kubernetes@1
@@ -87,7 +93,35 @@ jobs:
       secretType: 'dockerRegistry'
       containerRegistryType: 'Azure Container Registry'
     # deploy chart to namespace
-
+  - task: HelmDeploy@0
+    inputs:
+      connectionType: 'Azure Resource Manager'
+      azureSubscription: 'NHSAPP-BuyingCatalogue (Non-Prod)'
+      azureResourceGroup: 'gpitfutures-dev-rg-aks'
+      kubernetesCluster: 'gpitfutures-dev-aks'
+      namespace: '$(DeployVars.Namespace)'
+      command: 'upgrade'
+      chartType: 'Name'
+      chartName: 'gpitfuturesdevacr/buyingcatalogue'
+      releaseName: 'bc'
+      overrideValues: 'appBaseUrl=$(DeployVars.BaseUrl),
+      baseIsapiEnabledUrl=$(DeployVars.BaseIdentityUrl),
+      isapi.clients[0].redirectUrls[0]=$(DeployVars.BaseUrl)/oauth/callback,
+      isapi.clients[0].redirectUrls[1]=$(DeployVars.BaseUrl)/admin/oauth/callback,
+      isapi.clients[0].redirectUrls[2]=$(DeployVars.BaseUrl)/order/oauth/callback,
+      isapi.clients[0].postLogoutRedirectUrls[0]=$(DeployVars.BaseUrl)/signout-callback-oidc,
+      isapi.clients[0].postLogoutRedirectUrls[1]=$(DeployVars.BaseUrl)/admin/signout-callback-oidc,
+      isapi.clients[0].postLogoutRedirectUrls[2]=$(DeployVars.BaseUrl)/order/signout-callback-oidc,
+      isapi.ingress.hosts[0].host=$(DeployVars.BasePath),
+      email.ingress.hosts[0].host=$(DeployVars.BasePath),
+      mp.ingress.hosts[0].host=$(DeployVars.BasePath),
+      pb.ingress.hosts[0].host=$(DeployVars.BasePath),
+      pb.baseUri=$(DeployVars.BaseUrl),
+      admin.ingress.hosts[0].host=$(DeployVars.BasePath),
+      of.ingress.hosts[0].host=$(DeployVars.BasePath),
+      redis-commander.ingress.hosts[0].host=$(DeployVars.BasePath)'
+      valueFile: 'environments/azure.yaml'
+      arguments: '--debug '
 # - job: runAcceptanceTests
 #   dependsOn: packageAndPublish
 #   variables:

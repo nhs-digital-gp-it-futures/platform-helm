@@ -39,7 +39,11 @@ spec:
               valueFrom:
                 configMapKeyRef:
                   name: {{ .Values.redisHost.name | quote }}
-                  key: {{ .Values.redisHost.key | quote }}      
+                  key: {{ .Values.redisHost.key | quote }}
+            {{- if .Values.urlPrefix }}
+            - name: URL_PREFIX
+              value: {{ .Values.urlPrefix | quote }}
+            {{- end -}}          
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

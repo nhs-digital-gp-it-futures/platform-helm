@@ -35,7 +35,7 @@ securityContext: {}
   # runAsUser: 1000
 
 service:
-  type: LoadBalancer
+  type: ClusterIP
   port: 8081
 
 resources:      
@@ -55,3 +55,5 @@ affinity: {}
 redisHost:
   name:
   key:
+
+urlPrefix:
