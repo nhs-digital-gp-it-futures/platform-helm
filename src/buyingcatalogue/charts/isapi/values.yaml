@@ -11,7 +11,7 @@ image:
   pullPolicy: Always
 
 imagePullSecrets: 
-- name: regcredlocal
+
 nameOverride: isapi
 fullnameOverride: gpitfutures-bc-isapi
 
@@ -38,18 +38,17 @@ securityContext: {}
   # runAsUser: 1000
 
 service:
-  type: LoadBalancer
+  type: ClusterIP
   port: 5102
 
 ingress:
   enabled: true
   annotations: 
-    kubernetes.io/ingress.class: nginx
-    ingress.kubernetes.io/ssl-redirect: "false"
-    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+    # kubernetes.io/ingress.class: nginx
+    # ingress.kubernetes.io/ssl-redirect: "false"
+    # nginx.ingress.kubernetes.io/ssl-redirect: "false"
   hosts:
-    - host: localhost
-      paths: 
+    - paths: 
         - /identity
   tls: []
 
@@ -83,8 +82,8 @@ clients:
     allowOfflineAccess:
     requireClientSecret:
     secret:
-      name: "bc-buyingcatalogue"
-      key: oidc-client-secret 
+      name: 
+      key: 
     requirePkce:
     requireConsent:
     redirectUrls: {}

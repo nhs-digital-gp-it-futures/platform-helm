@@ -11,7 +11,6 @@ image:
   pullPolicy: Always
 
 imagePullSecrets: 
-- name: regcredlocal
 nameOverride: "ordapi-sql"
 fullnameOverride: "gpitfutures-bc-ordapi-sql"
 
@@ -36,7 +35,7 @@ securityContext: {}
   # runAsUser: 1000
 
 service:
-  type: LoadBalancer
+  type: ClusterIP
   port: 1452
 
 resources:

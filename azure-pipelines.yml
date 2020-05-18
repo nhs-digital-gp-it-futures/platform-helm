@@ -104,25 +104,26 @@ jobs:
       chartType: 'Name'
       chartName: 'gpitfuturesdevacr/buyingcatalogue'
       releaseName: 'bc'
-      overrideValues: >
-        appBaseUrl=$(DeployVars.BaseUrl),
-        baseIsapiEnabledUrl=$(DeployVars.BaseIdentityUrl),
-        isapi.clients[0].redirectUrls[0]=$(DeployVars.BaseUrl)/oauth/callback,
-        isapi.clients[0].redirectUrls[1]=$(DeployVars.BaseUrl)/admin/oauth/callback,
-        isapi.clients[0].redirectUrls[2]=$(DeployVars.BaseUrl)/order/oauth/callback,
-        isapi.clients[0].postLogoutRedirectUrls[0]=$(DeployVars.BaseUrl)/signout-callback-oidc,
-        isapi.clients[0].postLogoutRedirectUrls[1]=$(DeployVars.BaseUrl)/admin/signout-callback-oidc,
-        isapi.clients[0].postLogoutRedirectUrls[2]=$(DeployVars.BaseUrl)/order/signout-callback-oidc,
-        isapi.ingress.hosts[0].host=$(DeployVars.BasePath),
-        email.ingress.hosts[0].host=$(DeployVars.BasePath),
-        mp.ingress.hosts[0].host=$(DeployVars.BasePath),
-        pb.ingress.hosts[0].host=$(DeployVars.BasePath),
-        pb.baseUri=$(DeployVars.BaseUrl),
-        admin.ingress.hosts[0].host=$(DeployVars.BasePath),
-        of.ingress.hosts[0].host=$(DeployVars.BasePath),
-        redis-commander.ingress.hosts[0].host=$(DeployVars.BasePath)
+      overrideValues:
       valueFile: 'environments/azure.yaml'
-      arguments: '--debug '
+      arguments: >
+        --debug
+        --set appBaseUrl=$(DeployVars.BaseUrl),
+        --set baseIsapiEnabledUrl=$(DeployVars.BaseIdentityUrl),
+        --set isapi.clients[0].redirectUrls[0]=$(DeployVars.BaseUrl)/oauth/callback,
+        --set isapi.clients[0].redirectUrls[1]=$(DeployVars.BaseUrl)/admin/oauth/callback,
+        --set isapi.clients[0].redirectUrls[2]=$(DeployVars.BaseUrl)/order/oauth/callback,
+        --set isapi.clients[0].postLogoutRedirectUrls[0]=$(DeployVars.BaseUrl)/signout-callback-oidc,
+        --set isapi.clients[0].postLogoutRedirectUrls[1]=$(DeployVars.BaseUrl)/admin/signout-callback-oidc,
+        --set isapi.clients[0].postLogoutRedirectUrls[2]=$(DeployVars.BaseUrl)/order/signout-callback-oidc,
+        --set isapi.ingress.hosts[0].host=$(DeployVars.BasePath),
+        --set email.ingress.hosts[0].host=$(DeployVars.BasePath),
+        --set mp.ingress.hosts[0].host=$(DeployVars.BasePath),
+        --set pb.ingress.hosts[0].host=$(DeployVars.BasePath),
+        --set pb.baseUri=$(DeployVars.BaseUrl),
+        --set admin.ingress.hosts[0].host=$(DeployVars.BasePath),
+        --set of.ingress.hosts[0].host=$(DeployVars.BasePath),
+        --set redis-commander.ingress.hosts[0].host=$(DeployVars.BasePath)
 # - job: runAcceptanceTests
 #   dependsOn: packageAndPublish
 #   variables:

@@ -35,7 +35,7 @@ securityContext: {}
   # runAsUser: 1000
 
 service:
-  type: LoadBalancer
+  type: ClusterIP
   blobPort: 10000  
   queuePort: 10001
   tablePort: 10002

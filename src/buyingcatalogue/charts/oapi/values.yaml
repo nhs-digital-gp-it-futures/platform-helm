@@ -11,7 +11,6 @@ image:
   pullPolicy: Always
 
 imagePullSecrets: 
-- name: regcredlocal
 nameOverride: oapi
 fullnameOverride: gpitfutures-bc-oapi
 
@@ -38,7 +37,7 @@ securityContext: {}
   # runAsUser: 1000
 
 service:
-  type: LoadBalancer
+  type: ClusterIP
   port: 5103
 
 resources: 
@@ -48,7 +47,8 @@ resources:
   limits:
     cpu: 1000m
     memory: 500Mi
-  
+hostAliases:
+
 nodeSelector: {}
 
 tolerations: []

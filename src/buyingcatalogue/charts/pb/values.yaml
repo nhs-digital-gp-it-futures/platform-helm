@@ -61,6 +61,8 @@ resources:
     cpu: 1000m
     memory: 300Mi
 
+hostAliases:  
+
 nodeSelector: {}
 
 tolerations: []

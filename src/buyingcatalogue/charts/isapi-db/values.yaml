@@ -11,7 +11,6 @@ image:
   pullPolicy: Always
 
 imagePullSecrets: 
-- name: regcredlocal
 nameOverride: "isapi-sql"
 fullnameOverride: "gpitfutures-bc-isapi-sql"
 
@@ -36,7 +35,7 @@ securityContext: {}
   # runAsUser: 1000
 
 service:
-  type: LoadBalancer
+  type: ClusterIP
   port: 1451
 
 resources:
@@ -74,8 +73,8 @@ eaUser:
   lastName:
   email:
   passwordHash: 
-    name: "bc-buyingcatalogue"
-    key: ea-user-password  
+    name: 
+    key: 
   phone:
 
 probes:

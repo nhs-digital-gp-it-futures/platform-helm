@@ -11,7 +11,7 @@ image:
   pullPolicy: Always
 
 imagePullSecrets: 
-- name: regcredlocal
+
 nameOverride: "bapi"
 fullnameOverride: "gpitfutures-bc-bapi"
 
@@ -38,7 +38,7 @@ securityContext: {}
   # runAsUser: 1000
 
 service:
-  type: LoadBalancer
+  type: ClusterIP
   port: 5100
 
 ingress:

@@ -11,7 +11,7 @@ image:
   pullPolicy: Always
 
 imagePullSecrets: 
-- name: regcredlocal
+
 nameOverride: "admin"
 fullnameOverride: "gpitfutures-bc-admin"
 
@@ -36,7 +36,7 @@ securityContext: {}
   # runAsUser: 1000
 
 service:
-  type: LoadBalancer
+  type: ClusterIP
   port: 3005
 
 ingress:
@@ -60,6 +60,8 @@ resources:
   limits:
     cpu: 1000m
     memory: 300Mi
+
+hostAliases:  
 
 nodeSelector: {}
 

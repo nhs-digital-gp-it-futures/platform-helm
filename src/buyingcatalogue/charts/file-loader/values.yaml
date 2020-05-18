@@ -11,7 +11,6 @@ image:
   pullPolicy: Always
 
 imagePullSecrets: 
-- name: regcredlocal
 nameOverride: "file-loader"
 fullnameOverride: "gpitfutures-bc-file-loader"
 
@@ -51,8 +50,8 @@ affinity: {}
 
 azureBlobStorage:    
   connectionSecret: 
-    name: "bc-buyingcatalogue"
-    key: azure-blob-connection-string
+    name: 
+    key: 
   containerName: container-1
 
 env:

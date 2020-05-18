@@ -46,6 +46,8 @@ spec:
               port: http
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
+          hostAliases:
+            {{- toYaml .Values.hostAliases | nindent 12 }}
           env:
             - name: ASPNETCORE_ENVIRONMENT
               value: Development

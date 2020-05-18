@@ -44,6 +44,8 @@ spec:
               port: http
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
+          hostAliases:
+            {{- toYaml .Values.hostAliases | nindent 12 }}
           env:
             - name: LOGGER_LEVEL
               value: "info"
