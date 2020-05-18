@@ -92,6 +92,14 @@ jobs:
         }
       secretType: 'dockerRegistry'
       containerRegistryType: 'Azure Container Registry'
+  - bash: |      
+      helm repo add \
+      gpitfuturesdevacr \
+      https://gpitfuturesdevacr.azurecr.io/helm/v1/repo \
+      --username gpitfuturesdevacr \
+      --password $(gpitfuturesdevacr-pass)
+    failOnStderr: true
+    displayName: 'helm repo add'
     # deploy chart to namespace
   - task: HelmDeploy@0
     inputs:
