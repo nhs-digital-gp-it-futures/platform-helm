@@ -27,6 +27,8 @@ spec:
       serviceAccountName: {{ include "oapi.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      hostAliases:
+        {{- toYaml .Values.hostAliases | nindent 8 }}
       containers:
         - name: {{ .Chart.Name }}
           securityContext:
@@ -46,8 +48,6 @@ spec:
               port: http
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
-          hostAliases:
-            {{- toYaml .Values.hostAliases | nindent 12 }}
           env:
             - name: ASPNETCORE_ENVIRONMENT
               value: Development
