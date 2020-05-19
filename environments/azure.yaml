@@ -68,6 +68,7 @@ isapi:
         - email
         - profile        
         - Organisation
+        - Ordering
   allowInvalidCertificate: true  #set to false once we have dns / actual certs set up
   dataProtection:
     applicationName: "ISAPI Development"
@@ -88,6 +89,10 @@ isapi:
           - /identity/error/*
           - /identity/connect/*
           - /identity/.well-known/*
+  hostAliases:  #remove this cheat
+  - ip: "51.11.46.27"
+    hostnames:
+    - "<namespace>.dev.buyingcatalogue.digital.nhs.uk"
 
 oapi:
   enabled: true  

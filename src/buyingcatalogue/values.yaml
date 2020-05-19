@@ -155,6 +155,7 @@ isapi:
         - email
         - profile
         - Organisation
+        - Ordering
   serviceDependencies:
     email:
       hostUriConfig:

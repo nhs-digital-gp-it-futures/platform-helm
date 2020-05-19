@@ -17,6 +17,7 @@ helm upgrade bc src/buyingcatalogue -n $namespace -i -f environments/azure.yaml 
   --set isapi.clients[0].postLogoutRedirectUrls[1]=$baseUrl/admin/signout-callback-oidc \
   --set isapi.clients[0].postLogoutRedirectUrls[2]=$baseUrl/order/signout-callback-oidc \
   --set isapi.ingress.hosts[0].host=$basePath \
+  --set isapi.hostAliases[0].hostnames[0]=$basePath \
   --set oapi.hostAliases[0].hostnames[0]=$basePath \
   --set ordapi.hostAliases[0].hostnames[0]=$basePath \
   --set email.ingress.hosts[0].host=$basePath \
@@ -28,5 +29,5 @@ helm upgrade bc src/buyingcatalogue -n $namespace -i -f environments/azure.yaml 
   --set admin.hostAliases[0].hostnames[0]=$basePath \
   --set of.ingress.hosts[0].host=$basePath \
   --set of.hostAliases[0].hostnames[0]=$basePath \
-  --set redis-commander.ingress.hosts[0].host=$basePath \
+  --set redis-commander.ingress.hosts[0].host=$basePath
   
