@@ -4,7 +4,7 @@
 
 replicaCount: 1
 
-useLocalImage:
+useLocalImage: false
 
 image:
   repository: gpitfuturesdevacr.azurecr.io/nhsd/buying-catalogue/publicbrowse
@@ -41,10 +41,7 @@ service:
 
 ingress:
   enabled: true
-  annotations: 
-    kubernetes.io/ingress.class: nginx
-    ingress.kubernetes.io/ssl-redirect: "false"
-    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+  annotations: {}
   hosts:
     - paths: 
         - /
@@ -98,7 +95,7 @@ serviceDependencies:
     baseUriConfig:
       name: 
       key:     
-    clientId :
+    clientId:
     clientSecret: 
       name: 
       key: 

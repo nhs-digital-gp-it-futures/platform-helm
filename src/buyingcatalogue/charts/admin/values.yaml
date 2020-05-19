@@ -4,7 +4,7 @@
 
 replicaCount: 1
 
-useLocalImage:
+useLocalImage: false
 
 image:
   repository: gpitfuturesdevacr.azurecr.io/nhsd/buying-catalogue/admin
@@ -40,11 +40,8 @@ service:
   port: 3005
 
 ingress:
-  enabled: true
-  annotations: 
-    kubernetes.io/ingress.class: nginx
-    ingress.kubernetes.io/ssl-redirect: "false"
-    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+  enabled: false
+  annotations: {}
   hosts:
     - paths: 
         - /admin
@@ -61,7 +58,7 @@ resources:
     cpu: 1000m
     memory: 300Mi
 
-hostAliases:  
+hostAliases:  []
 
 nodeSelector: {}
 

@@ -4,7 +4,7 @@
 
 replicaCount: 1
 
-useLocalImage:
+useLocalImage: false
 
 image:
   repository: mcr.microsoft.com/azure-storage/azurite

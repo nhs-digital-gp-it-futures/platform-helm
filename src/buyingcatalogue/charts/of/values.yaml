@@ -4,7 +4,7 @@
 
 replicaCount: 1
 
-useLocalImage:
+useLocalImage: false
 
 image:
   repository: gpitfuturesdevacr.azurecr.io/nhsd/buying-catalogue/order-form
@@ -39,11 +39,8 @@ service:
   port: 3006
 
 ingress:
-  enabled: true
-  annotations: 
-    # kubernetes.io/ingress.class:
-    # ingress.kubernetes.io/ssl-redirect:
-    # nginx.ingress.kubernetes.io/ssl-redirect:
+  enabled: false
+  annotations: {}    
   hosts:
     - paths: 
         - /order

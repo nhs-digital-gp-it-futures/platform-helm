@@ -4,7 +4,7 @@
 
 replicaCount: 1
 
-useLocalImage:
+useLocalImage: false
 
 image:
   repository: gpitfuturesdevacr.azurecr.io/nhsd/buying-catalogue/marketingpage
@@ -39,14 +39,10 @@ service:
   port: 3002
 
 ingress:
-  enabled: true
+  enabled: false
   annotations: 
-    kubernetes.io/ingress.class: nginx
-    ingress.kubernetes.io/ssl-redirect: "false"
-    nginx.ingress.kubernetes.io/ssl-redirect: "false"
   hosts:
-    - host: localhost
-      paths: 
+    - paths: 
         - /supplier
   tls: []
   #  - secretName: chart-example-tls

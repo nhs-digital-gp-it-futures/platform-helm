@@ -5,7 +5,7 @@
 {{- $isapiUrl:=  ternary (printf "http://%s.%s:%d/%s" (include "call-nested" (list . "isapi" "isapi.fullname")) .Release.Namespace (.Values.isapi.service.port | int ) .Values.isapi.pathBase) .Values.isapi.disabledUrl .Values.isapi.enabled -}}
 {{- $isapiIssuerUrl:= ternary .Values.baseIsapiEnabledUrl .Values.isapi.disabledUrl .Values.isapi.enabled -}}
 {{- $adminUrl:= ternary .Values.admin.baseUri .Values.admin.disabledUrl .Values.admin.enabled -}}
-{{- $ofUrl:= ternary .Values.of.baseUri .Values.of.disabledUrl .Values.of.enabled -}}
+{{- $ofUrl:= ternary (printf "%s/" .Values.of.baseUri) .Values.of.disabledUrl .Values.of.enabled -}}
 {{- $pbUrl:= ternary .Values.pb.baseUri .Values.pb.disabledUrl .Values.pb.enabled -}}
 {{- $emailUrl:= ternary (printf "%s.%s" (include "call-nested" (list . "email" "email.fullname")) .Release.Namespace) .Values.email.disabledUrl .Values.email.enabled -}}
 {{- $redisUrl:= ternary (printf "%s-master" (include "call-nested" (list . "redis" "redis.fullname"))) .Values.redis.disabledUrl .Values.redis.enabled -}}

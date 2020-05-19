@@ -4,7 +4,7 @@
 
 replicaCount: 1
 
-useLocalImage:
+useLocalImage: false
 
 image:
   repository: gpitfuturesdevacr.azurecr.io/nhsd/buying-catalogue/organisations-api

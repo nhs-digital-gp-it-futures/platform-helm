@@ -172,8 +172,7 @@ isapi:
   pathBase: "identity"
   ingress:
     enabled: true
-    annotations: 
-      ingress.kubernetes.io/ssl-redirect: "true"
+    annotations: {}
     hosts:
       - paths: 
           - /identity/health
@@ -302,10 +301,7 @@ mp:
     port: 3002
   ingress:
     enabled: true
-    annotations: 
-      kubernetes.io/ingress.class: nginx
-      ingress.kubernetes.io/ssl-redirect: "false"
-      nginx.ingress.kubernetes.io/ssl-redirect: "false"
+    annotations: {}
     hosts:
       - paths: 
           - /marketing
@@ -322,7 +318,7 @@ mp:
       key: bapi-url  
 
 pb: 
-  enabled: false
+  enabled: true
   replicaCount: 1
   image:
     repository: gpitfuturesdevacr.azurecr.io/nhsd/buying-catalogue/publicbrowse 
@@ -335,10 +331,7 @@ pb:
     port: 3000
   ingress:
     enabled: true
-    annotations: 
-      kubernetes.io/ingress.class: nginx
-      ingress.kubernetes.io/ssl-redirect: "false"
-      nginx.ingress.kubernetes.io/ssl-redirect: "false"
+    annotations: {}
     hosts:
       - paths: 
           - /
@@ -369,7 +362,7 @@ pb:
       baseUriConfig:
         name: "bc-buyingcatalogue"
         key: issuer-url  
-      clientId: "SampleClient"
+      clientId: "NodeClient"
       clientSecret: 
         name: "bc-buyingcatalogue"
         key: oidc-client-secret    
@@ -400,10 +393,7 @@ admin:
     port: 3005
   ingress:
     enabled: true
-    annotations: 
-      kubernetes.io/ingress.class: nginx
-      ingress.kubernetes.io/ssl-redirect: "false"
-      nginx.ingress.kubernetes.io/ssl-redirect: "false"
+    annotations: {}
     hosts:
       - paths: 
           - /admin
@@ -423,7 +413,7 @@ admin:
       baseUriConfig:
         name: "bc-buyingcatalogue"
         key: issuer-url
-      clientId: "SampleClient"
+      clientId: "NodeClient"
       clientSecret: 
         name: "bc-buyingcatalogue"
         key: oidc-client-secret   
@@ -457,10 +447,7 @@ of:
     port: 3006
   ingress:
     enabled: true
-    annotations: 
-      kubernetes.io/ingress.class: nginx
-      ingress.kubernetes.io/ssl-redirect: "false"
-      nginx.ingress.kubernetes.io/ssl-redirect: "false"
+    annotations: {}
     hosts:
       - paths: 
           - /order
@@ -477,7 +464,7 @@ of:
       baseUriConfig:
         name: "bc-buyingcatalogue"
         key: issuer-url  
-      clientId: "SampleClient"
+      clientId: "NodeClient"
       clientSecret: 
         name: "bc-buyingcatalogue"
         key: oidc-client-secret   
