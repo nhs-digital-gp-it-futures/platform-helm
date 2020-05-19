@@ -173,7 +173,6 @@ isapi:
   pathBase: "identity"
   ingress:
     enabled: true
-    annotations: {}
     hosts:
       - paths: 
           - /identity/health
@@ -302,7 +301,6 @@ mp:
     port: 3002
   ingress:
     enabled: true
-    annotations: {}
     hosts:
       - paths: 
           - /marketing
@@ -332,7 +330,6 @@ pb:
     port: 3000
   ingress:
     enabled: true
-    annotations: {}
     hosts:
       - paths: 
           - /
@@ -394,7 +391,6 @@ admin:
     port: 3005
   ingress:
     enabled: true
-    annotations: {}
     hosts:
       - paths: 
           - /admin
@@ -448,7 +444,6 @@ of:
     port: 3006
   ingress:
     enabled: true
-    annotations: {}
     hosts:
       - paths: 
           - /order

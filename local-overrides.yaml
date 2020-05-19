@@ -55,9 +55,11 @@ file-loader:
 
 mp:
   enabled: true
+  disabledUrl: "http://localhost:3002"
 
 pb: 
   enabled: true  
+  disabledUrl: "http://localhost:3000"
 
 admin:
   enabled: true
@@ -69,6 +71,7 @@ of:
 
 redis:
   enabled: true
+  disabledUrl: "TODO"
 
 redis-commander:
   enabled: true

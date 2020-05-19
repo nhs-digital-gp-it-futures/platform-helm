@@ -40,7 +40,7 @@ service:
 
 ingress:
   enabled: false
-  annotations: 
+  annotations: {}
   hosts:
     - paths: 
         - /supplier
