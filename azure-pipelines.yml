@@ -134,7 +134,7 @@ jobs:
         --set mp.ingress.hosts[0].host=$(DeployVars.BasePath)
         --set pb.ingress.hosts[0].host=$(DeployVars.BasePath)
         --set pb.baseUri=$(DeployVars.BaseUrl)
-        --set pb.hostAliases[0].hostnames[0]=$(DeployVars.BaseUrl)
+        --set pb.hostAliases[0].hostnames[0]=$(DeployVars.BasePath)
         --set admin.ingress.hosts[0].host=$(DeployVars.BasePath)
         --set admin.hostAliases[0].hostnames[0]=$(DeployVars.BasePath)
         --set of.ingress.hosts[0].host=$(DeployVars.BasePath)
