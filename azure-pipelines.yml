@@ -116,7 +116,8 @@ jobs:
       releaseName: 'bc'
       overrideValues:
       valueFile: 'environments/azure.yaml'
-      arguments: >        
+      arguments: >   
+        --timeout 10m0s
         --set appBaseUrl=$(DeployVars.BaseUrl)
         --set baseIsapiEnabledUrl=$(DeployVars.BaseIdentityUrl)
         --set isapi.clients[0].redirectUrls[0]=$(DeployVars.BaseUrl)/oauth/callback
