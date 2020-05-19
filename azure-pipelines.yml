@@ -118,8 +118,8 @@ jobs:
       valueFile: 'environments/azure.yaml'
       arguments: >   
         --timeout 10m0s
-        --set dbPassword=$(gpitfuturesdevdbpassword)-$namespace
-        --set clientSecret=$(clientSecret)-$namespace
+        --set dbPassword=$(gpitfuturesdevdbpassword)-$(DeployVars.Namespace)
+        --set clientSecret=$(clientSecret)-$(DeployVars.Namespace)
         --set appBaseUrl=$(DeployVars.BaseUrl)
         --set baseIsapiEnabledUrl=$(DeployVars.BaseIdentityUrl)
         --set isapi.clients[0].redirectUrls[0]=$(DeployVars.BaseUrl)/oauth/callback
