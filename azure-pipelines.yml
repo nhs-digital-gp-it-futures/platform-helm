@@ -58,7 +58,10 @@ jobs:
     name: setVersionStep  
   - bash: |
       echo "semver $(setVersionStep.semVer), MajorMinorPatch $(GitVersion.MajorMinorPatch), Reason $(Build.Reason), Branch $(Build.SourceBranch), BranchName $(Build.SourceBranchName)"
-      echo "PRID $(System.PullRequest.PullRequestId), PRNumber $(System.PullRequest.PullRequestNumber), PRSource $(System.PullRequest.SourceBranch), Target $(System.PullRequest.TargetBranch)"
+      if [ $(Build.Reason) -eq "PullRequest" ]
+      then
+        echo "PRID $(System.PullRequest.PullRequestId), PRNumber $(System.PullRequest.PullRequestNumber), PRSource $(System.PullRequest.SourceBranch), Target $(System.PullRequest.TargetBranch)"
+      fi
       env | sort
     name: echovar
 - job: deployToDev
@@ -70,6 +73,7 @@ jobs:
   steps:
   - bash: | 
       if [ $(Build.Reason) -eq "PullRequest" ]
+      then
         namespace=`echo 'buyingcatalogue-$(System.PullRequest.SourceBranch)' | sed 's/[[:punct:]]/-/g'`
       else
         namespace=`echo 'buyingcatalogue-$(Build.SourceBranchName)' | sed 's/[[:punct:]]/-/g'`
