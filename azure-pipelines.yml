@@ -58,7 +58,7 @@ jobs:
     name: setVersionStep  
   - bash: |
       echo "semver $(setVersionStep.semVer), MajorMinorPatch $(GitVersion.MajorMinorPatch), Reason $(Build.Reason), Branch $(Build.SourceBranch), BranchName $(Build.SourceBranchName)"
-      if [ $(Build.Reason) -eq "PullRequest" ]
+      if [ $(Build.Reason) = "PullRequest" ]
       then
         echo "PRID $(System.PullRequest.PullRequestId), PRNumber $(System.PullRequest.PullRequestNumber), PRSource $(System.PullRequest.SourceBranch), Target $(System.PullRequest.TargetBranch)"
       fi
@@ -72,7 +72,7 @@ jobs:
       value: $[ dependencies.packageAndPublish.outputs['setVersionStep.semVer'] ]
   steps:
   - bash: | 
-      if [ $(Build.Reason) -eq "PullRequest" ]
+      if [ $(Build.Reason) = "PullRequest" ]
       then
         namespace=`echo 'buyingcatalogue-$(System.PullRequest.SourceBranch)' | sed 's/[[:punct:]]/-/g'`
       else
