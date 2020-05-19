@@ -39,6 +39,8 @@ jobs:
   - bash: |      
       chartPackage=$(ls buyingcatalogue-*.tgz)
       echo "Chart Package $chartPackage"
+      sudo apt-get update
+      sudo apt-get install --only-upgrade -y azure-cli
       az --version
       az acr helm push --force \
           -n gpitfuturesdevacr \
