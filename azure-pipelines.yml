@@ -4,8 +4,12 @@
 # https://aka.ms/yaml
 
 trigger:
-- master
-- feature/*
+  batch: true
+  branches:
+    include:
+      - master
+      - feature/*
+    
 
 pr:
 - master
@@ -52,7 +56,13 @@ jobs:
     displayName: 'az acr helm push'
   - script: echo "##vso[task.setvariable variable=semVer;isOutput=true]$(GitVersion.SemVer)"
     name: setVersionStep  
-  - script: echo semver $(setVersionStep.semVer), MajorMinorPatch $(GitVersion.MajorMinorPatch), Reason $(Build.Reason), Branch $(Build.SourceBranch), BranchName $(Build.SourceBranchName), PRID $(System.PullRequest.PullRequestId), PRNumber $(System.PullRequest.PullRequestNumber)
+  - bash: |
+      echo "semver $(setVersionStep.semVer), MajorMinorPatch $(GitVersion.MajorMinorPatch), Reason $(Build.Reason), Branch $(Build.SourceBranch), BranchName $(Build.SourceBranchName)"
+      if [ $(Build.Reason) = "PullRequest" ]
+      then
+        echo "PRID $(System.PullRequest.PullRequestId), PRNumber $(System.PullRequest.PullRequestNumber), PRSource $(System.PullRequest.SourceBranch), Target $(System.PullRequest.TargetBranch)"
+      fi
+      env | sort
     name: echovar
 - job: deployToDev
   dependsOn: packageAndPublish
@@ -62,10 +72,16 @@ jobs:
       value: $[ dependencies.packageAndPublish.outputs['setVersionStep.semVer'] ]
   steps:
   - bash: | 
-      namespace=`echo 'buyingcatalogue-$(Build.SourceBranchName)' | sed 's/[[:punct:]]/-/g'`      
+      if [ $(Build.Reason) = "PullRequest" ]
+      then
+        namespace=`echo 'buyingcatalogue-$(Build.SourceBranchName)-$(System.PullRequest.PullRequestNumber)' | sed 's/[[:punct:]]/-/g'`
+      else
+        namespace=`echo 'buyingcatalogue-$(Build.SourceBranchName)' | sed 's/[[:punct:]]/-/g'`
+      fi
       basePath="$namespace-dev.buyingcatalogue.digital.nhs.uk"
       baseUrl="https://$basePath"
       baseIdentityUrl="$baseUrl/identity"
+      echo "namespace=$namespace, basePath=$basePath, baseUrl=$baseUrl, baseIdentityUrl"
       echo "##vso[task.setvariable variable=Namespace;isOutput=true]$namespace"
       echo "##vso[task.setvariable variable=BasePath;isOutput=true]$basePath"
       echo "##vso[task.setvariable variable=BaseUrl;isOutput=true]$baseUrl"
@@ -116,7 +132,11 @@ jobs:
       releaseName: 'bc'
       overrideValues:
       valueFile: 'environments/azure.yaml'
-      arguments: >        
+      arguments: >   
+        --version $(semVer)
+        --timeout 10m0s
+        --set dbPassword=$(gpitfuturesdevdbpassword)-$(DeployVars.Namespace)
+        --set clientSecret=$(gpitfuturesdevclientsecret)-$(DeployVars.Namespace)
         --set appBaseUrl=$(DeployVars.BaseUrl)
         --set baseIsapiEnabledUrl=$(DeployVars.BaseIdentityUrl)
         --set isapi.clients[0].redirectUrls[0]=$(DeployVars.BaseUrl)/oauth/callback
