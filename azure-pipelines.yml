@@ -74,7 +74,7 @@ jobs:
   - bash: | 
       if [ $(Build.Reason) = "PullRequest" ]
       then
-        namespace=`echo 'buyingcatalogue-$(System.PullRequest.SourceBranch)' | sed 's/[[:punct:]]/-/g'`
+        namespace=`echo 'buyingcatalogue-$(Build.SourceBranchName)-$(System.PullRequest.PullRequestNumber)' | sed 's/[[:punct:]]/-/g'`
       else
         namespace=`echo 'buyingcatalogue-$(Build.SourceBranchName)' | sed 's/[[:punct:]]/-/g'`
       fi
