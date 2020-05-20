@@ -133,6 +133,7 @@ jobs:
       overrideValues:
       valueFile: 'environments/azure.yaml'
       arguments: >   
+        --version $(semVer)
         --timeout 10m0s
         --set dbPassword=$(gpitfuturesdevdbpassword)-$(DeployVars.Namespace)
         --set clientSecret=$(gpitfuturesdevclientsecret)-$(DeployVars.Namespace)
