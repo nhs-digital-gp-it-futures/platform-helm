@@ -1,0 +1,1 @@
+helm upgrade bc src/buyingcatalogue -n buyingcatalogue -i -f environments/local-docker.yaml -f local-overrides.yaml
