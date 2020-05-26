@@ -37,7 +37,6 @@ jobs:
           --version $(GitVersion.SemVer) \
           --app-version $(GitVersion.SemVer) \
           src/buyingcatalogue
-    failOnStderr: true
     displayName: 'helm package'
   - bash: |      
       chartPackage=$(ls buyingcatalogue-*.tgz)
@@ -51,7 +50,7 @@ jobs:
           -p $(gpitfuturesdevacr-pass) \
           $chartPackage
       echo $(jq -n --arg version "$(GitVersion.SemVer)" '{helmChartVersion: $version}') > $(build.artifactStagingDirectory)/variables.json      
-    failOnStderr: true
+    failOnStderr: true               
     name: helmPush
     displayName: 'az acr helm push'
   - script: echo "##vso[task.setvariable variable=semVer;isOutput=true]$(GitVersion.SemVer)"
