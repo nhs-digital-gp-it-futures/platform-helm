@@ -1,7 +1,5 @@
-# Starter pipeline
-# Start with a minimal pipeline that you can customize to build and deploy your code.
-# Add steps that build, run tests, deploy, and more:
-# https://aka.ms/yaml
+# Azure pipeline to build & publish buying catalogue system
+# Some parts based on https://cloudblogs.microsoft.com/opensource/2018/11/27/tutorial-azure-devops-setup-cicd-pipeline-kubernetes-docker-helm/
 
 trigger:
   batch: true
@@ -50,7 +48,8 @@ jobs:
           -n gpitfuturesdevacr \
           -u gpitfuturesdevacr \
           -p $(gpitfuturesdevacr-pass) \
-          $chartPackage      
+          $chartPackage
+      echo $(jq -n --arg version "$(GitVersion.SemVer)" '{helmChartVersion: $version}') > $(build.artifactStagingDirectory)/variables.json      
     failOnStderr: true
     name: helmPush
     displayName: 'az acr helm push'
@@ -64,6 +63,9 @@ jobs:
       fi
       env | sort
     name: echovar
+  - publish: $(build.artifactStagingDirectory)
+    artifact: build-artifact
+    condition: and(succeeded(), eq(variables['build.sourceBranch'], 'refs/heads/master'))
 - job: deployToDev
   dependsOn: packageAndPublish
   variables:
@@ -169,4 +171,5 @@ jobs:
     # admin
     # order
     # identity
+
   
