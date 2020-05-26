@@ -34,13 +34,10 @@ jobs:
     inputs:
       helmVersionToInstall: 'latest'
   - bash: |      
-      curl https://bazel.build/bazel-release.pub.gpg | sudo apt-key add -
-      sudo apt-get update
       helm package \
           --version $(GitVersion.SemVer) \
           --app-version $(GitVersion.SemVer) \
           src/buyingcatalogue
-    failOnStderr: false
     displayName: 'helm package'
   - bash: |      
       chartPackage=$(ls buyingcatalogue-*.tgz)
@@ -53,7 +50,6 @@ jobs:
           -u gpitfuturesdevacr \
           -p $(gpitfuturesdevacr-pass) \
           $chartPackage      
-    failOnStderr: false
     name: helmPush
     displayName: 'az acr helm push'
   - script: echo "##vso[task.setvariable variable=semVer;isOutput=true]$(GitVersion.SemVer)"
