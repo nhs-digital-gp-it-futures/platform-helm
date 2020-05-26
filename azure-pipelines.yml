@@ -39,9 +39,10 @@ jobs:
           src/buyingcatalogue
     displayName: 'helm package'
   - bash: |      
-      chartPackage=$(ls buyingcatalogue-*.tgz)
+      cat /etc/apt/sources.list.d/azure-cli.list
+      chartPackage=$(ls buyingcatalogue-*.tgz)      
       echo "Chart Package $chartPackage"
-      sudo apt-get update -o Dir::Etc::sourcelist="sources.list.d/azure-cli.list"
+      sudo apt-get update -o Dir::Etc::sourcelist="sources.list.d/azure-cli.list" -o Dir::Etc::sourceparts="-" -o APT::Get::List-Cleanup="0"
       sudo apt-get install --only-upgrade -y azure-cli
       az --version
       az acr helm push --force \
