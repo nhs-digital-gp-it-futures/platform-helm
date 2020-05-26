@@ -4,7 +4,9 @@ appBaseUrl: "https://<namespace>.dev.buyingcatalogue.digital.nhs.uk"
 baseIsapiEnabledUrl: "https://<namespace>.dev.buyingcatalogue.digital.nhs.uk/identity"
 
 keyVault:
-  enabled: true
+  enabled: true  
+  name: gpitfutures-dev-kv #should override per environment
+  isapiCertificateSecretName: buyingcataloguedev
 
 azurite:
   enabled: true #eventually set to false

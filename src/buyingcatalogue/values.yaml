@@ -185,7 +185,7 @@ isapi:
     applicationName: "ISAPI Development"
   pathBase: "identity"
   certificateSettings: 
-    useDeveloperCertificate: true
+    useDeveloperCertificate: false
     certificatePath: "/cert/tls.crt"
     privateKeyPath: "/cert/tls.key"
   ingress:
