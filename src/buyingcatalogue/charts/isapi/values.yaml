@@ -98,11 +98,13 @@ serviceDependencies:
       name:
       key:  
     port:
+    subjectPrefix:
   pb:
     baseAddressConfig:
       name:
       key:
     loginPath:
+    logoutPath:
 # make sure its false if env == prod
 allowInvalidCertificate: false 
 dataProtection:
