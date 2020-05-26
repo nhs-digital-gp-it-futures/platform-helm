@@ -470,6 +470,9 @@ of:
     pb:
       name: "bc-buyingcatalogue"
       key: pb-url
+    bapi:
+      name: "bc-buyingcatalogue"
+      key: bapi-url
     redis:
       urlConfig:
         name: "bc-buyingcatalogue"
