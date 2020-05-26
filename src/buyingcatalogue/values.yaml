@@ -4,6 +4,11 @@ clientSecret:
 appBaseUrl: 
 baseIsapiEnabledUrl: 
 
+keyVault:
+  enabled: false
+  name:
+  isapiCertificateSecretName:
+
 azurite:
   enabled: true
   disabledUrl: 
@@ -126,7 +131,15 @@ isapi:
   fullnameOverride: "gpitfutures-bc-isapi"
   service:
     type: ClusterIP
-    port: 5102      
+    port: 5102
+  volumes:
+    - name: cert
+      secret:
+        secretName: isapi-cert   
+  volumeMounts:
+    - mountPath: "/cert"
+      name: cert
+      readOnly: true
   connectionStringSecret: 
     name: "bc-buyingcatalogue"
     key: isapi-db-connection-string 
@@ -171,6 +184,10 @@ isapi:
   dataProtection:
     applicationName: "ISAPI Development"
   pathBase: "identity"
+  certificateSettings: 
+    useDeveloperCertificate: false
+    certificatePath: "/cert/tls.crt"
+    privateKeyPath: "/cert/tls.key"
   ingress:
     enabled: true
     hosts:
