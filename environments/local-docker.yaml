@@ -191,6 +191,7 @@ ordapi:
     repository: gpitfuturesdevacr.azurecr.io/nhsd/buying-catalogue/ordering-api
   useLocalImage: false
   imagePullSecrets: 
+  - name: regcredlocal
   nameOverride: "ordapi"
   fullnameOverride: "gpitfutures-bc-ordapi"
   service:
@@ -199,6 +200,8 @@ ordapi:
   allowInvalidCertificate: true
 
 ordapi-db:
+  imagePullSecrets: 
+  - name: regcredlocal
   service:
     type: LoadBalancer
     port: 1452

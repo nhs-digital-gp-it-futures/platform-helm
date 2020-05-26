@@ -1,5 +1,11 @@
 #!/bin/bash
-namespace="buyingcatalogue-master"
+
+if [ $# -neq 1  ]
+  echo "usage ./launch-or-update-azure.sh <namespace>"
+  exit
+fi
+
+namespace=$1
 basePath="$namespace-dev.buyingcatalogue.digital.nhs.uk"
 baseUrl="https://$basePath"
 baseIdentityUrl="$baseUrl/identity"

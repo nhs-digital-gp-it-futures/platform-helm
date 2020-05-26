@@ -1,3 +1,8 @@
 #!/bin/bash
 
-helm delete bc -n buyingcatalogue-1234-test
+if [ $# -neq 1  ]
+  echo "usage ./launch-or-update-azure.sh <namespace>"
+  exit
+fi
+
+helm delete bc -n $1
