@@ -138,7 +138,7 @@ spec:
               value: {{ .Values.dataProtection.applicationName | quote }}
             - name: PATHBASE
               value: {{ .Values.pathBase | quote }}
-            {{- with .Values.env.certificateSettings -}}
+            {{- with .Values.certificateSettings }}
             - name: CERTIFICATESETTINGS__USEDEVELOPERCREDENTIALS
               value: {{ .useDeveloperCertificate | quote }}
             - name: CERTIFICATESETTINGS__CERTIFICATEPATH

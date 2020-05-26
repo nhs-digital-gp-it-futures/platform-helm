@@ -87,7 +87,7 @@ bapi:
     key: bapi-db-connection-string  
 
 isapi-db:
-  enabled: false
+  enabled: true
   disabledUrl: 
   replicaCount: 1
   image:
@@ -120,7 +120,7 @@ isapi-db:
  
 
 isapi:
-  enabled: false
+  enabled: true
   disabledUrl:   
   replicaCount: 1
   image:
@@ -185,7 +185,7 @@ isapi:
     applicationName: "ISAPI Development"
   pathBase: "identity"
   certificateSettings: 
-    useDeveloperCertificate: false
+    useDeveloperCertificate: true
     certificatePath: "/cert/tls.crt"
     privateKeyPath: "/cert/tls.key"
   ingress:

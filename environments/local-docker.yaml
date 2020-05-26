@@ -87,7 +87,7 @@ isapi:
     type: LoadBalancer
   insertTestData: true
   clients: 
-    - clientId: "SampleClient"
+    - clientId: "NodeClient"
       clientName: "Main Node Client"
       allowedGrantTypes: "Code"
       allowOfflineAccess : false
@@ -138,9 +138,10 @@ isapi:
       allowedScopes: 
         - openid
         - email
-        - profile
-        - SampleResource  
+        - profile        
         - Organisation
+        - Ordering
+        - SampleResource  
   allowInvalidCertificate: true
   dataProtection:
     applicationName: "ISAPI Development"
@@ -188,6 +189,7 @@ ordapi:
     repository: gpitfuturesdevacr.azurecr.io/nhsd/buying-catalogue/ordering-api
   useLocalImage: false
   imagePullSecrets: 
+  - name: regcredlocal
   nameOverride: "ordapi"
   fullnameOverride: "gpitfutures-bc-ordapi"
   service:
@@ -196,6 +198,8 @@ ordapi:
   allowInvalidCertificate: true
 
 ordapi-db:
+  imagePullSecrets: 
+  - name: regcredlocal
   service:
     type: LoadBalancer
     port: 1452

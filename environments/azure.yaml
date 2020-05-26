@@ -3,6 +3,9 @@ clientSecret:
 appBaseUrl: "https://<namespace>.dev.buyingcatalogue.digital.nhs.uk"
 baseIsapiEnabledUrl: "https://<namespace>.dev.buyingcatalogue.digital.nhs.uk/identity"
 
+keyVault:
+  enabled: true
+
 azurite:
   enabled: true #eventually set to false
   disabledUrl: "<set to azure storage account>" 
