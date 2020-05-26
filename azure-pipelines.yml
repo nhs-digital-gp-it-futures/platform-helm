@@ -31,8 +31,7 @@ jobs:
     displayName: 'install helm'
     inputs:
       helmVersionToInstall: 'latest'
-  - bash: |      
-      helm repo list
+  - bash: |            
       helm dependency update src/buyingcatalogue          
       helm package \
           --version $(GitVersion.SemVer) \
