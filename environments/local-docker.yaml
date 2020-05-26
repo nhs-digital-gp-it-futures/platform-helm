@@ -144,6 +144,9 @@ isapi:
   allowInvalidCertificate: true
   dataProtection:
     applicationName: "ISAPI Development"
+  serviceDependencies:
+    email:
+      subjectPrefix: dev
   ingress:
     enabled: true
     annotations: 

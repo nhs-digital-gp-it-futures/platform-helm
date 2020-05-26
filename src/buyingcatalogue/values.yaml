@@ -167,6 +167,7 @@ isapi:
         name: "bc-buyingcatalogue"
         key: pb-url
       loginPath: /re-login
+      logoutPath: /logout-callback
   allowInvalidCertificate: false
   dataProtection:
     applicationName: "ISAPI Development"
