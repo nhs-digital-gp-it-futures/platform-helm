@@ -63,6 +63,13 @@ jobs:
       fi
       env | sort
     name: echovar
+  - task: CopyFiles@2
+    inputs:
+      SourceFolder: 'environments'
+      Contents: '**'
+      TargetFolder: '$(build.artifactStagingDirectory)/environments'
+      CleanTargetFolder: true
+      OverWrite: true
   - publish: $(build.artifactStagingDirectory)
     artifact: build-artifact
     condition: and(succeeded(), eq(variables['build.sourceBranch'], 'refs/heads/master'))
