@@ -62,7 +62,8 @@ dependencies:
   version: ~0.1.0
 - name: admin
   condition: admin.enabled
-  version: ~0.1.0
+  version: ~0.1.0-alpha 
+  repository: "https://gpitfuturesdevacr.azurecr.io/helm/v1/repo"
 - name: of
   condition: of.enabled
   version: ~0.1.0

@@ -7,7 +7,6 @@ trigger:
     include:
       - master
       - feature/*
-    
 
 pr:
 - master
