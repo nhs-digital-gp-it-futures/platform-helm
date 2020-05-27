@@ -70,7 +70,7 @@ bapi:
   disabledUrl: 
   replicaCount: 1
   image:
-    repository: gpitfuturesdevacr.azurecr.io/nhsd/buying-catalogue/api
+    repository: gpitfuturesdevacr.azurecr.io/nhsd/buying-catalogue/bapi
   useLocalImage: false
   imagePullSecrets: 
   nameOverride: "bapi"
