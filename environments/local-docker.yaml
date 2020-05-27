@@ -141,7 +141,6 @@ isapi:
         - profile        
         - Organisation
         - Ordering
-        - SampleResource  
   allowInvalidCertificate: true
   dataProtection:
     applicationName: "ISAPI Development"
