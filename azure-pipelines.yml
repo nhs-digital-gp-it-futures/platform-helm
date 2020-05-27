@@ -31,7 +31,7 @@ jobs:
     inputs:
       helmVersionToInstall: 'latest'
   - bash: |
-      helm repo add gpitfuturesdevacr https://gpitfuturesdevacr.azurecr.io/helm/v1/repo --username gpitfuturesdevacr.azurecr.io --password $(gpitfuturesdevacr-pass)            
+      helm repo add gpitfuturesdevacr https://gpitfuturesdevacr.azurecr.io/helm/v1/repo --username gpitfuturesdevacr --password $(gpitfuturesdevacr-pass)            
       helm dependency update src/buyingcatalogue          
       helm package \
           --version $(GitVersion.SemVer) \
