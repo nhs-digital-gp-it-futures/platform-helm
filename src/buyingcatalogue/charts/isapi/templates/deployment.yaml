@@ -117,6 +117,8 @@ spec:
                   key: {{ .hostUriConfig.key | quote }}
             - name: SMTPSERVER__PORT
               value: {{ .port | quote }}
+            - name: SMTPSERVER__EMAILSUBJECTPREFIX
+              value: {{ .subjectPrefix | quote }}
             {{- end }}
 
             {{- with .Values.serviceDependencies.pb }}
@@ -127,6 +129,8 @@ spec:
                   key: {{ .baseAddressConfig.key | quote }}
             - name: PUBLICBROWSE__LOGINPATH
               value: {{ .loginPath | quote }}
+            - name: PUBLICBROWSE__LOGOUTPATH
+              value: {{ .logoutPath | quote }}
             {{- end }}
             - name: ALLOWINVALIDCERTIFICATE
               value: {{ .Values.allowInvalidCertificate | quote }}
