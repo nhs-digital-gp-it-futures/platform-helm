@@ -56,7 +56,12 @@ resources:
   limits:
     cpu: 1000m
     memory: 500Mi
+
 hostAliases:
+
+volumes:
+
+volumeMounts:
 
 nodeSelector: {}
 
@@ -111,6 +116,13 @@ dataProtection:
   applicationName: "ISAPI Development"
 
 pathBase: "identity"
+
+#certificate settings used to encrypt cookie. developer settings will generate a unique certificate per restart
+certificateSettings: 
+  useDeveloperCertificate: true
+  certificatePath:
+  privateKeyPath:
+
 env:
   configmap:
   secrets:

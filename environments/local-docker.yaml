@@ -87,7 +87,7 @@ isapi:
     type: LoadBalancer
   insertTestData: true
   clients: 
-    - clientId: "SampleClient"
+    - clientId: "NodeClient"
       clientName: "Main Node Client"
       allowedGrantTypes: "Code"
       allowOfflineAccess : false
@@ -138,9 +138,9 @@ isapi:
       allowedScopes: 
         - openid
         - email
-        - profile
-        - SampleResource  
+        - profile        
         - Organisation
+        - Ordering
   allowInvalidCertificate: true
   dataProtection:
     applicationName: "ISAPI Development"

@@ -29,10 +29,14 @@ spec:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       hostAliases:
         {{- toYaml .Values.hostAliases | nindent 8 }}
+      volumes:
+        {{- toYaml .Values.volumes | nindent 8 }}
       containers:
         - name: {{ .Chart.Name }}
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
+          volumeMounts:
+            {{- toYaml .Values.volumeMounts | nindent 12 }}
           {{- include "image.properties" . | nindent 10 }}
           ports:
             - name: http
@@ -138,6 +142,14 @@ spec:
               value: {{ .Values.dataProtection.applicationName | quote }}
             - name: PATHBASE
               value: {{ .Values.pathBase | quote }}
+            {{- with .Values.certificateSettings }}
+            - name: CERTIFICATESETTINGS__USEDEVELOPERCREDENTIALS
+              value: {{ .useDeveloperCertificate | quote }}
+            - name: CERTIFICATESETTINGS__CERTIFICATEPATH
+              value: {{ .certificatePath | quote }}
+            - name: CERTIFICATESETTINGS__PRIVATEKEYPATH
+              value: {{ .privateKeyPath | quote }}
+            {{- end }}
             {{- if .Values.env.values -}}
             {{- range .Values.env.values }}
               - name: {{ .name }}

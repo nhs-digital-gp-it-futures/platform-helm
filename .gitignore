@@ -1,1 +1,7 @@
 .vscode
+#ignore downloaded charts
+src/buyingcatalogue/charts/*.tgz 
+#Local overrides git ignored, so people can change them without risk of committing
+local-overrides.yaml
+#ignore chart lock file
+**/Chart.lock 
