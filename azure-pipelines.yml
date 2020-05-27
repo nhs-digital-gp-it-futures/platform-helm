@@ -38,8 +38,7 @@ jobs:
           --app-version $(GitVersion.SemVer) \
           src/buyingcatalogue
     displayName: 'helm package'
-  - bash: |      
-      cat /etc/apt/sources.list.d/azure-cli.list
+  - bash: |            
       chartPackage=$(ls buyingcatalogue-*.tgz)      
       echo "Chart Package $chartPackage"
       sudo apt-get update -o Dir::Etc::sourcelist="sources.list.d/azure-cli.list" -o Dir::Etc::sourceparts="-" -o APT::Get::List-Cleanup="0"
