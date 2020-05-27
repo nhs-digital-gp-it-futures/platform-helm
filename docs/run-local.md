@@ -51,13 +51,13 @@ In order to launch or update the system to the latest built images or chosen con
 #### Bash
 
 ```bash
-./launch-or-update-environment.sh
+./launch-or-update-local.sh
 ```
 
 #### PS
 
 ```Powershell
-./launch-or-update-environment.ps1
+./launch-or-update-local.ps1
 ```
 
 The script will start [all services available on these ports](#configuration-overview) on localhost, or update them if they are running.
