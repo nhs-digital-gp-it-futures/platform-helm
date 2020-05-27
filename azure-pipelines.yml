@@ -7,7 +7,6 @@ trigger:
     include:
       - master
       - feature/*
-    
 
 pr:
 - master
@@ -31,7 +30,8 @@ jobs:
     displayName: 'install helm'
     inputs:
       helmVersionToInstall: 'latest'
-  - bash: |            
+  - bash: |
+      helm repo add gpitfuturesdevacr https://gpitfuturesdevacr.azurecr.io/helm/v1/repo --username gpitfuturesdevacr --password $(gpitfuturesdevacr-pass)            
       helm dependency update src/buyingcatalogue          
       helm package \
           --version $(GitVersion.SemVer) \
@@ -63,6 +63,13 @@ jobs:
       fi
       env | sort
     name: echovar
+  - task: CopyFiles@2
+    inputs:
+      SourceFolder: 'environments'
+      Contents: '**'
+      TargetFolder: '$(build.artifactStagingDirectory)/environments'
+      CleanTargetFolder: true
+      OverWrite: true
   - publish: $(build.artifactStagingDirectory)
     artifact: build-artifact
     condition: and(succeeded(), eq(variables['build.sourceBranch'], 'refs/heads/master'))
