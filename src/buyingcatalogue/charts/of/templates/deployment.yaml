@@ -125,7 +125,14 @@ spec:
                 configMapKeyRef:
                   name: {{ .name | quote }}
                   key: {{ .key | quote }}            
-            {{- end }}          
+            {{- end }}
+            {{- with .Values.serviceDependencies.bapi }}
+            - name: SOLUTIONS_API_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ .name | quote }}
+                  key: {{ .key | quote }}            
+            {{- end }}            
             {{- end }}                
             {{- if .Values.env.values -}}
             {{- range .Values.env.values }}
