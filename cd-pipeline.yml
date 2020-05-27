@@ -1,0 +1,112 @@
+trigger: none
+pr: none
+
+variables:
+
+
+resources: 
+  pipelines:
+  - pipeline: azure-pipelines
+    source: nhs-digital-gp-it-futures.platform-helm
+    trigger:
+      enabled: true
+      branches:
+        include:
+          - master
+
+stages:
+- stage: development
+  displayName: development
+  jobs:
+  - deployment: development
+    variables:  
+      - group: dev-acr-secrets          
+      - name: namespace
+        value: buyingcatalogue-development
+      - name: basePath
+        value: $(namespace)-dev.buyingcatalogue.digital.nhs.uk      
+      - name: baseUrl
+        value: https://$(basePath)
+      - name: baseIdentityUrl
+        value: $(baseUrl)/identity
+    displayName: deploy helm chart into AKS
+    pool:
+      vmImage: 'ubuntu-latest'
+    environment: development-$(projectName)
+    strategy:
+      runOnce:
+        deploy:
+          steps:            
+              # create namespace if it doesn't exist
+            - task: Kubernetes@1
+              inputs:
+                connectionType: 'Azure Resource Manager'
+                azureSubscriptionEndpoint: 'NHSAPP-BuyingCatalogue (Non-Prod)'
+                azureResourceGroup: 'gpitfutures-dev-rg-aks'
+                kubernetesCluster: 'gpitfutures-dev-aks'
+                command: 'apply'
+                useConfigurationFile: true
+                configurationType: 'inline'
+                inline: |
+                  {
+                    "apiVersion": "v1",
+                    "kind": "Namespace",
+                    "metadata": {
+                      "name": "$(namespace)",
+                      "labels": {
+                        "name": "$(namespace)"
+                      }
+                    }
+                  }
+                secretType: 'dockerRegistry'
+                containerRegistryType: 'Azure Container Registry'
+            - bash: |      
+                helm repo add \
+                gpitfuturesdevacr \
+                https://gpitfuturesdevacr.azurecr.io/helm/v1/repo \
+                --username gpitfuturesdevacr \
+                --password $(gpitfuturesdevacr-pass)
+              failOnStderr: true
+              displayName: 'helm repo add'
+              # deploy chart to namespace
+            - task: HelmDeploy@0
+              inputs:
+                connectionType: 'Azure Resource Manager'
+                azureSubscription: 'NHSAPP-BuyingCatalogue (Non-Prod)'
+                azureResourceGroup: 'gpitfutures-dev-rg-aks'
+                kubernetesCluster: 'gpitfutures-dev-aks'
+                namespace: '$(DeployVars.Namespace)'
+                command: 'upgrade'
+                chartType: 'Name'
+                chartName: 'gpitfuturesdevacr/buyingcatalogue'
+                releaseName: 'bc'
+                overrideValues:
+                valueFile: 'environments/azure.yaml'
+                arguments: >   
+                  --version $(semVer)
+                  --timeout 10m0s
+                  --set dbPassword=$(gpitfuturesdevdbpassword)-$(DeployVars.Namespace)
+                  --set clientSecret=$(gpitfuturesdevclientsecret)-$(DeployVars.Namespace)
+                  --set appBaseUrl=$(DeployVars.BaseUrl)
+                  --set baseIsapiEnabledUrl=$(DeployVars.BaseIdentityUrl)
+                  --set isapi.clients[0].redirectUrls[0]=$(DeployVars.BaseUrl)/oauth/callback
+                  --set isapi.clients[0].redirectUrls[1]=$(DeployVars.BaseUrl)/admin/oauth/callback
+                  --set isapi.clients[0].redirectUrls[2]=$(DeployVars.BaseUrl)/order/oauth/callback
+                  --set isapi.clients[0].postLogoutRedirectUrls[0]=$(DeployVars.BaseUrl)/signout-callback-oidc
+                  --set isapi.clients[0].postLogoutRedirectUrls[1]=$(DeployVars.BaseUrl)/admin/signout-callback-oidc
+                  --set isapi.clients[0].postLogoutRedirectUrls[2]=$(DeployVars.BaseUrl)/order/signout-callback-oidc
+                  --set isapi.ingress.hosts[0].host=$(DeployVars.BasePath)
+                  --set isapi.hostAliases[0].hostnames[0]=$(DeployVars.BasePath)
+                  --set oapi.hostAliases[0].hostnames[0]=$(DeployVars.BasePath)
+                  --set ordapi.hostAliases[0].hostnames[0]=$(DeployVars.BasePath)
+                  --set email.ingress.hosts[0].host=$(DeployVars.BasePath)
+                  --set mp.ingress.hosts[0].host=$(DeployVars.BasePath)
+                  --set pb.ingress.hosts[0].host=$(DeployVars.BasePath)
+                  --set pb.baseUri=$(DeployVars.BaseUrl)
+                  --set pb.hostAliases[0].hostnames[0]=$(DeployVars.BasePath)
+                  --set admin.ingress.hosts[0].host=$(DeployVars.BasePath)
+                  --set admin.hostAliases[0].hostnames[0]=$(DeployVars.BasePath)
+                  --set of.ingress.hosts[0].host=$(DeployVars.BasePath)
+                  --set of.hostAliases[0].hostnames[0]=$(DeployVars.BasePath)
+                  --set redis-commander.ingress.hosts[0].host=$(DeployVars.BasePath)
+            
