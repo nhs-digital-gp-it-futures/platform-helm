@@ -485,9 +485,15 @@ of:
     ordapi:
       name: "bc-buyingcatalogue"
       key: ordapi-url
+    oapi:
+      name: "bc-buyingcatalogue"
+      key: oapi-url
     pb:
       name: "bc-buyingcatalogue"
       key: pb-url
+    bapi:
+      name: "bc-buyingcatalogue"
+      key: bapi-url
     redis:
       urlConfig:
         name: "bc-buyingcatalogue"
