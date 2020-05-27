@@ -86,7 +86,13 @@ serviceDependencies:
   ordapi:
     name:
     key:
+  oapi:
+    name:
+    key:
   pb:
+    name:
+    key:
+  bapi:
     name:
     key:
   redis:
