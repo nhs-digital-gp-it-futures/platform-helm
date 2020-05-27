@@ -468,6 +468,9 @@ of:
     ordapi:
       name: "bc-buyingcatalogue"
       key: ordapi-url
+    oapi:
+      name: "bc-buyingcatalogue"
+      key: oapi-url
     pb:
       name: "bc-buyingcatalogue"
       key: pb-url

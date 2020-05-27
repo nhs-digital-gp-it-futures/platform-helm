@@ -110,8 +110,15 @@ spec:
               valueFrom:
                 configMapKeyRef:
                   name: {{ .name | quote }}
-                  key: {{ .key | quote }}            
-            {{- end }}          
+                  key: {{ .key | quote }}        
+            {{- end }}  
+            {{- with .Values.serviceDependencies.oapi }}
+            - name: ORGANISATION_API_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ .name | quote }}
+                  key: {{ .key | quote }}        
+            {{- end }}             
             {{- with .Values.serviceDependencies.pb }}
             - name: PUBLIC_BROWSE_BASE_URL
               valueFrom:
