@@ -71,8 +71,7 @@ jobs:
       CleanTargetFolder: true
       OverWrite: true
   - publish: $(build.artifactStagingDirectory)
-    artifact: build-artifact
-    condition: and(succeeded(), eq(variables['build.sourceBranch'], 'refs/heads/master'))
+    artifact: build-artifact    
 # - job: deployToDev
 #   dependsOn: packageAndPublish
 #   variables:
