@@ -39,7 +39,7 @@ stages:
                 echo "pipeline.workspace=$(pipeline.workspace)"
                 env | sort
                 ls $(pipeline.workspace)
-                helmChartVersion=$(jq .helmChartVersion $(pipeline.workspace)/ci-pipeline/build-artifact/variables.json -r)
+                helmChartVersion=$(jq .helmChartVersion $(pipeline.workspace)/azure-pipelines/build-artifact/variables.json -r)
                 echo "helmChartVersion=$helmChartVersion"
                 echo "##vso[task.setvariable variable=Version;isOutput=true]$helmChartVersion"
               failOnStderr: true
