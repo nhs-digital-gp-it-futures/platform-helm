@@ -1,6 +1,3 @@
-trigger: none
-pr: none
-
 resources: 
   pipelines:
   - pipeline: azure-pipelines
@@ -36,6 +33,10 @@ stages:
         deploy:
           steps: 
             - checkout: none
+            - bash: | 
+                echo "pipeline.workspace=$(pipeline.workspace)"
+                env | sort
+                ls $(pipeline.workspace)
             - task: HelmInstaller@1
               displayName: 'install helm'
               inputs:
@@ -44,14 +45,12 @@ stages:
               inputs:
                 artifact: build-artifact
             - bash: | 
-                echo "pipeline.workspace=$(pipeline.workspace)"
-                env | sort
                 ls $(pipeline.workspace)
                 helmChartVersion=$(jq .helmChartVersion $(pipeline.workspace)/azure-pipelines/build-artifact/variables.json -r)
                 echo "helmChartVersion=$helmChartVersion"
                 echo "##vso[task.setvariable variable=Version;isOutput=true]$helmChartVersion"
               failOnStderr: true
-              displayName: 'helm repo add'
+              displayName: 'get version info'
               name: Version
               # create namespace if it doesn't exist
             - task: Kubernetes@1
