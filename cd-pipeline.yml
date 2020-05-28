@@ -40,8 +40,9 @@ stages:
               displayName: 'install helm'
               inputs:
                 helmVersionToInstall: 'latest'
-            - download: ci-pipeline
-              artifact: build-artifact
+            - task: DownloadPipelineArtifact@2
+              inputs:
+                artifact: build-artifact
             - bash: | 
                 echo "pipeline.workspace=$(pipeline.workspace)"
                 env | sort
