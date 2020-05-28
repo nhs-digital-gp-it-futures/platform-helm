@@ -1,9 +1,6 @@
 trigger: none
 pr: none
 
-variables:
-
-
 resources: 
   pipelines:
   - pipeline: azure-pipelines
