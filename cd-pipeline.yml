@@ -10,6 +10,7 @@ resources:
       branches:
         include:
           - master
+          - feature/6794-release-process
 
 stages:
 - stage: development
@@ -33,7 +34,13 @@ stages:
     strategy:
       runOnce:
         deploy:
-          steps:            
+          steps: 
+            - bash: | 
+              helmChartVersion=$(jq .helmChartVersion $(pipeline.workspace)/ci-pipeline/build-artifact/variables.json -r)
+              echo "##vso[task.setvariable variable=Version;isOutput=true]$helmChartVersion"
+            failOnStderr: true
+            displayName: 'helm repo add'
+            name: Version
               # create namespace if it doesn't exist
             - task: Kubernetes@1
               inputs:
@@ -72,7 +79,7 @@ stages:
                 azureSubscription: 'NHSAPP-BuyingCatalogue (Non-Prod)'
                 azureResourceGroup: 'gpitfutures-dev-rg-aks'
                 kubernetesCluster: 'gpitfutures-dev-aks'
-                namespace: '$(DeployVars.Namespace)'
+                namespace: '$(namespace)'
                 command: 'upgrade'
                 chartType: 'Name'
                 chartName: 'gpitfuturesdevacr/buyingcatalogue'
@@ -80,30 +87,30 @@ stages:
                 overrideValues:
                 valueFile: 'environments/azure.yaml'
                 arguments: >   
-                  --version $(semVer)
+                  --version $(Version.Version)
                   --timeout 10m0s
-                  --set dbPassword=$(gpitfuturesdevdbpassword)-$(DeployVars.Namespace)
-                  --set clientSecret=$(gpitfuturesdevclientsecret)-$(DeployVars.Namespace)
-                  --set appBaseUrl=$(DeployVars.BaseUrl)
+                  --set dbPassword=$(gpitfuturesdevdbpassword)-$(namespace)
+                  --set clientSecret=$(gpitfuturesdevclientsecret)-$(namespace)
+                  --set appBaseUrl=$(baseUrl)
                   --set baseIsapiEnabledUrl=$(DeployVars.BaseIdentityUrl)
-                  --set isapi.clients[0].redirectUrls[0]=$(DeployVars.BaseUrl)/oauth/callback
-                  --set isapi.clients[0].redirectUrls[1]=$(DeployVars.BaseUrl)/admin/oauth/callback
-                  --set isapi.clients[0].redirectUrls[2]=$(DeployVars.BaseUrl)/order/oauth/callback
-                  --set isapi.clients[0].postLogoutRedirectUrls[0]=$(DeployVars.BaseUrl)/signout-callback-oidc
-                  --set isapi.clients[0].postLogoutRedirectUrls[1]=$(DeployVars.BaseUrl)/admin/signout-callback-oidc
-                  --set isapi.clients[0].postLogoutRedirectUrls[2]=$(DeployVars.BaseUrl)/order/signout-callback-oidc
-                  --set isapi.ingress.hosts[0].host=$(DeployVars.BasePath)
-                  --set isapi.hostAliases[0].hostnames[0]=$(DeployVars.BasePath)
-                  --set oapi.hostAliases[0].hostnames[0]=$(DeployVars.BasePath)
-                  --set ordapi.hostAliases[0].hostnames[0]=$(DeployVars.BasePath)
-                  --set email.ingress.hosts[0].host=$(DeployVars.BasePath)
-                  --set mp.ingress.hosts[0].host=$(DeployVars.BasePath)
-                  --set pb.ingress.hosts[0].host=$(DeployVars.BasePath)
-                  --set pb.baseUri=$(DeployVars.BaseUrl)
-                  --set pb.hostAliases[0].hostnames[0]=$(DeployVars.BasePath)
-                  --set admin.ingress.hosts[0].host=$(DeployVars.BasePath)
-                  --set admin.hostAliases[0].hostnames[0]=$(DeployVars.BasePath)
-                  --set of.ingress.hosts[0].host=$(DeployVars.BasePath)
-                  --set of.hostAliases[0].hostnames[0]=$(DeployVars.BasePath)
-                  --set redis-commander.ingress.hosts[0].host=$(DeployVars.BasePath)
+                  --set isapi.clients[0].redirectUrls[0]=$(baseUrl)/oauth/callback
+                  --set isapi.clients[0].redirectUrls[1]=$(baseUrl)/admin/oauth/callback
+                  --set isapi.clients[0].redirectUrls[2]=$(baseUrl)/order/oauth/callback
+                  --set isapi.clients[0].postLogoutRedirectUrls[0]=$(baseUrl)/signout-callback-oidc
+                  --set isapi.clients[0].postLogoutRedirectUrls[1]=$(baseUrl)/admin/signout-callback-oidc
+                  --set isapi.clients[0].postLogoutRedirectUrls[2]=$(baseUrl)/order/signout-callback-oidc
+                  --set isapi.ingress.hosts[0].host=$(basePath)
+                  --set isapi.hostAliases[0].hostnames[0]=$(basePath)
+                  --set oapi.hostAliases[0].hostnames[0]=$(basePath)
+                  --set ordapi.hostAliases[0].hostnames[0]=$(basePath)
+                  --set email.ingress.hosts[0].host=$(basePath)
+                  --set mp.ingress.hosts[0].host=$(basePath)
+                  --set pb.ingress.hosts[0].host=$(basePath)
+                  --set pb.baseUri=$(baseUrl)
+                  --set pb.hostAliases[0].hostnames[0]=$(basePath)
+                  --set admin.ingress.hosts[0].host=$(basePath)
+                  --set admin.hostAliases[0].hostnames[0]=$(basePath)
+                  --set of.ingress.hosts[0].host=$(basePath)
+                  --set of.hostAliases[0].hostnames[0]=$(basePath)
+                  --set redis-commander.ingress.hosts[0].host=$(basePath)
             
