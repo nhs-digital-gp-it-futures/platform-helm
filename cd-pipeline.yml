@@ -7,10 +7,10 @@ resources:
     source: nhs-digital-gp-it-futures.platform-helm
     trigger:
       enabled: true
-      # branches:
-      #   include:
-      #     - master
-      #     - feature/6794-release-process
+      branches:
+        include:
+          - master
+          - feature/*
 
 stages:
 - stage: development
