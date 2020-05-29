@@ -74,7 +74,7 @@ jobs:
     artifact: build-artifact    
 - job: deployToDev
   dependsOn: packageAndPublish
-  condition: and(succeeded(), neq(variables['Build.SourceBranch'], 'refs/heads/master') )
+  condition: and(succeeded(), ne(variables['Build.SourceBranch'], 'refs/heads/master') )
   variables:
     - group: dev-acr-secrets
     - name: semVer
