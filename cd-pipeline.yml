@@ -41,6 +41,8 @@ stages:
               displayName: 'install helm'
               inputs:
                 helmVersionToInstall: 'latest'            
+            - download: azure-pipelines
+              artifact: build-artifact
             - bash: | 
                 ls $(pipeline.workspace)
                 helmChartVersion=$(jq .helmChartVersion $(pipeline.workspace)/azure-pipelines/build-artifact/variables.json -r)
