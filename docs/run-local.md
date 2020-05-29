@@ -26,7 +26,7 @@ helm install bc stable/nginx-ingress
 
 ### Add Namespace
 
-Create the buying catalogue namespace - `kubectl apply -f local-namespace.yml`
+Create the buying catalogue namespace - `kubectl apply -f environments/local-namespace.yml`
 
 ### Add Container Registry Secret
 
