@@ -44,10 +44,12 @@ dependencies:
   version: ~0.1.0
 - name: ordapi
   condition: ordapi.enabled
-  version: ~0.1.0
+  version: ~1.25.0-alpha 
+  repository: "@gpitfuturesdevacr"
 - name: ordapi-db
   condition: ordapi-db.enabled
-  version: ~0.1.0
+  version: ~1.25.0-alpha 
+  repository: "@gpitfuturesdevacr"
 - name: email
   condition: email.enabled
   version: ~0.1.0
@@ -56,17 +58,20 @@ dependencies:
   version: ~0.1.0
 - name: mp
   condition: mp.enabled
-  version: ~0.1.0
+  version: ~1.25.0-alpha 
+  repository: "@gpitfuturesdevacr"
 - name: pb
   condition: pb.enabled
-  version: ~0.1.0
+  version: ~1.25.0-alpha 
+  repository: "@gpitfuturesdevacr"
 - name: admin
   condition: admin.enabled
-  version: ~0.1.0-alpha 
-  repository: "https://gpitfuturesdevacr.azurecr.io/helm/v1/repo"
+  version: ~1.25.0-alpha 
+  repository: "@gpitfuturesdevacr"
 - name: of
   condition: of.enabled
-  version: ~0.1.0
+  version: ~1.25.0-alpha 
+  repository: "@gpitfuturesdevacr"
 - name: redis
   condition: redis.enabled
   version: ~10.6.7
