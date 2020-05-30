@@ -74,7 +74,7 @@ jobs:
     artifact: build-artifact    
 - job: deployToDev
   dependsOn: packageAndPublish
-  condition: and(succeeded(), ne(variables['Build.SourceBranch'], 'refs/heads/master'), ne(variables['Build.SourceBranch'], 'refs/heads/feature/6794-release-process') )
+  condition: and(succeeded(), ne(variables['Build.SourceBranch'], 'refs/heads/master'))
   variables:
     - group: dev-acr-secrets
     - name: semVer
