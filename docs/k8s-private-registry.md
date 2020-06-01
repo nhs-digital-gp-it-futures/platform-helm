@@ -11,7 +11,7 @@ Go to: [All services > Containers > Container registries](https://portal.azure.c
 
 One you have this password, run this snippet, replacing values in '<>'
 ```bash
-kubectl create secret docker-registry regcredlocal --docker-server=gpitfuturesdevacr.azurecr.io --docker-username=gpitfuturesdevacr --docker-password=<password> --docker-email=<your-hscic.gov.uk email> --namespace buyingcatalogue
+kubectl create secret docker-registry regcredlocal --docker-server=gpitfuturesdevacr.azurecr.io --docker-username=gpitfuturesdevacr --docker-password=<password> --docker-email=<your-hscic.gov.uk email> --namespace buyingcatalogue-dev
 ```
 
 ### References
