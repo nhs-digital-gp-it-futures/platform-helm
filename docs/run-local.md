@@ -40,6 +40,13 @@ You may wish to run the dashboard. Instructions are [here](run-dashboard.md).
 
 You may wish to run Rancher rather than the dashboard. Rancher provide a step by step walkthrough to install, which is linked [here](rancher-setup.md)
 
+## Add Dependencies
+
+In order to run locally, a dependancy to the ACR must be added to Helm. This can be done using the below command (replace `$(gpitfuturesdevacr-pass)` with a password from azure portal)
+```
+helm repo add gpitfuturesdevacr https://gpitfuturesdevacr.azurecr.io/helm/v1/repo --username gpitfuturesdevacr --password $(gpitfuturesdevacr-pass)
+```
+
 ## Install Dependencies
 
 The umbrella chart depends on some standard charts. These need to be added by running `helm dependency update src/buyingcatalogue`.
