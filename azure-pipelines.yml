@@ -71,10 +71,10 @@ jobs:
       CleanTargetFolder: true
       OverWrite: true
   - publish: $(build.artifactStagingDirectory)
-    artifact: build-artifact
-    condition: and(succeeded(), eq(variables['build.sourceBranch'], 'refs/heads/master'))
+    artifact: build-artifact    
 - job: deployToDev
   dependsOn: packageAndPublish
+  condition: and(succeeded(), ne(variables['Build.SourceBranch'], 'refs/heads/master'))
   variables:
     - group: dev-acr-secrets
     - name: semVer
@@ -173,10 +173,10 @@ jobs:
 #   variables:
 #     - group: dev-acr-secrets
 #   steps:
-    # public browse
-    # marketing pages
-    # admin
-    # order
-    # identity
+#     public browse
+#     marketing pages
+#     admin
+#     order
+#     identity
 
   
