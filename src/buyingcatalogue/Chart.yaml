@@ -32,16 +32,20 @@ dependencies:
   version: ~0.1.0
 - name: dapi
   condition: dapi.enabled
-  version: ~0.1.0
+  version: ~1.25.0-alpha 
+  repository: "@gpitfuturesdevacr"
 - name: isapi
   condition: isapi.enabled
-  version: ~0.1.0
+  version: ~1.25.0-alpha 
+  repository: "@gpitfuturesdevacr"
 - name: isapi-db
   condition: isapi-db.enabled
-  version: ~0.1.0
+  version: ~1.25.0-alpha 
+  repository: "@gpitfuturesdevacr"
 - name: oapi
   condition: oapi.enabled
-  version: ~0.1.0
+  version: ~1.25.0-alpha 
+  repository: "@gpitfuturesdevacr"
 - name: ordapi
   condition: ordapi.enabled
   version: ~1.25.0-alpha 
@@ -52,10 +56,12 @@ dependencies:
   repository: "@gpitfuturesdevacr"
 - name: email
   condition: email.enabled
-  version: ~0.1.0
+  version: ~1.25.0-alpha 
+  repository: "@gpitfuturesdevacr"
 - name: file-loader
   condition: file-loader.enabled
-  version: ~0.1.0
+  version: ~1.25.0-alpha 
+  repository: "@gpitfuturesdevacr"
 - name: mp
   condition: mp.enabled
   version: ~1.25.0-alpha 
@@ -79,3 +85,4 @@ dependencies:
 - name: redis-commander
   condition: redis-commander.enabled
   version: ~0.1.0
+
