@@ -26,12 +26,10 @@ dependencies:
   version: ~0.1.0
 - name: bapi
   condition: bapi.enabled
-  version: ~1.25.0-alpha 
-  repository: "@gpitfuturesdevacr"
+  version: ~0.1.0
 - name: bapi-db
   condition: bapi-db.enabled
-  version: ~1.25.0-alpha 
-  repository: "@gpitfuturesdevacr"
+  version: ~0.1.0
 - name: dapi
   condition: dapi.enabled
   version: ~1.25.0-alpha 
