@@ -18,10 +18,6 @@ dapi:
   enabled: true
   disabledUrl: "host.docker.internal"
 
-bapi-db:
-  enabled: true
-  disabledUrl: "host.docker.internal"
-
 bapi:  
   enabled: true
   disabledUrl: "host.docker.internal"

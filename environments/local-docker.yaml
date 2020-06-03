@@ -39,18 +39,6 @@ dapi:
   azureBlobStorage:    
     containerName: container-1
 
-bapi-db:
-  enabled: true
-  disabledUrl: "host.docker.internal"
-  replicaCount: 1
-  image:
-    repository: gpitfuturesdevacr.azurecr.io/nhsd/buying-catalogue/debug-db
-  useLocalImage: false
-  imagePullSecrets: 
-  - name: regcredlocal
-  service:
-    type: LoadBalancer
-
 bapi:  
   enabled: true
   disabledUrl: "host.docker.internal"
