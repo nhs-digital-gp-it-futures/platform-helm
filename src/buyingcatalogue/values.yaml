@@ -45,15 +45,15 @@ db:
         name: "bc-buyingcatalogue"
         key: db-password
 
-bapi-dacpac-applier:
+bapi-db-deploy:
   enabled: false
   replicaCount: 1
   image:
     repository: gpitfuturesdevacr.azurecr.io/nhsd/buying-catalogue/bapi-db-deploy
   useLocalImage: false
   imagePullSecrets: 
-  nameOverride: "bapi-dacpac-applier"
-  fullnameOverride: "gpitfutures-bc-bapi-dacpac-applier"
+  nameOverride: "bapi-db-deploy"
+  fullnameOverride: "gpitfutures-bc-bapi-db-deploy"
   db:
     name: buyingcatalogue
     serverConfig:

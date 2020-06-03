@@ -30,7 +30,7 @@ db:
         key: db-password
   replicaCount: 1
   
-bapi-dacpac-applier:
+bapi-db-deploy:
   enabled: true
   db:
     includeImport: "TRUE"

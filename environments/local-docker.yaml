@@ -18,7 +18,7 @@ db:
   service:
     type: LoadBalancer
 
-bapi-dacpac-applier:
+bapi-db-deploy:
   enabled: true
   replicaCount: 1
   imagePullSecrets: 
