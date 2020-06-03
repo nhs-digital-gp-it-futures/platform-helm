@@ -75,3 +75,10 @@ redis:
 
 redis-commander:
   enabled: true
+
+db:
+  enabled: true
+  disabledUrl: "host.docker.internal"
+
+bapi-dacpac-applier:
+  enabled: true

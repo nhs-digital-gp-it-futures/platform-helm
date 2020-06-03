@@ -1,0 +1,74 @@
+{{- $name := include "bapi-dacpac-applier.fullname" . -}}
+{{- $cfgname := printf "%s-%s" "cfg" $name -}}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ include "bapi-dacpac-applier.fullname" . }}
+  labels:
+    {{- include "bapi-dacpac-applier.labels" . | nindent 4 }}
+spec:
+  template:
+    spec:
+    {{- with .Values.imagePullSecrets }}
+      imagePullSecrets: {{- toYaml . | nindent 8 }}
+    {{- end }}
+      serviceAccountName: {{ include "bapi-dacpac-applier.serviceAccountName" . }}
+      securityContext: {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+      - name: {{ .Chart.Name }}
+        securityContext:
+          {{- toYaml .Values.securityContext | nindent 12 }}
+        {{- include "bapi-dacpac-applier.image.properties" . | nindent 8 }}
+        resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+        env:
+          {{- with .Values.db }}
+          - name: DB_NAME
+            value: {{ .name | quote }}
+          - name: INCLUDE_IMPORT
+            value: {{ .includeImport | quote }} 
+          - name: INCLUDE_PUBLISH
+            value: {{ .includePublish | quote }} 
+          - name: INSERT_TEST_DATA
+            value: {{ .insertTestData | quote }} 
+          - name: SA_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: {{ .saPasswordSecret.name }}
+                key: {{ .saPasswordSecret.key }}
+          - name: NHSD_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: {{ .dbPasswordSecret.name }}
+                key: {{ .dbPasswordSecret.key }}
+          - name: "DB_SERVER"
+            valueFrom:
+              configMapKeyRef:
+                name: {{ .serverConfig.name }}
+                key: {{ .serverConfig.key }}
+          {{- end }}
+          {{- if .Values.env.values -}}
+          {{- range .Values.env.values }}
+            - name: {{ .name }}
+              value: {{ .value | quote }}
+          {{- end -}}
+          {{- end -}}
+          {{- if .Values.env.configmap -}}
+          {{- range .Values.env.configmap }}
+            - name: {{ .name }}
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ $cfgname }}
+                  key: {{ .key }}
+          {{- end -}}
+          {{- end }}
+          {{- if .Values.env.secrets -}}
+          {{- range .Values.env.secrets }}
+            - name: {{ .name }}
+              valueFrom:
+                secretKeyRef:            
+                  name: {{ .valueFrom.secretKeyRef.name }}
+                  key: {{ .valueFrom.secretKeyRef.key }}            
+          {{- end -}}
+          {{- end }}
+      restartPolicy: OnFailure

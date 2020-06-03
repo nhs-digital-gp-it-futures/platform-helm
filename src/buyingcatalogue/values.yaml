@@ -24,6 +24,44 @@ azurite:
     queuePort: 10001
     tablePort: 10002
 
+db:
+  enabled: false
+  disabledUrl: 
+  replicaCount: 1
+  useLocalImage: false
+  nameOverride: "db"
+  fullnameOverride: "gpitfutures-bc-db"
+  service:
+    type: ClusterIP
+    port: 1433
+  saPasswordSecret: 
+    name: "bc-buyingcatalogue"
+    key: sa-password    
+
+bapi-dacpac-applier:
+  enabled: false
+  replicaCount: 1
+  image:
+    repository: gpitfuturesdevacr.azurecr.io/nhsd/buying-catalogue/db-deploy
+  useLocalImage: false
+  imagePullSecrets: 
+  nameOverride: "bapi-dacpac-applier"
+  fullnameOverride: "gpitfutures-bc-bapi-dacpac-applier"
+  db:
+    name: buyingcatalogue
+    serverConfig:
+      name: "bc-buyingcatalogue"
+      key: db-url
+    saPasswordSecret: 
+      name: "bc-buyingcatalogue"
+      key: sa-password 
+    dbPasswordSecret:
+      name: "bc-buyingcatalogue"
+      key: db-password
+    includeImport: "FALSE"
+    includePublish: "FALSE"
+    insertTestData: "FALSE"
+
 dapi:
   enabled: true
   disabledUrl: 
@@ -118,7 +156,6 @@ isapi-db:
       key: ea-user-password   
     phone: "01234567890"
  
-
 isapi:
   enabled: true
   disabledUrl:   

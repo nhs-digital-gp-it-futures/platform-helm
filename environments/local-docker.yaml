@@ -13,6 +13,18 @@ azurite:
   service:
     type: LoadBalancer
 
+db:
+  enabled: true
+  service:
+    type: LoadBalancer
+
+bapi-dacpac-applier:
+  enabled: true
+  db:
+    includeImport: "TRUE"
+    includePublish: "TRUE"
+    insertTestData: "TRUE"
+  
 dapi:
   enabled: true
   disabledUrl: "host.docker.internal"
