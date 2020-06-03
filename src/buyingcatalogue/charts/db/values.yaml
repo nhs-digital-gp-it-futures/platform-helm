@@ -57,6 +57,14 @@ saPasswordSecret:
   name:
   key:
 
+dbs:
+  bapi:
+    name: buyingcatalogue
+    user: NHSD
+    userPasswordSecret:
+      name:
+      key:
+      
 env:
   configmap:
   secrets:

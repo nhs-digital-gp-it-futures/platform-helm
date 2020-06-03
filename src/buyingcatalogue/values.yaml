@@ -36,7 +36,14 @@ db:
     port: 1433
   saPasswordSecret: 
     name: "bc-buyingcatalogue"
-    key: sa-password    
+    key: sa-password   
+  dbs:
+    bapi:
+      name: buyingcatalogue
+      user: NHSD
+      userPasswordSecret:
+        name: "bc-buyingcatalogue"
+        key: db-password
 
 bapi-dacpac-applier:
   enabled: false
