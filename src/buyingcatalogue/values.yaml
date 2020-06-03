@@ -49,7 +49,7 @@ bapi-dacpac-applier:
   enabled: false
   replicaCount: 1
   image:
-    repository: gpitfuturesdevacr.azurecr.io/nhsd/buying-catalogue/db-deploy
+    repository: gpitfuturesdevacr.azurecr.io/nhsd/buying-catalogue/bapi-db-deploy
   useLocalImage: false
   imagePullSecrets: 
   nameOverride: "bapi-dacpac-applier"

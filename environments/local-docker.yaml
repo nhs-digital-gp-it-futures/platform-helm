@@ -20,6 +20,9 @@ db:
 
 bapi-dacpac-applier:
   enabled: true
+  replicaCount: 1
+  imagePullSecrets: 
+  - name: regcredlocal
   db:
     includeImport: "TRUE"
     includePublish: "TRUE"

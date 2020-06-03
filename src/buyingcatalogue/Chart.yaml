@@ -29,7 +29,7 @@ dependencies:
   version: ~0.1.0
 - name: bapi-dacpac-applier
   condition: bapi-dacpac-applier.enabled
-  version: 1.25.0-6636-deploy-single-db.1
+  version: 1.25.0-6636-deploy-single-db.1+38
   repository: "@gpitfuturesdevacr"
 - name: bapi
   condition: bapi.enabled
