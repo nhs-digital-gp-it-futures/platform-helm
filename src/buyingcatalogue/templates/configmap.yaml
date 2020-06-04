@@ -19,6 +19,7 @@ metadata:
     {{- include "buyingcatalogue.labels" . | nindent 4 }}
 data:
   db-url: {{ $dbUrl | quote }}
+  db-port: {{ .Values.db.service.port | quote }}
   dapi-url: {{ printf "http://%s:%d" $dapiUrl (.Values.dapi.service.port | int ) }}
   bapi-url: {{ printf "http://%s:%d" $bapiUrl (.Values.bapi.service.port | int ) }}
   oapi-url: {{ printf "http://%s:%d" $oapiUrl (.Values.oapi.service.port | int ) }}
