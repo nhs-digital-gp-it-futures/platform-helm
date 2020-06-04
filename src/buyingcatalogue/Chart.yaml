@@ -29,7 +29,7 @@ dependencies:
   version: ~0.1.0
 - name: bapi-db-deploy
   condition: bapi-db-deploy.enabled
-  version: 1.25.0-6636-bapi-dacpac-apply-port-change.1+41
+  version: ~1.25.0-alpha 
   repository: "@gpitfuturesdevacr"
 - name: bapi
   condition: bapi.enabled
