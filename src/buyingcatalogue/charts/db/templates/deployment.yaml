@@ -1,26 +1,26 @@
-{{- $name := include "bapi-db.fullname" . -}}
+{{- $name := include "db.fullname" . -}}
 {{- $cfgname := printf "%s-%s" "cfg" $name -}}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "bapi-db.fullname" . }}
+  name: {{ include "db.fullname" . }}
   labels:
-    {{- include "bapi-db.labels" . | nindent 4 }}
+    {{- include "db.labels" . | nindent 4 }}
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
-      {{- include "bapi-db.selectorLabels" . | nindent 6 }}
+      {{- include "db.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       labels:
-        {{- include "bapi-db.selectorLabels" . | nindent 8 }}
+        {{- include "db.selectorLabels" . | nindent 8 }}
     spec:
     {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
     {{- end }}
-      serviceAccountName: {{ include "bapi-db.serviceAccountName" . }}
+      serviceAccountName: {{ include "db.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:
@@ -55,15 +55,6 @@ spec:
               value: "Y"      
             - name: MSSQL_PID
               value: Developer  
-            - name: DB_NAME
-              value: {{ .Values.dbName | quote }}
-            - name: DB_USER
-              value: {{ .Values.dbUser | quote }}
-            - name: DB_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Values.dbPasswordSecret.name }}
-                  key: {{ .Values.dbPasswordSecret.key }}
             {{- if .Values.env.values }}
             {{- range .Values.env.values }}
             - name: {{ .name }}

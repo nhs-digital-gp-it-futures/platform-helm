@@ -1,6 +1,6 @@
 apiVersion: v2
-name: bapi-db
-description: Local DB Chart for bapi & kubernetes
+name: db
+description: Local Chart for mssql database
 
 type: application
 

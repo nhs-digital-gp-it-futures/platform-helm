@@ -1,3 +1,4 @@
+{{- $dbUrl:= ternary (printf "%s.%s" (include "call-nested" (list . "db" "db.fullname")) .Release.Namespace) (default "NotSet" .Values.db.disabledUrl) .Values.db.enabled -}}
 {{- $dapiUrl:= ternary (printf "%s.%s" (include "call-nested" (list . "dapi" "dapi.fullname")) .Release.Namespace) (default "NotSet" .Values.dapi.disabledUrl) .Values.dapi.enabled -}}
 {{- $bapiUrl:= ternary (printf "%s.%s" (include "call-nested" (list . "bapi" "bapi.fullname")) .Release.Namespace) (default "NotSet" .Values.bapi.disabledUrl) .Values.bapi.enabled -}}
 {{- $oapiUrl:= ternary (printf "%s.%s" (include "call-nested" (list . "oapi" "oapi.fullname")) .Release.Namespace) (default "NotSet" .Values.oapi.disabledUrl) .Values.oapi.enabled -}}
@@ -17,6 +18,8 @@ metadata:
   labels:     
     {{- include "buyingcatalogue.labels" . | nindent 4 }}
 data:
+  db-url: {{ $dbUrl | quote }}
+  db-port: {{ .Values.db.service.port | quote }}
   dapi-url: {{ printf "http://%s:%d" $dapiUrl (.Values.dapi.service.port | int ) }}
   bapi-url: {{ printf "http://%s:%d" $bapiUrl (.Values.bapi.service.port | int ) }}
   oapi-url: {{ printf "http://%s:%d" $oapiUrl (.Values.oapi.service.port | int ) }}
