@@ -1,3 +1,5 @@
+saUserName:
+saPassword:
 dbPassword:
 clientSecret:
 
@@ -62,6 +64,9 @@ bapi-db-deploy:
     serverPortConfig:
       name: "bc-buyingcatalogue"
       key: db-port
+    saUserNameSecret: 
+      name: "bc-buyingcatalogue"
+      key: sa-user-name
     saPasswordSecret: 
       name: "bc-buyingcatalogue"
       key: sa-password 
