@@ -196,6 +196,23 @@ isapi:
     useDeveloperCertificate: false
     certificatePath: "/cert/tls.crt"
     privateKeyPath: "/cert/tls.key"
+  # use these settings to adjust the password reset email
+  # passwordReset:
+  #   emailMessage:
+  #     senderName:
+  #     senderAddress:
+  #     subject:
+  #     htmlBody:
+  #     textBody:
+
+  # use these settings to adjust the registration email
+  # registration:
+  #   emailMessage:
+  #     senderName:
+  #     senderAddress:
+  #     subject:
+  #     htmlBody:
+  #     textBody:
   ingress:
     enabled: true
     hosts:
