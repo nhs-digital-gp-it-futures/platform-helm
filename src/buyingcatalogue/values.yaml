@@ -175,6 +175,13 @@ isapi:
         name: "bc-buyingcatalogue"
         key: email-url      
       port: 587
+      authenticationRequired: false
+      userName:
+        name: "bc-buyingcatalogue"
+        key: email-user-name
+      password:
+        name: "bc-buyingcatalogue"
+        key: email-password
     pb:
       baseAddressConfig:
         name: "bc-buyingcatalogue"
@@ -276,11 +283,14 @@ ordapi-db:
     key: db-password    
 
 email:
-  enabled: true
+  enabled: true  
   replicaCount: 1
   image:
     repository: gpitfuturesdevacr.azurecr.io/nhsd/buying-catalogue/smtp-server
   useLocalImage: false
+  disabledUrl:
+  disabledUserName:
+  disabledPassword:
   imagePullSecrets: 
   nameOverride: "email"
   fullnameOverride: "gpitfutures-bc-email"
