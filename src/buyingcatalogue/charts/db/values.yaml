@@ -1,4 +1,4 @@
-# Default values for bapi-db.
+# Default values for db.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
@@ -7,13 +7,13 @@ replicaCount: 1
 useLocalImage: false
 
 image:
-  repository: gpitfuturesdevacr.azurecr.io/nhsd/buying-catalogue/debug-db
-  pullPolicy: Always
+  repository: mcr.microsoft.com/mssql/server:2019-latest
+  pullPolicy: IfNotPresent
 
-imagePullSecrets: 
-- name: regcredlocal
-nameOverride: "bapi-sql"
-fullnameOverride: "gpitfutures-bc-bapi-sql"
+imagePullSecrets: []
+
+nameOverride: "db"
+fullnameOverride: "gpitfutures-bc-db"
 
 serviceAccount:
   # Specifies whether a service account should be created
@@ -36,7 +36,7 @@ securityContext: {}
   # runAsUser: 1000
 
 service:
-  type: LoadBalancer
+  type: ClusterIP
   port: 1450
 
 resources:
@@ -57,12 +57,14 @@ saPasswordSecret:
   name:
   key:
 
-dbName: buyingcatalogue
-dbUser: NHSD
-dbPasswordSecret: 
-  name:
-  key:
-
+dbs:
+  bapi:
+    name: buyingcatalogue
+    user: NHSD
+    userPasswordSecret:
+      name:
+      key:
+      
 env:
   configmap:
   secrets:

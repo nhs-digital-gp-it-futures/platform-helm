@@ -24,6 +24,54 @@ azurite:
     queuePort: 10001
     tablePort: 10002
 
+db:
+  enabled: false
+  disabledUrl: 
+  replicaCount: 1
+  useLocalImage: false
+  nameOverride: "db"
+  fullnameOverride: "gpitfutures-bc-db"
+  service:
+    type: ClusterIP
+    port: 1450
+  saPasswordSecret: 
+    name: "bc-buyingcatalogue"
+    key: sa-password   
+  dbs:
+    bapi:
+      name: buyingcatalogue
+      user: NHSD
+      userPasswordSecret:
+        name: "bc-buyingcatalogue"
+        key: db-password
+
+bapi-db-deploy:
+  enabled: false
+  replicaCount: 1
+  image:
+    repository: gpitfuturesdevacr.azurecr.io/nhsd/buying-catalogue/bapi-db-deploy
+  useLocalImage: false
+  imagePullSecrets: 
+  nameOverride: "bapi-db-deploy"
+  fullnameOverride: "gpitfutures-bc-bapi-db-deploy"
+  db:
+    name: buyingcatalogue
+    serverConfig:
+      name: "bc-buyingcatalogue"
+      key: db-url
+    serverPortConfig:
+      name: "bc-buyingcatalogue"
+      key: db-port
+    saPasswordSecret: 
+      name: "bc-buyingcatalogue"
+      key: sa-password 
+    dbPasswordSecret:
+      name: "bc-buyingcatalogue"
+      key: db-password
+    includeImport: "FALSE"
+    includePublish: "FALSE"
+    insertTestData: "FALSE"
+
 dapi:
   enabled: true
   disabledUrl: 
@@ -42,28 +90,6 @@ dapi:
       name: "bc-buyingcatalogue"
       key: azure-blob-connection-string
     containerName: container-1
-
-bapi-db:
-  enabled: true
-  disabledUrl: 
-  replicaCount: 1
-  image:
-    repository: gpitfuturesdevacr.azurecr.io/nhsd/buying-catalogue/debug-db
-  useLocalImage: false
-  imagePullSecrets: 
-  nameOverride: "bapi-sql"
-  fullnameOverride: "gpitfutures-bc-bapi-sql"
-  service:
-    type: ClusterIP
-    port: 1450
-  saPasswordSecret: 
-    name: "bc-buyingcatalogue"
-    key: sa-password    
-  dbName: buyingcatalogue
-  dbUser: NHSD
-  dbPasswordSecret: 
-    name: "bc-buyingcatalogue"
-    key: db-password    
 
 bapi:  
   enabled: true
@@ -118,7 +144,6 @@ isapi-db:
       key: ea-user-password   
     phone: "01234567890"
  
-
 isapi:
   enabled: true
   disabledUrl:   
