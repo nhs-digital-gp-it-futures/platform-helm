@@ -33,7 +33,8 @@ dependencies:
   repository: "@gpitfuturesdevacr"
 - name: bapi
   condition: bapi.enabled
-  version: ~0.1.0
+  version: ~1.25.0-alpha 
+  repository: "@gpitfuturesdevacr"
 - name: dapi
   condition: dapi.enabled
   version: ~1.25.0-alpha 
