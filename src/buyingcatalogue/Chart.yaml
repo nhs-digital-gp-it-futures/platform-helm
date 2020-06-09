@@ -57,7 +57,7 @@ dependencies:
   repository: "@gpitfuturesdevacr"
 - name: ordapi-db-deploy
   condition: ordapi-db-deploy.enabled
-  version: 1.25.0-6636-deploy-using-dacpac.1+246
+  version: ~1.25.0-alpha 
   repository: "@gpitfuturesdevacr"
 - name: email
   condition: email.enabled

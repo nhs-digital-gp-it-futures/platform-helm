@@ -42,13 +42,13 @@ db:
   dbs:
     bapi:
       name: buyingcatalogue
-      user: NHSD
+      user: NHSD-BAPI
       userPasswordSecret:
         name: "bc-buyingcatalogue"
         key: db-password
     ordapi:
       name: CatalogueOrdering
-      user: NHSD
+      user: NHSD-ORDAPI
       userPasswordSecret:
         name: "bc-buyingcatalogue"
         key: db-password
