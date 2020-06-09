@@ -4,7 +4,7 @@ This directory contains helm charts for the buying catalogue.
 
 The buying catalogue umbrella chart represents a version of the entire system. It can easily be run locally to aid development, and is also used to deploy to the cloud. It aggregates the different charts used for each component, providing the ability to configure for the different environments.
 
-To work with the cluster in development, follow the instructions [here](docs/run-local.md). Once all of the tasks have been completed the URL to access the local cluster is [host.docker.internal]https://host.docker.internal/
+To work with the cluster in development, follow the instructions [here](docs/run-local.md). Once all of the tasks have been completed the URL to access the local cluster is [host.docker.internal](https://host.docker.internal/).
 
 Branches of this repository are automatically deployed to the dev environment in azure.
 Each change of this repository is considered a new release, which can then be released via the release pipeline to test and then production. Instructions on how to work with the cluster in cloud can be found [here](docs/run-azure.md).
