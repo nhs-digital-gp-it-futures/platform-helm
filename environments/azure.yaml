@@ -18,16 +18,25 @@ dapi:
   azureBlobStorage:    
     containerName: container-1  #set to release name-documents when using real storage
 
-bapi-db:
+db:
   enabled: true #eventually set to false when using azure sql
   disabledUrl: "gpitfutures-dev-sql-pri" #azure sql url
-  #dbName: "" #eventually set to dynamic name
-  # dbUser: NHSD  #eventually set to azure sql user
-  # dbPasswordSecret:  #eventually set to azure sql secret
-  #   name:
-  #   key:
+  dbs:
+    bapi:
+      name: buyingcatalogue       # db name
+      user: NHSD                  # db user name
+      userPasswordSecret:         # db user password
+        name: "bc-buyingcatalogue"
+        key: db-password
   replicaCount: 1
   
+bapi-db-deploy:
+  enabled: true
+  db:
+    includeImport: "TRUE"
+    includePublish: "TRUE"
+    insertTestData: "TRUE"
+    
 bapi:  
   enabled: true  
   replicaCount: 1

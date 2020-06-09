@@ -1,4 +1,4 @@
-# Default values for bapi.
+# Default values for db.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
@@ -7,19 +7,17 @@ replicaCount: 1
 useLocalImage: false
 
 image:
-  repository: gpitfuturesdevacr.azurecr.io/nhsd/buying-catalogue/bapi
-  pullPolicy: Always
+  repository: mcr.microsoft.com/mssql/server:2019-latest
+  pullPolicy: IfNotPresent
 
-imagePullSecrets: 
+imagePullSecrets: []
 
-nameOverride: "bapi"
-fullnameOverride: "gpitfutures-bc-bapi"
-
-minReadySeconds: 5
+nameOverride: "db"
+fullnameOverride: "gpitfutures-bc-db"
 
 serviceAccount:
   # Specifies whether a service account should be created
-  create: false
+  create: true
   # Annotations to add to the service account
   annotations: {}
   # The name of the service account to use.
@@ -39,49 +37,44 @@ securityContext: {}
 
 service:
   type: ClusterIP
-  port: 5100
+  port: 1450
 
-ingress:
-  enabled: false
-  annotations: {}
-  hosts:
-    - host: chart-example.local
-      paths: []
-  tls: []
-  #  - secretName: chart-example-tls
-  #    hosts:
-  #      - chart-example.local
-
-resources: 
+resources:
+  limits:
+    cpu: 4000m
+    memory: 2048Mi
   requests:
     cpu: 25m
-    memory: 64Mi
-  limits:
-    cpu: 1000m
-    memory: 500Mi
-  
+    memory: 700Mi
+
 nodeSelector: {}
 
 tolerations: []
 
 affinity: {}
 
-updateStrategy:
-  rollingUpdate:
-    maxSurge: 1
-    maxUnavailable: 1
+saPasswordSecret: 
+  name:
+  key:
 
-serviceDependencies:    
-  dapiUrlConfig:
-    name: 
-    key:           
-
-connectionStringSecret: 
-  name: 
-  key:   
-
+dbs:
+  bapi:
+    name: buyingcatalogue
+    user: NHSD
+    userPasswordSecret:
+      name:
+      key:
+      
 env:
   configmap:
   secrets:
   values:    
 
+probes:
+  port: 1433
+  liveness:
+    initialDelaySeconds: 15
+    periodSeconds: 20
+  readiness:
+    initialDelaySeconds: 5
+    periodSeconds: 10

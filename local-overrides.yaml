@@ -7,6 +7,8 @@
 #   useLocalImage: true
 # Please note that you need to build the local image yourself and it needs to follow the standard name specified in its docker-compose, custom tags are not supported yet.
 
+#saUserName: 
+saPassword: 8VSKwQ8xgk35qWFm8VSKwQ8xgk35qWFm!
 dbPassword: DisruptTheMarket1!
 clientSecret: SampleClientSecret
 
@@ -15,10 +17,6 @@ azurite:
   disabledUrl: "host.docker.internal"
   
 dapi:
-  enabled: true
-  disabledUrl: "host.docker.internal"
-
-bapi-db:
   enabled: true
   disabledUrl: "host.docker.internal"
 
@@ -74,4 +72,11 @@ redis:
   disabledUrl: "TODO"
 
 redis-commander:
+  enabled: true
+
+db:
+  enabled: true
+  disabledUrl: "host.docker.internal"
+
+bapi-dacpac-applier:
   enabled: true
