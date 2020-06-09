@@ -21,13 +21,6 @@ dapi:
 db:
   enabled: true #eventually set to false when using azure sql
   disabledUrl: "gpitfutures-dev-sql-pri" #azure sql url
-  dbs:
-    bapi:
-      name: buyingcatalogue       # db name
-      user: NHSD                  # db user name
-      userPasswordSecret:         # db user password
-        name: "bc-buyingcatalogue"
-        key: db-password
   replicaCount: 1
   
 bapi-db-deploy:
