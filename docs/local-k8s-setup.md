@@ -3,6 +3,7 @@
 ### Prerequisites
 
 Have [Docker for Desktop](https://www.docker.com/products/docker-desktop) installed and running 
+Have [WSL Feature Installed](https://docs.microsoft.com/en-us/windows/wsl/install-win10) and configured
 
 ### How to
 - Click on the Docker Desktop icon (in the System Tray) and click 'Settings'
@@ -23,6 +24,7 @@ docker-desktop   Ready    master   1m     v1.14.3
 ```
 
 ## WSL
+
 run the `wsl-setup.sh` script located in the 'Scripts' directory using bash as su
 
 ```
