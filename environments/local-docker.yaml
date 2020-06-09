@@ -6,34 +6,26 @@ baseIsapiEnabledUrl: "https://host.docker.internal/identity"
 azurite:
   enabled: true
   disabledUrl: "host.docker.internal"
-  replicaCount: 1
-  image:
-    repository: mcr.microsoft.com/azure-storage/azurite  
-  useLocalImage: false
   service:
     type: LoadBalancer
 
+db:
+  enabled: true
+  service:
+    type: LoadBalancer
+
+bapi-db-deploy:
+  enabled: true
+  imagePullSecrets: 
+  - name: regcredlocal
+  db:
+    includeImport: "TRUE"
+    includePublish: "TRUE"
+    insertTestData: "TRUE"
+  
 dapi:
   enabled: true
   disabledUrl: "host.docker.internal"
-  replicaCount: 1
-  image:
-    repository: gpitfuturesdevacr.azurecr.io/nhsd/buying-catalogue/document-dapi
-  useLocalImage: false
-  imagePullSecrets: 
-  - name: regcredlocal
-  service:
-    type: LoadBalancer
-  azureBlobStorage:    
-    containerName: container-1
-
-bapi-db:
-  enabled: true
-  disabledUrl: "host.docker.internal"
-  replicaCount: 1
-  image:
-    repository: gpitfuturesdevacr.azurecr.io/nhsd/buying-catalogue/debug-db
-  useLocalImage: false
   imagePullSecrets: 
   - name: regcredlocal
   service:
@@ -42,50 +34,27 @@ bapi-db:
 bapi:  
   enabled: true
   disabledUrl: "host.docker.internal"
-  replicaCount: 1
-  image:
-    repository: gpitfuturesdevacr.azurecr.io/nhsd/buying-catalogue/bapi
-  useLocalImage: false
   imagePullSecrets: 
   - name: regcredlocal
   service:
     type: LoadBalancer
 
 isapi-db:
-  enabled: false
+  enabled: true
   disabledUrl: "host.docker.internal"
-  replicaCount: 1
-  image:
-    repository: gpitfuturesdevacr.azurecr.io/nhsd/buying-catalogue/identity-api-user-db
   useLocalImage: false
   imagePullSecrets: 
   - name: regcredlocal  
   service:
     type: LoadBalancer
-  insertTestData: true
-  eaUser:
-    firstName: Agency
-    lastName: User
-    email: user@agency.com
-    passwordHash:
-      name: "bc-buyingcatalogue"
-      key: ea-user-password   
-    phone: "01234567890"
 
 isapi:
   enabled: true
   disabledUrl: "http://host.docker.internal:5102/identity"  
-  replicaCount: 1
-  image:
-    repository: gpitfuturesdevacr.azurecr.io/nhsd/buying-catalogue/identity-isapi
-  useLocalImage: false
   imagePullSecrets: 
   - name: regcredlocal
-  nameOverride: "isapi"
-  fullnameOverride: "gpitfutures-bc-isapi"  
   service:
     type: LoadBalancer
-  insertTestData: true
   clients: 
     - clientId: "NodeClient"
       clientName: "Main Node Client"
@@ -135,15 +104,7 @@ isapi:
         - http://localhost:3000/signout-callback-oidc
         - http://localhost:3005/admin/signout-callback-oidc
         - http://localhost:3006/order/signout-callback-oidc
-      allowedScopes: 
-        - openid
-        - email
-        - profile        
-        - Organisation
-        - Ordering
   allowInvalidCertificate: true
-  dataProtection:
-    applicationName: "ISAPI Development"
   serviceDependencies:
     email:
       subjectPrefix: dev
@@ -169,34 +130,20 @@ isapi:
 
 oapi:
   enabled: true
-  disabledUrl: 
-  replicaCount: 1
-  image:
-    repository: gpitfuturesdevacr.azurecr.io/nhsd/buying-catalogue/organisations-api
-  useLocalImage: false
+  disabledUrl: "host.docker.internal"
   imagePullSecrets: 
   - name: regcredlocal
-  nameOverride: "oapi"
-  fullnameOverride: "gpitfutures-bc-oapi"
   service:
-    type: LoadBalancer
-    port: 5103      
+    type: LoadBalancer   
   allowInvalidCertificate: true
 
 ordapi:
   enabled: true
-  disabledUrl: 
-  replicaCount: 1
-  image:
-    repository: gpitfuturesdevacr.azurecr.io/nhsd/buying-catalogue/ordering-api
-  useLocalImage: false
+  disabledUrl: "host.docker.internal"
   imagePullSecrets: 
   - name: regcredlocal
-  nameOverride: "ordapi"
-  fullnameOverride: "gpitfutures-bc-ordapi"
   service:
     type: LoadBalancer
-    port: 5104   
   allowInvalidCertificate: true
 
 ordapi-db:
@@ -204,42 +151,22 @@ ordapi-db:
   - name: regcredlocal
   service:
     type: LoadBalancer
-    port: 1452
 
 email:
   enabled: true
   disabledUrl: ""  
-  replicaCount: 1
-  image:
-    repository: gpitfuturesdevacr.azurecr.io/nhsd/buying-catalogue/smtp-server
-  useLocalImage: false
   imagePullSecrets: 
   - name: regcredlocal
-  nameOverride: "email"
-  fullnameOverride: "gpitfutures-bc-email"
   service:
     type: LoadBalancer
-    ports:
-      http: 1080
-      smtps: 587
 
 file-loader:
   enabled: true
-  replicaCount: 1
-  image:
-    repository: gpitfuturesdevacr.azurecr.io/nhsd/buying-catalogue/file-uploader
-  useLocalImage: false
   imagePullSecrets: 
   - name: regcredlocal
-  azureBlobStorage:    
-    containerName: container-1
 
 mp:
   enabled: true
-  replicaCount: 1
-  image:
-    repository: gpitfuturesdevacr.azurecr.io/nhsd/buying-catalogue/marketingpage
-  useLocalImage: false   
   imagePullSecrets: 
   - name: regcredlocal
   service:
@@ -252,11 +179,7 @@ mp:
       nginx.ingress.kubernetes.io/ssl-redirect: "true"
 
 pb: 
-  enabled: false
-  replicaCount: 1
-  image:
-    repository: gpitfuturesdevacr.azurecr.io/nhsd/buying-catalogue/publicbrowse 
-  useLocalImage: false    
+  enabled: true  
   imagePullSecrets: 
   - name: regcredlocal
   service:
@@ -272,10 +195,6 @@ pb:
           - /
     tls: []
   baseUri: "https://host.docker.internal"
-  featureFlags:
-    loginEnabled : "true"
-    useCapabilitiesSelector: "true"
-    showCovid19: "true"
   env:
     values:
       - name: NODE_TLS_REJECT_UNAUTHORIZED
@@ -284,17 +203,10 @@ pb:
 admin: 
   enabled: true
   disabledUrl: "host.docker.internal"
-  replicaCount: 1
-  image:
-    repository: gpitfuturesdevacr.azurecr.io/nhsd/buying-catalogue/admin
-  useLocalImage: false    
   imagePullSecrets: 
   - name: regcredlocal
-  nameOverride: "admin"
-  fullnameOverride: "gpitfutures-bc-admin"
   service:
     type: LoadBalancer
-    port: 3005
   ingress:
     enabled: true
     annotations: 
@@ -311,18 +223,11 @@ admin:
           value: "0"
 
 of: 
-  enabled: true
-  replicaCount: 1
-  image:
-    repository: gpitfuturesdevacr.azurecr.io/nhsd/buying-catalogue/order-form
-  useLocalImage: false    
+  enabled: true 
   imagePullSecrets: 
   - name: regcredlocal
-  nameOverride: "of"
-  fullnameOverride: "gpitfutures-bc-of"
   service:
     type: LoadBalancer
-    port: 3006
   ingress:
     enabled: true
     annotations: 
