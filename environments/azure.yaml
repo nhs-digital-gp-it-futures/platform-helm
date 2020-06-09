@@ -19,8 +19,8 @@ dapi:
     containerName: container-1  #set to release name-documents when using real storage
 
 db:
-  enabled: true #eventually set to false when using azure sql
-  disabledUrl: "gpitfutures-dev-sql-pri" #azure sql url
+  enabled: false
+  disabledUrl: "gpitfutures-dev-sql-pri.database.windows.net" #azure sql url
   dbs:
     bapi:
       name: buyingcatalogue       # db name
@@ -28,7 +28,9 @@ db:
       userPasswordSecret:         # db user password
         name: "bc-buyingcatalogue"
         key: db-password
-  replicaCount: 1
+  service:
+    port: 1433
+
   
 bapi-db-deploy:
   enabled: true

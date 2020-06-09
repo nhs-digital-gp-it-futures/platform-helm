@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    app: adrian
+    azure-key-vault-env-injection: enabled
+  name: adrian

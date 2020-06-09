@@ -1,6 +1,6 @@
 #!/bin/bash
 
-if [ $# -neq 1  ]
+if [ $# -ne 1  ]; then
   echo "usage ./launch-or-update-azure.sh <namespace>"
   exit
 fi
@@ -9,10 +9,19 @@ namespace=$1
 basePath="$namespace-dev.buyingcatalogue.digital.nhs.uk"
 baseUrl="https://$basePath"
 baseIdentityUrl="$baseUrl/identity"
+bapiDbName=buyingcatalogue-$namespace
+
+sed "s/REPLACENAMESPACE/$namespace/g" environments/azure-namespace-template.yml > namespace.yaml
+cat namespace.yaml
+kubectl apply -f namespace.yaml
 
 #helm upgrade bc gpitfuturesdevacr/buyingcatalogue -n $namespace -i -f environments/azure.yaml --debug \
 helm upgrade bc src/buyingcatalogue -n $namespace -i -f environments/azure.yaml \
+  --set saUserName=gpitfbcadmin \
+  --set saPassword=mzwtabxensk5o7cGgf6ydirvj0luphq \
   --set dbPassword=DisruptTheMarket1! \
+  --set db.dbs.bapi.name=$bapiDbName \
+  --set bapi-db-deploy.db.name=$bapiDbName \
   --set clientSecret=SampleClientSecret \
   --set appBaseUrl=$baseUrl \
   --set baseIsapiEnabledUrl=$baseIdentityUrl \
@@ -35,5 +44,4 @@ helm upgrade bc src/buyingcatalogue -n $namespace -i -f environments/azure.yaml 
   --set admin.hostAliases[0].hostnames[0]=$basePath \
   --set of.ingress.hosts[0].host=$basePath \
   --set of.hostAliases[0].hostnames[0]=$basePath \
-  --set redis-commander.ingress.hosts[0].host=$basePath
-  
+  --set redis-commander.ingress.hosts[0].host=$basePath 
