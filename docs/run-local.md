@@ -42,7 +42,7 @@ You may wish to run Rancher rather than the dashboard. Rancher provide a step by
 
 ## Add Dependencies
 
-In order to run locally, a dependancy to the ACR must be added to Helm. This can be done using the below command (replace `$(gpitfuturesdevacr-pass)` with a password from azure portal)
+In order to run locally, a dependancy to the ACR must be added to Helm. This can be done using the below command (replace `$(gpitfuturesdevacr-pass)` with the password from azure portal you obtained in k8s-private-registry.md)
 ```
 helm repo add gpitfuturesdevacr https://gpitfuturesdevacr.azurecr.io/helm/v1/repo --username gpitfuturesdevacr --password $(gpitfuturesdevacr-pass)
 ```
@@ -67,7 +67,7 @@ In order to launch or update the system to the latest built images or chosen con
 ./launch-or-update-local.ps1
 ```
 
-The script will start [all services available on these ports](#configuration-overview) on localhost, or update them if they are running.
+The script will start [all services available on these ports](../README.md#configuration-overview) on localhost, or update them if they are running.
 
 Ingress is also set up, so the front ends are exposed on localhost, as they would be when running in production.
 
