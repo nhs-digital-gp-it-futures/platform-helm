@@ -1,4 +1,6 @@
-## Windows
+Depending on your machine setup please choose the most appropriate Installation Method from below
+
+## Windows Installation
 
 ### Prerequisites
 
@@ -22,7 +24,8 @@ NAME             STATUS   ROLES    AGE    VERSION
 docker-desktop   Ready    master   1m     v1.14.3
 ```
 
-## WSL
+## WSL Installation
+
 run the `wsl-setup.sh` script located in the 'Scripts' directory using bash as su
 
 ```
@@ -39,7 +42,7 @@ If the response looks similar to this you are good to go
 NAME             STATUS   ROLES    AGE    VERSION
 docker-desktop   Ready    master   1m     v1.14.3
 ```
-## Mac 
+## Mac Installation
 
 ### Prerequisites
 
@@ -63,7 +66,7 @@ NAME             STATUS   ROLES    AGE    VERSION
 docker-desktop   Ready    master   1m     v1.14.3
 ```
 
-## Linux 
+## Linux Installation
 To set up, please follow [this](https://kubernetes.io/docs/tasks/tools/install-minikube) tutorial
 
 ## Linux in a VM
