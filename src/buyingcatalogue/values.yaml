@@ -46,6 +46,12 @@ db:
       userPasswordSecret:
         name: "bc-buyingcatalogue"
         key: db-password
+    ordapi:
+      name: CatalogueOrdering
+      user: NHSD
+      userPasswordSecret:
+        name: "bc-buyingcatalogue"
+        key: db-password
 
 bapi-db-deploy:
   enabled: false
@@ -76,6 +82,33 @@ bapi-db-deploy:
     includeImport: "FALSE"
     includePublish: "FALSE"
     insertTestData: "FALSE"
+
+ordapi-db-deploy:
+  enabled: false
+  replicaCount: 1
+  image:
+    repository: gpitfuturesdevacr.azurecr.io/nhsd/buying-catalogue/ordapi-db-deploy
+  useLocalImage: false
+  imagePullSecrets: 
+  nameOverride: "ordapi-db-deploy"
+  fullnameOverride: "gpitfutures-bc-ordapi-db-deploy"
+  db:
+    name: CatalogueOrdering
+    serverConfig:
+      name: "bc-buyingcatalogue"
+      key: db-url
+    serverPortConfig:
+      name: "bc-buyingcatalogue"
+      key: db-port
+    saUserNameSecret: 
+      name: "bc-buyingcatalogue"
+      key: sa-user-name
+    saPasswordSecret: 
+      name: "bc-buyingcatalogue"
+      key: sa-password 
+    dbPasswordSecret:
+      name: "bc-buyingcatalogue"
+      key: db-password
 
 dapi:
   enabled: true
@@ -282,28 +315,6 @@ ordapi:
       baseUriConfig:
         name: "bc-buyingcatalogue"
         key: issuer-url
-
-ordapi-db:
-  enabled: true
-  disabledUrl: 
-  replicaCount: 1
-  image:
-    repository: gpitfuturesdevacr.azurecr.io/nhsd/buying-catalogue/ordering-api-ordering-db
-  useLocalImage: false
-  imagePullSecrets: 
-  nameOverride: "ordapi-sql"
-  fullnameOverride: "gpitfutures-bc-ordapi-sql"
-  service:
-    type: ClusterIP
-    port: 1452
-  saPasswordSecret: 
-    name: "bc-buyingcatalogue"
-    key: sa-password    
-  dbName: CatalogueOrdering
-  dbUser: NHSD
-  dbPasswordSecret: 
-    name: "bc-buyingcatalogue"
-    key: db-password    
 
 email:
   enabled: true
