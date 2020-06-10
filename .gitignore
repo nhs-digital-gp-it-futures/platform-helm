@@ -5,3 +5,5 @@ src/buyingcatalogue/charts/*.tgz
 local-overrides.yaml
 #ignore chart lock file
 **/Chart.lock 
+#ignore generated namespace.yaml
+namespace.yaml

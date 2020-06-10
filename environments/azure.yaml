@@ -19,9 +19,10 @@ dapi:
     containerName: container-1  #set to release name-documents when using real storage
 
 db:
-  enabled: true #eventually set to false when using azure sql
-  disabledUrl: "gpitfutures-dev-sql-pri" #azure sql url
-  replicaCount: 1
+  enabled: false
+  disabledUrl: "" #azure sql url
+  service:
+    port: 1433
   
 bapi-db-deploy:
   enabled: true

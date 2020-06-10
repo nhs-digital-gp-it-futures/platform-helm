@@ -77,6 +77,7 @@ jobs:
   condition: and(succeeded(), ne(variables['Build.SourceBranch'], 'refs/heads/master'))
   variables:
     - group: dev-acr-secrets
+    - group: "Azure Keyvault - Dev Environment"
     - name: semVer
       value: $[ dependencies.packageAndPublish.outputs['setVersionStep.semVer'] ]
   steps:
@@ -144,7 +145,16 @@ jobs:
       arguments: >   
         --version $(semVer)
         --timeout 10m0s
+        --set saUserName=$(gpitdevsqladminusername)
+        --set saPassword=$(gpitdevsqladminpassword)
         --set dbPassword=$(gpitfuturesdevdbpassword)-$(DeployVars.Namespace)
+        --set db.dbs.bapi.name=$(DeployVars.Namespace)-bapi
+        --set bapi-db-deploy.db.name=$(DeployVars.Namespace)-bapi
+        --set bapi-db-deploy.db.sqlPackageArgs="/p:DatabaseEdition=Standard /p:DatabaseServiceObjective=S0"
+        --set db.dbs.ordapi.name=$(DeployVars.Namespace)-ordapi
+        --set ordapi-db-deploy.db.name=$(DeployVars.Namespace)-ordapi
+        --set ordapi-db-deploy.db.sqlPackageArgs="/p:DatabaseEdition=Standard /p:DatabaseServiceObjective=S0"
+        --set db.disabledUrl=gpitfutures-dev-sql-pri.database.windows.net
         --set clientSecret=$(gpitfuturesdevclientsecret)-$(DeployVars.Namespace)
         --set appBaseUrl=$(DeployVars.BaseUrl)
         --set baseIsapiEnabledUrl=$(DeployVars.BaseIdentityUrl)
