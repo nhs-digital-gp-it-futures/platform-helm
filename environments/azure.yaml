@@ -21,6 +21,8 @@ dapi:
 db:
   enabled: false
   disabledUrl: "" #azure sql url
+  service:
+    port: 1433
   
 bapi-db-deploy:
   enabled: true
