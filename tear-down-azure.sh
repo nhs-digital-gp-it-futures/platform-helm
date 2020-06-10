@@ -6,6 +6,8 @@ then
   exit
 fi
 
-helm delete bc -n $1
+namespace=$1
 
-kubectl delete ns $1
+helm delete bc -n $namespace
+
+kubectl delete ns $namespace

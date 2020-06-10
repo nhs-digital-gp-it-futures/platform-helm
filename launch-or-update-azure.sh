@@ -21,16 +21,16 @@ cat namespace.yaml
 kubectl apply -f namespace.yaml
 
 #helm upgrade bc gpitfuturesdevacr/buyingcatalogue -n $namespace -i -f environments/azure.yaml --debug \
-helm upgrade bc src/buyingcatalogue -n $namespace -i -f environments/azure.yaml --debug \
+helm upgrade bc src/buyingcatalogue -n $namespace -i -f environments/azure.yaml \
   --set saUserName=$3 \
   --set saPassword=$4 \
   --set dbPassword=DisruptTheMarket1! \
   --set db.dbs.bapi.name=$dbName-bapi \
   --set bapi-db-deploy.db.name=$dbName-bapi \
   --set bapi-db-deploy.db.sqlPackageArgs="/p:DatabaseEdition=Standard /p:DatabaseServiceObjective=S0" \          
-  --set db.dbs.ordapi.name=$dbName-ordapi
-  --set ordapi-db-deploy.db.name=$dbName-ordapi
-  --set ordapi-db-deploy.db.sqlPackageArgs="/p:DatabaseEdition=Standard /p:DatabaseServiceObjective=S0"
+  --set db.dbs.ordapi.name=$dbName-ordapi \
+  --set ordapi-db-deploy.db.name=$dbName-ordapi \
+  --set ordapi-db-deploy.db.sqlPackageArgs="/p:DatabaseEdition=Standard /p:DatabaseServiceObjective=S0" \
   --set db.disabledUrl=$dbServer \
   --set clientSecret=SampleClientSecret \
   --set appBaseUrl=$baseUrl \
