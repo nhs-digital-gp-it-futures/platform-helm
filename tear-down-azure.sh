@@ -1,6 +1,7 @@
 #!/bin/bash
 
-if [ $# -neq 1  ]
+if [ $# -ne 1  ]
+then
   echo "usage ./launch-or-update-azure.sh <namespace>"
   exit
 fi

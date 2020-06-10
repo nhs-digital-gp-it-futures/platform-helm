@@ -71,13 +71,43 @@ The script will start [all services available on these ports](../README.md#confi
 
 Ingress is also set up, so the front ends are exposed on localhost, as they would be when running in production.
 
-### Overrides 
+### Overrides
+
 Overrides in [local-overrides.yaml](../local-overrides.yaml) can be set to choose whether to run a component in Kubernetes, or to consider it as running on the developers machine. When a service is disabled, anything that uses that service routes out to the developers machine, using `host.docker.internal` or `docker.for.mac.localhost` for mac.
 
 By default cluster spins up containers ~~from latest images built from development branches ~~ with the latest specified versions. You can, however, override this and use a locally build image.
 
 ```yaml
 mp:
+  enabled: true
+  useLocalImage: true
+```
+
+If you update the local image, e.g. by running `docker-compose build` in the component directory, you will need to redeploy it / delete the pod for the new image to be used.
+
+### Local Charts
+
+Each component, e.g. public browse, bapi, now has its' charts in their respective repository, with the expectation that the chart will evolve with the code.
+
+When updating the chart for a component, it is useful to be able to deploy that local version of the chart within the cluster to confirm it works as expected.
+
+To do so, update the dependencies in `src/buyingcatalogue/Chart.yaml` to use a file repository, instead of the acr, e.g. for isapi:
+
+```yaml
+- name: isapi
+  condition: isapi.enabled
+  version: ~0.1.0           #local charts are all left at v0.1.0
+  repository: "file://../../../BuyingCatalogueIdentity/charts/isapi/"  #path to isapi chart. This assumes platform-helm and BuyingCatalogueIdentity repositories are cloned to the same root folder
+```
+
+***Don't check in the version change in `Chart.yaml`***
+
+After amending the components chart, you need to run `helm dependency update src/buyingcatalogue` for it to pick up the updated chart in the component git repository.
+
+You will almost certainly want to use your local image as well, so amend `local-overrides.yaml`, e.g. for isapi:
+
+```yaml
+isapi:
   enabled: true
   useLocalImage: true
 ```
