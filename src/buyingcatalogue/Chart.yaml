@@ -43,9 +43,9 @@ dependencies:
   condition: isapi.enabled
   version: ~1.25.0-alpha 
   repository: "@gpitfuturesdevacr"
-- name: isapi-db
-  condition: isapi-db.enabled
-  version: ~1.25.0-alpha 
+- name: isapi-db-deploy
+  condition: isapi-db-deploy.enabled
+  version: 1.25.0-6636-isapi-db-deploy.1+32
   repository: "@gpitfuturesdevacr"
 - name: oapi
   condition: oapi.enabled
