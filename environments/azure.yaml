@@ -21,13 +21,6 @@ dapi:
 db:
   enabled: true #eventually set to false when using azure sql
   disabledUrl: "gpitfutures-dev-sql-pri" #azure sql url
-  dbs:
-    bapi:
-      name: buyingcatalogue       # db name
-      user: NHSD                  # db user name
-      userPasswordSecret:         # db user password
-        name: "bc-buyingcatalogue"
-        key: db-password
   replicaCount: 1
   
 bapi-db-deploy:
@@ -36,6 +29,9 @@ bapi-db-deploy:
     includeImport: "TRUE"
     includePublish: "TRUE"
     insertTestData: "TRUE"
+
+ordapi-db-deploy:
+  enabled: true
     
 bapi:  
   enabled: true  
@@ -125,12 +121,6 @@ ordapi:
   - ip: "51.11.46.27"
     hostnames:
     - "<namespace>.dev.buyingcatalogue.digital.nhs.uk"
-
-ordapi-db:
-  enabled: true  #eventually set to false when using azure sql
-  disabledUrl: "gpitfutures-dev-sql-pri" #azure sql url
-  replicaCount: 1
-  insertTestData: true  #override to false in preprod / prod?
 
 email:
   enabled: true  #probably leave enabled apart from prod  
