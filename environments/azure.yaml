@@ -20,7 +20,7 @@ dapi:
 
 db:
   enabled: false
-  disabledUrl: "gpitfutures-dev-sql-pri.database.windows.net" #azure sql url
+  disabledUrl: "" #azure sql url
   dbs:
     bapi:
       name: buyingcatalogue       # db name

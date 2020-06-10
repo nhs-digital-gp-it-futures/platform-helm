@@ -1,27 +1,34 @@
 #!/bin/bash
 
-if [ $# -ne 1  ]; then
-  echo "usage ./launch-or-update-azure.sh <namespace>"
+if [ $# -ne 4  ]; then
+  echo "usage ./launch-or-update-azure.sh <namespace> <azure sql server> <azure sql user> <azure sql pass>"  
   exit
 fi
 
 namespace=$1
+dbServer=$2
+saUserName=$3
+saPassword=$4
 basePath="$namespace-dev.buyingcatalogue.digital.nhs.uk"
 baseUrl="https://$basePath"
 baseIdentityUrl="$baseUrl/identity"
 bapiDbName=buyingcatalogue-$namespace
+
+#helm dependency update src/buyingcatalogue/
 
 sed "s/REPLACENAMESPACE/$namespace/g" environments/azure-namespace-template.yml > namespace.yaml
 cat namespace.yaml
 kubectl apply -f namespace.yaml
 
 #helm upgrade bc gpitfuturesdevacr/buyingcatalogue -n $namespace -i -f environments/azure.yaml --debug \
-helm upgrade bc src/buyingcatalogue -n $namespace -i -f environments/azure.yaml \
-  --set saUserName=gpitfbcadmin \
-  --set saPassword=mzwtabxensk5o7cGgf6ydirvj0luphq \
+helm upgrade bc src/buyingcatalogue -n $namespace -i -f environments/azure.yaml --debug \
+  --set saUserName=$3 \
+  --set saPassword=$4 \
   --set dbPassword=DisruptTheMarket1! \
   --set db.dbs.bapi.name=$bapiDbName \
   --set bapi-db-deploy.db.name=$bapiDbName \
+  --set bapi-db-deploy.db.sqlPackageArgs="/p:DatabaseEdition=Standard /p:DatabaseServiceObjective=S0" \
+  --set db.disabledUrl=$dbServer \
   --set clientSecret=SampleClientSecret \
   --set appBaseUrl=$baseUrl \
   --set baseIsapiEnabledUrl=$baseIdentityUrl \
@@ -44,4 +51,4 @@ helm upgrade bc src/buyingcatalogue -n $namespace -i -f environments/azure.yaml 
   --set admin.hostAliases[0].hostnames[0]=$basePath \
   --set of.ingress.hosts[0].host=$basePath \
   --set of.hostAliases[0].hostnames[0]=$basePath \
-  --set redis-commander.ingress.hosts[0].host=$basePath 
+  --set redis-commander.ingress.hosts[0].host=$basePath
