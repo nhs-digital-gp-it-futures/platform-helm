@@ -12,7 +12,7 @@ saPassword=$4
 basePath="$namespace-dev.buyingcatalogue.digital.nhs.uk"
 baseUrl="https://$basePath"
 baseIdentityUrl="$baseUrl/identity"
-bapiDbName=buyingcatalogue-$namespace
+dbName=bc-$namespace
 
 #helm dependency update src/buyingcatalogue/
 
@@ -25,9 +25,12 @@ helm upgrade bc src/buyingcatalogue -n $namespace -i -f environments/azure.yaml 
   --set saUserName=$3 \
   --set saPassword=$4 \
   --set dbPassword=DisruptTheMarket1! \
-  --set db.dbs.bapi.name=$bapiDbName \
-  --set bapi-db-deploy.db.name=$bapiDbName \
-  --set bapi-db-deploy.db.sqlPackageArgs="/p:DatabaseEdition=Standard /p:DatabaseServiceObjective=S0" \
+  --set db.dbs.bapi.name=$dbName-bapi \
+  --set bapi-db-deploy.db.name=$dbName-bapi \
+  --set bapi-db-deploy.db.sqlPackageArgs="/p:DatabaseEdition=Standard /p:DatabaseServiceObjective=S0" \          
+  --set db.dbs.ordapi.name=$dbName-ordapi
+  --set ordapi-db-deploy.db.name=$dbName-ordapi
+  --set ordapi-db-deploy.db.sqlPackageArgs="/p:DatabaseEdition=Standard /p:DatabaseServiceObjective=S0"
   --set db.disabledUrl=$dbServer \
   --set clientSecret=SampleClientSecret \
   --set appBaseUrl=$baseUrl \
