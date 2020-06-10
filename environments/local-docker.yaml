@@ -22,6 +22,11 @@ bapi-db-deploy:
     includeImport: "TRUE"
     includePublish: "TRUE"
     insertTestData: "TRUE"
+
+ordapi-db-deploy:
+  enabled: true
+  imagePullSecrets: 
+  - name: regcredlocal
   
 dapi:
   enabled: true
@@ -145,12 +150,6 @@ ordapi:
   service:
     type: LoadBalancer
   allowInvalidCertificate: true
-
-ordapi-db:
-  imagePullSecrets: 
-  - name: regcredlocal
-  service:
-    type: LoadBalancer
 
 email:
   enabled: true

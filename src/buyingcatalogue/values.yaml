@@ -42,7 +42,13 @@ db:
   dbs:
     bapi:
       name: buyingcatalogue
-      user: NHSD
+      user: NHSD-BAPI
+      userPasswordSecret:
+        name: "bc-buyingcatalogue"
+        key: db-password
+    ordapi:
+      name: CatalogueOrdering
+      user: NHSD-ORDAPI
       userPasswordSecret:
         name: "bc-buyingcatalogue"
         key: db-password
@@ -76,6 +82,33 @@ bapi-db-deploy:
     includeImport: "FALSE"
     includePublish: "FALSE"
     insertTestData: "FALSE"
+
+ordapi-db-deploy:
+  enabled: false
+  replicaCount: 1
+  image:
+    repository: gpitfuturesdevacr.azurecr.io/nhsd/buying-catalogue/ordapi-db-deploy
+  useLocalImage: false
+  imagePullSecrets: 
+  nameOverride: "ordapi-db-deploy"
+  fullnameOverride: "gpitfutures-bc-ordapi-db-deploy"
+  db:
+    name: CatalogueOrdering
+    serverConfig:
+      name: "bc-buyingcatalogue"
+      key: db-url
+    serverPortConfig:
+      name: "bc-buyingcatalogue"
+      key: db-port
+    saUserNameSecret: 
+      name: "bc-buyingcatalogue"
+      key: sa-user-name
+    saPasswordSecret: 
+      name: "bc-buyingcatalogue"
+      key: sa-password 
+    dbPasswordSecret:
+      name: "bc-buyingcatalogue"
+      key: db-password
 
 dapi:
   enabled: true
@@ -205,6 +238,13 @@ isapi:
         name: "bc-buyingcatalogue"
         key: email-url      
       port: 587
+      authenticationRequired: false
+      userName:
+        name: "bc-buyingcatalogue"
+        key: email-user-name
+      password:
+        name: "bc-buyingcatalogue"
+        key: email-password
     pb:
       baseAddressConfig:
         name: "bc-buyingcatalogue"
@@ -219,6 +259,23 @@ isapi:
     useDeveloperCertificate: false
     certificatePath: "/cert/tls.crt"
     privateKeyPath: "/cert/tls.key"
+  # use these settings to adjust the password reset email
+  # passwordReset:
+  #   emailMessage:
+  #     senderName:
+  #     senderAddress:
+  #     subject:
+  #     htmlBody:
+  #     textBody:
+
+  # use these settings to adjust the registration email
+  # registration:
+  #   emailMessage:
+  #     senderName:
+  #     senderAddress:
+  #     subject:
+  #     htmlBody:
+  #     textBody:
   ingress:
     enabled: true
     hosts:
@@ -283,34 +340,15 @@ ordapi:
         name: "bc-buyingcatalogue"
         key: issuer-url
 
-ordapi-db:
-  enabled: true
-  disabledUrl: 
-  replicaCount: 1
-  image:
-    repository: gpitfuturesdevacr.azurecr.io/nhsd/buying-catalogue/ordering-api-ordering-db
-  useLocalImage: false
-  imagePullSecrets: 
-  nameOverride: "ordapi-sql"
-  fullnameOverride: "gpitfutures-bc-ordapi-sql"
-  service:
-    type: ClusterIP
-    port: 1452
-  saPasswordSecret: 
-    name: "bc-buyingcatalogue"
-    key: sa-password    
-  dbName: CatalogueOrdering
-  dbUser: NHSD
-  dbPasswordSecret: 
-    name: "bc-buyingcatalogue"
-    key: db-password    
-
 email:
-  enabled: true
+  enabled: true  
   replicaCount: 1
   image:
     repository: gpitfuturesdevacr.azurecr.io/nhsd/buying-catalogue/smtp-server
   useLocalImage: false
+  disabledUrl:
+  disabledUserName:
+  disabledPassword:
   imagePullSecrets: 
   nameOverride: "email"
   fullnameOverride: "gpitfutures-bc-email"
