@@ -46,6 +46,12 @@ db:
       userPasswordSecret:
         name: "bc-buyingcatalogue"
         key: db-password
+    isapi:
+      name: CatalogueUsers
+      user: NHSD-ISAPI
+      userPasswordSecret:
+        name: "bc-buyingcatalogue"
+        key: db-password
     ordapi:
       name: CatalogueOrdering
       user: NHSD-ORDAPI
@@ -82,6 +88,43 @@ bapi-db-deploy:
     includeImport: "FALSE"
     includePublish: "FALSE"
     insertTestData: "FALSE"
+
+isapi-db-deploy:
+  enabled: false
+  replicaCount: 1
+  image:
+    repository: gpitfuturesdevacr.azurecr.io/nhsd/buying-catalogue/isapi-db-deploy
+  useLocalImage: false
+  imagePullSecrets: 
+  nameOverride: "isapi-db-deploy"
+  fullnameOverride: "gpitfutures-bc-isapi-db-deploy"
+  db:
+    name: CatalogueUsers
+    serverConfig:
+      name: "bc-buyingcatalogue"
+      key: db-url
+    serverPortConfig:
+      name: "bc-buyingcatalogue"
+      key: db-port
+    saUserNameSecret: 
+      name: "bc-buyingcatalogue"
+      key: sa-user-name
+    saPasswordSecret: 
+      name: "bc-buyingcatalogue"
+      key: sa-password 
+    dbPasswordSecret:
+      name: "bc-buyingcatalogue"
+      key: db-password  
+  insertTestData: true
+  createEaUser: true
+  eaUser:
+    firstName: Agency
+    lastName: User
+    email: user@agency.com
+    passwordHash:
+      name: "bc-buyingcatalogue"
+      key: ea-user-password   
+    phone: "01234567890"    
 
 ordapi-db-deploy:
   enabled: false
@@ -149,38 +192,6 @@ bapi:
   connectionStringSecret: 
     name: "bc-buyingcatalogue"
     key: bapi-db-connection-string  
-
-isapi-db:
-  enabled: true
-  disabledUrl: 
-  replicaCount: 1
-  image:
-    repository: gpitfuturesdevacr.azurecr.io/nhsd/buying-catalogue/identity-api-user-db
-  useLocalImage: false
-  imagePullSecrets: 
-  nameOverride: "isapi-sql"
-  fullnameOverride: "gpitfutures-bc-isapi-sql"
-  service:
-    type: ClusterIP
-    port: 1451  
-  saPasswordSecret: 
-    name: "bc-buyingcatalogue"
-    key: sa-password    
-  dbName: CatalogueUsers
-  dbUser: NHSD
-  dbPasswordSecret: 
-    name: "bc-buyingcatalogue"
-    key: db-password   
-  insertTestData: true
-  createEaUser: true
-  eaUser:
-    firstName: Agency
-    lastName: User
-    email: user@agency.com
-    passwordHash:
-      name: "bc-buyingcatalogue"
-      key: ea-user-password   
-    phone: "01234567890"
  
 isapi:
   enabled: true

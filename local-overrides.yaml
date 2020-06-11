@@ -23,6 +23,9 @@ db:
 bapi-db-deploy:
   enabled: true
 
+isapi-db-deploy:
+  enabled: true
+
 ordapi-db-deploy:
   enabled: true
 
@@ -31,10 +34,6 @@ dapi:
   disabledUrl: "host.docker.internal"
 
 bapi:  
-  enabled: true
-  disabledUrl: "host.docker.internal"
-
-isapi-db:
   enabled: true
   disabledUrl: "host.docker.internal"
 
