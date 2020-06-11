@@ -80,6 +80,8 @@ jobs:
     - group: "Azure Keyvault - Dev Environment"
     - name: semVer
       value: $[ dependencies.packageAndPublish.outputs['setVersionStep.semVer'] ]
+    - name: sqlPackageArgs
+      value: "/p:DatabaseEdition=Standard /p:DatabaseServiceObjective=S0"
   steps:
   - bash: | 
       if [ $(Build.Reason) = "PullRequest" ]
@@ -142,9 +144,6 @@ jobs:
       releaseName: 'bc'
       overrideValues:
       valueFile: 'environments/azure.yaml'
-      variables:
-      - name: sqlPackageArgs
-        value: "/p:DatabaseEdition=Standard /p:DatabaseServiceObjective=S0"
       arguments: >   
         --version $(semVer)
         --timeout 10m0s
