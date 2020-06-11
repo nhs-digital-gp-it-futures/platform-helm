@@ -143,8 +143,8 @@ jobs:
       overrideValues:
       valueFile: 'environments/azure.yaml'
       variables:
-        - name: sqlPackageArgs
-          value: "/p:DatabaseEdition=Standard /p:DatabaseServiceObjective=S0"
+      - name: sqlPackageArgs
+        value: "/p:DatabaseEdition=Standard /p:DatabaseServiceObjective=S0"
       arguments: >   
         --version $(semVer)
         --timeout 10m0s
