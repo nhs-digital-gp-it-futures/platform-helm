@@ -93,11 +93,13 @@ jobs:
       basePath="$namespace-dev.buyingcatalogue.digital.nhs.uk"
       baseUrl="https://$basePath"
       baseIdentityUrl="$baseUrl/identity"
+      containerName=$namespace-documents
       echo "namespace=$namespace, basePath=$basePath, baseUrl=$baseUrl, baseIdentityUrl"
       echo "##vso[task.setvariable variable=Namespace;isOutput=true]$namespace"
       echo "##vso[task.setvariable variable=BasePath;isOutput=true]$basePath"
       echo "##vso[task.setvariable variable=BaseUrl;isOutput=true]$baseUrl"
       echo "##vso[task.setvariable variable=BaseIdentityUrl;isOutput=true]$baseIdentityUrl"
+      echo "##vso[task.setvariable variable=ContainerName;isOutput=true]$containerName"
     name: DeployVars
     # create namespace if it doesn't exist
   - task: Kubernetes@1
@@ -159,7 +161,11 @@ jobs:
         --set isapi-db-deploy.db.sqlPackageArgs="${{ variables.sqlPackageArgs }}"
         --set db.dbs.ordapi.name=$(DeployVars.Namespace)-ordapi
         --set ordapi-db-deploy.db.name=$(DeployVars.Namespace)-ordapi
-        --set ordapi-db-deploy.db.sqlPackageArgs="${{ variables.sqlPackageArgs }}"
+        --set ordapi-db-deploy.db.sqlPackageArgs="/p:DatabaseEdition=Standard /p:DatabaseServiceObjective=S0"
+        --set db.disabledUrl=gpitfutures-dev-sql-pri.database.windows.net
+        --set azurite.connectionString=$(gpitdevstorageaccountconnectionstring)
+        --set file-loader.azureBlobStorage.containerName=$(DeployVars.ContainerName)
+        --set dapi.azureBlobStorage.containerName=$(DeployVars.ContainerName)
         --set clientSecret=$(gpitfuturesdevclientsecret)-$(DeployVars.Namespace)
         --set appBaseUrl=$(DeployVars.BaseUrl)
         --set baseIsapiEnabledUrl=$(DeployVars.BaseIdentityUrl)
