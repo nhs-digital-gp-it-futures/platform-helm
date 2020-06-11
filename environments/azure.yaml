@@ -4,7 +4,7 @@ appBaseUrl: "https://<namespace>.dev.buyingcatalogue.digital.nhs.uk"
 baseIsapiEnabledUrl: "https://<namespace>.dev.buyingcatalogue.digital.nhs.uk/identity"
 
 keyVault:
-  enabled: true  
+  enabled: false  
   name: gpitfutures-dev-kv #should override per environment
   isapiCertificateSecretName: buyingcataloguedev
 

@@ -14,6 +14,10 @@ baseUrl="https://$basePath"
 baseIdentityUrl="$baseUrl/identity"
 dbName=bc-$namespace
 
+saUserStart=`echo $saUserName | cut -c-3`
+saPassStart=`echo $saPassword | cut -c-3`
+echo "launch-or-update-azure.sh $namespace $dbServer $saUserStart* $saPassStart*"  
+
 #helm dependency update src/buyingcatalogue/
 
 sed "s/REPLACENAMESPACE/$namespace/g" environments/azure-namespace-template.yml > namespace.yaml
@@ -22,12 +26,12 @@ kubectl apply -f namespace.yaml
 
 #helm upgrade bc gpitfuturesdevacr/buyingcatalogue -n $namespace -i -f environments/azure.yaml --debug \
 helm upgrade bc src/buyingcatalogue -n $namespace -i -f environments/azure.yaml \
-  --set saUserName=$3 \
-  --set saPassword=$4 \
+  --set saUserName=$saUserName \
+  --set saPassword=$saPassword \
   --set dbPassword=DisruptTheMarket1! \
   --set db.dbs.bapi.name=$dbName-bapi \
   --set bapi-db-deploy.db.name=$dbName-bapi \
-  --set bapi-db-deploy.db.sqlPackageArgs="/p:DatabaseEdition=Standard /p:DatabaseServiceObjective=S0" \          
+  --set bapi-db-deploy.db.sqlPackageArgs="/p:DatabaseEdition=Standard /p:DatabaseServiceObjective=S0" \
   --set db.dbs.ordapi.name=$dbName-ordapi \
   --set ordapi-db-deploy.db.name=$dbName-ordapi \
   --set ordapi-db-deploy.db.sqlPackageArgs="/p:DatabaseEdition=Standard /p:DatabaseServiceObjective=S0" \
