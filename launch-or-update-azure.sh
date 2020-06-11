@@ -2,7 +2,7 @@
 
 if [ $# -ne 4  ]; then
   echo "usage ./launch-or-update-azure.sh <namespace> <azure sql server> <azure sql user> <azure sql pass>"  
-  exit
+  exit 1
 fi
 
 namespace=$1
@@ -13,6 +13,7 @@ basePath="$namespace-dev.buyingcatalogue.digital.nhs.uk"
 baseUrl="https://$basePath"
 baseIdentityUrl="$baseUrl/identity"
 dbName=bc-$namespace
+sqlPackageArgs="/p:DatabaseEdition=Standard /p:DatabaseServiceObjective=S0"
 
 #helm dependency update src/buyingcatalogue/
 
@@ -27,10 +28,13 @@ helm upgrade bc src/buyingcatalogue -n $namespace -i -f environments/azure.yaml 
   --set dbPassword=DisruptTheMarket1! \
   --set db.dbs.bapi.name=$dbName-bapi \
   --set bapi-db-deploy.db.name=$dbName-bapi \
-  --set bapi-db-deploy.db.sqlPackageArgs="/p:DatabaseEdition=Standard /p:DatabaseServiceObjective=S0" \          
+  --set bapi-db-deploy.db.sqlPackageArgs=$sqlPackageArgs \
+  --set db.dbs.isapi.name=$dbName-isapi \
+  --set isapi-db-deploy.db.name=$dbName-isapi \
+  --set isapi-db-deploy.db.sqlPackageArgs=$sqlPackageArgs \
   --set db.dbs.ordapi.name=$dbName-ordapi \
   --set ordapi-db-deploy.db.name=$dbName-ordapi \
-  --set ordapi-db-deploy.db.sqlPackageArgs="/p:DatabaseEdition=Standard /p:DatabaseServiceObjective=S0" \
+  --set ordapi-db-deploy.db.sqlPackageArgs=$sqlPackageArgs \
   --set db.disabledUrl=$dbServer \
   --set clientSecret=SampleClientSecret \
   --set appBaseUrl=$baseUrl \
