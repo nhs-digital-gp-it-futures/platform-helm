@@ -3,9 +3,9 @@
 chart="gpitfuturesdevacr/buyingcatalogue"
 wait="true"
 
-while getopts ":h:c:n:d:u:p:v:w:b" opt; do
+while getopts ":h:c:n:d:u:p:v:w:b:s" opt; do
   case $opt in
-    h)  echo "usage ./launch-or-update-azure.sh c=<local | remote> n=<namespace> d=<azure sql server> s=<azure sql user> p=<azure sql pass> v=<version> w=<wait?> b=<base path>"
+    h)  echo "usage ./launch-or-update-azure.sh c=<local | remote> n=<namespace> d=<azure sql server> s=<azure sql user> p=<azure sql pass> v=<version> w=<wait?> b=<base path>s=<sql package args>"
         echo "chart is (default)remote(gpitfuturesdevacr/buyingcatalogue), or local (src/buyingcatalogue). Version paramter (-v) applies to remote only"
         echo "wait=(default)true or false, whether helm will wait for the intallation to be complete"
         exit
@@ -30,6 +30,8 @@ while getopts ":h:c:n:d:u:p:v:w:b" opt; do
     w) wait="$OPTARG"
     ;;
     b) basePath="$OPTARG"
+    ;;
+    s) sqlPackageArgs="$OPTARG"
     ;;
     \?) echo "Invalid option -$OPTARG" >&2
     ;;
@@ -62,6 +64,8 @@ basePath=${basePath:-"$namespace-dev.buyingcatalogue.digital.nhs.uk"}
 baseUrl="https://$basePath"
 baseIdentityUrl="$baseUrl/identity"
 dbName=bc-$namespace
+containerName=$namespace-documents
+sqlPackageArgs="/p:DatabaseEdition=Standard /p:DatabaseServiceObjective=S0"
 
 saUserStart=`echo $saUserName | cut -c-3`
 saPassStart=`echo $saPassword | cut -c-3`
@@ -78,10 +82,13 @@ helm upgrade bc $chart -n $namespace -i -f environments/azure.yaml \
   --set dbPassword=DisruptTheMarket1! \
   --set db.dbs.bapi.name=$dbName-bapi \
   --set bapi-db-deploy.db.name=$dbName-bapi \
-  --set bapi-db-deploy.db.sqlPackageArgs="/p:DatabaseEdition=Standard /p:DatabaseServiceObjective=S0" \
+  --set bapi-db-deploy.db.sqlPackageArgs=$sqlPackageArgs \
+  --set db.dbs.isapi.name=$dbName-isapi \
+  --set isapi-db-deploy.db.name=$dbName-isapi \
+  --set isapi-db-deploy.db.sqlPackageArgs=$sqlPackageArgs \
   --set db.dbs.ordapi.name=$dbName-ordapi \
   --set ordapi-db-deploy.db.name=$dbName-ordapi \
-  --set ordapi-db-deploy.db.sqlPackageArgs="/p:DatabaseEdition=Standard /p:DatabaseServiceObjective=S0" \
+  --set ordapi-db-deploy.db.sqlPackageArgs=$sqlPackageArgs \
   --set db.disabledUrl=$dbServer \
   --set clientSecret=SampleClientSecret \
   --set appBaseUrl=$baseUrl \
@@ -106,5 +113,7 @@ helm upgrade bc $chart -n $namespace -i -f environments/azure.yaml \
   --set of.ingress.hosts[0].host=$basePath \
   --set of.hostAliases[0].hostnames[0]=$basePath \
   --set redis-commander.ingress.hosts[0].host=$basePath \
+  --set file-loader.azureBlobStorage.containerName=$containerName \
+  --set dapi.azureBlobStorage.containerName=$containerName
   $versionArg \
   $waitArg

@@ -86,6 +86,8 @@ jobs:
     - group: dev-acr-secrets
     - name: semVer
       value: $[ dependencies.packageAndPublish.outputs['setVersionStep.semVer'] ]
+    - name: sqlPackageArgs
+      value: "/p:DatabaseEdition=Standard /p:DatabaseServiceObjective=S0"
   steps:
   - bash: |
       if [ $(Build.Reason) = "PullRequest" ]

@@ -9,14 +9,14 @@ keyVault:
   isapiCertificateSecretName: buyingcataloguedev
 
 azurite:
-  enabled: true #eventually set to false
-  disabledUrl: "<set to azure storage account>" 
+  enabled: false
+  connectionString:                          # override per environment
   
 dapi:
   enabled: true  
   replicaCount: 1  
   azureBlobStorage:    
-    containerName: container-1  #set to release name-documents when using real storage
+    containerName:                           # override per enironment
 
 db:
   enabled: false
@@ -31,26 +31,15 @@ bapi-db-deploy:
     includePublish: "TRUE"
     insertTestData: "TRUE"
 
+isapi-db-deploy:
+  enabled: true
+
 ordapi-db-deploy:
   enabled: true
     
 bapi:  
   enabled: true  
   replicaCount: 1
-  
-isapi-db:
-  enabled: true  #eventually set to false when using azure sql
-  disabledUrl: "gpitfutures-dev-sql-pri" #azure sql url
-  replicaCount: 1
-  insertTestData: true  #override to false in preprod / prod?
-  eaUser:               #how do we set these for preprod / prod?
-    firstName: Agency
-    lastName: User
-    email: user@agency.com
-    passwordHash:
-      name: "bc-buyingcatalogue"
-      key: ea-user-password   
-    phone: "01234567890"
 
 isapi:
   enabled: true  
@@ -141,7 +130,7 @@ file-loader:
   enabled: true
   replicaCount: 1
   azureBlobStorage:    
-    containerName: container-1 #set to release name-documents when using real storage
+    containerName:                            # override per environment
 
 mp:
   enabled: true
