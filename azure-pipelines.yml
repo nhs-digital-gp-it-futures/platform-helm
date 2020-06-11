@@ -114,7 +114,8 @@ jobs:
         -u $(gpitdevsqladminusername) \
         -p $(gpitdevsqladminpassword) \
         -w true \
-        -v $(semVer)
+        -v $(semVer) \
+        -s "/p:DatabaseEdition=Standard /p:DatabaseServiceObjective=S0"
     name: deploySystem
     displayName: Deploy System
 # TODO
