@@ -97,10 +97,14 @@ jobs:
       echo "namespace=$namespace, basePath=$basePath, baseUrl=$baseUrl, baseIdentityUrl"
       echo "##vso[task.setvariable variable=Namespace;isOutput=true]$namespace"
     name: DeployVars
-  - bash: |
-      az aks get-credentials -n gpitfutures-dev-aks -g gpitfutures-dev-rg-aks
+  - task: AzureCLI@2
+    inputs:
+      azureSubscription: 'NHSAPP-BuyingCatalogue (Non-Prod)'
+      scriptType: 'bash'
+      scriptLocation: 'inlineScript'
+      inlineScript: 'az aks get-credentials -n gpitfutures-dev-aks -g gpitfutures-dev-rg-aks'
     name: kubectlContext
-    displayName: Get Kubernetes Context
+    displayName: Get Kubernetes Context     
   - bash: |
       ./launch-or-update-local.sh $(DeployVars.Namespace) gpitfutures-dev-sql-pri.database.windows.net $(gpitdevsqladminusername) $(gpitdevsqladminpassword)
     name: deploySystem
