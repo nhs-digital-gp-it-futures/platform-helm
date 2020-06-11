@@ -142,19 +142,25 @@ jobs:
       releaseName: 'bc'
       overrideValues:
       valueFile: 'environments/azure.yaml'
+      variables:
+        - name: sqlPackageArgs
+          value: "/p:DatabaseEdition=Standard /p:DatabaseServiceObjective=S0"
       arguments: >   
         --version $(semVer)
         --timeout 10m0s
         --set saUserName=$(gpitdevsqladminusername)
         --set saPassword=$(gpitdevsqladminpassword)
         --set dbPassword=$(gpitfuturesdevdbpassword)-$(DeployVars.Namespace)
+        --set db.disabledUrl=gpitfutures-dev-sql-pri.database.windows.net
         --set db.dbs.bapi.name=$(DeployVars.Namespace)-bapi
         --set bapi-db-deploy.db.name=$(DeployVars.Namespace)-bapi
-        --set bapi-db-deploy.db.sqlPackageArgs="/p:DatabaseEdition=Standard /p:DatabaseServiceObjective=S0"
+        --set bapi-db-deploy.db.sqlPackageArgs=${{ variables.sqlPackageArgs }}
+        --set db.dbs.isapi.name=$(DeployVars.Namespace)-isapi
+        --set isapi-db-deploy.db.name=$(DeployVars.Namespace)-isapi
+        --set isapi-db-deploy.db.sqlPackageArgs=${{ variables.sqlPackageArgs }}
         --set db.dbs.ordapi.name=$(DeployVars.Namespace)-ordapi
         --set ordapi-db-deploy.db.name=$(DeployVars.Namespace)-ordapi
-        --set ordapi-db-deploy.db.sqlPackageArgs="/p:DatabaseEdition=Standard /p:DatabaseServiceObjective=S0"
-        --set db.disabledUrl=gpitfutures-dev-sql-pri.database.windows.net
+        --set ordapi-db-deploy.db.sqlPackageArgs=${{ variables.sqlPackageArgs }}
         --set clientSecret=$(gpitfuturesdevclientsecret)-$(DeployVars.Namespace)
         --set appBaseUrl=$(DeployVars.BaseUrl)
         --set baseIsapiEnabledUrl=$(DeployVars.BaseIdentityUrl)
