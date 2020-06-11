@@ -106,7 +106,13 @@ jobs:
     name: kubectlContext
     displayName: Get Kubernetes Context     
   - bash: |
-      ./launch-or-update-azure.sh $(DeployVars.Namespace) gpitfutures-dev-sql-pri.database.windows.net $(gpitdevsqladminusername) $(gpitdevsqladminpassword)
+      ./launch-or-update-azure.sh -c remote \
+        -n $(DeployVars.Namespace) \
+        -d gpitfutures-dev-sql-pri.database.windows.net \
+        -u $(gpitdevsqladminusername) \
+        -p $(gpitdevsqladminpassword) \
+        -w true \
+        -v $(semVer)
     name: deploySystem
     displayName: Deploy System
 # TODO

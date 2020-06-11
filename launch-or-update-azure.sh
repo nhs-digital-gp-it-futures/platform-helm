@@ -1,31 +1,78 @@
 #!/bin/bash
 
-if [ $# -ne 4  ]; then
-  echo "usage ./launch-or-update-azure.sh <namespace> <azure sql server> <azure sql user> <azure sql pass>"  
+chart="gpitfuturesdevacr/buyingcatalogue"
+wait="true"
+
+while getopts ":h:c:n:d:u:p:v:w:b" opt; do
+  case $opt in
+    h)  echo "usage ./launch-or-update-azure.sh c=<local | remote> n=<namespace> d=<azure sql server> s=<azure sql user> p=<azure sql pass> v=<version> w=<wait?> b=<base path>"
+        echo "chart is (default)remote(gpitfuturesdevacr/buyingcatalogue), or local (src/buyingcatalogue). Version paramter (-v) applies to remote only"
+        echo "wait=(default)true or false, whether helm will wait for the intallation to be complete"
+        exit
+    ;;
+    c)  if [ "$OPTARG" = "local" ]
+        then 
+          chart="src/buyingcatalogue"
+          rm $chart/charts/*.tgz
+          helm dependency update $chart
+        fi
+    ;;
+    n) namespace="$OPTARG"
+    ;;
+    d) dbServer="$OPTARG"
+    ;;
+    u) saUserName="$OPTARG"
+    ;;
+    p) saPassword="$OPTARG"
+    ;;
+    v) version="$OPTARG"
+    ;;
+    w) wait="$OPTARG"
+    ;;
+    b) basePath="$OPTARG"
+    ;;
+    \?) echo "Invalid option -$OPTARG" >&2
+    ;;
+  esac
+done
+
+if [ -z ${namespace+x} ]
+then 
+  namespace=`cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 8 | head -n 1`
+  echo "namespace not set: generated $namespace"
+fi
+
+if [ -z ${dbServer+x} ] || [ -z ${saUserName+x} ] || [ -z ${saPassword+x} ]
+then   
+  echo "db server not set"
   exit
 fi
 
-namespace=$1
-dbServer=$2
-saUserName=$3
-saPassword=$4
-basePath="$namespace-dev.buyingcatalogue.digital.nhs.uk"
+if [ -n "$version" ] && [ "$chart" = "gpitfuturesdevacr/buyingcatalogue" ]
+then  
+  versionArg="--set version $version"  
+fi
+
+if [ "$wait" = "true" ]
+then  
+  waitArg="--wait"  
+fi
+
+basePath=${basePath:-"$namespace-dev.buyingcatalogue.digital.nhs.uk"}
 baseUrl="https://$basePath"
 baseIdentityUrl="$baseUrl/identity"
 dbName=bc-$namespace
 
 saUserStart=`echo $saUserName | cut -c-3`
 saPassStart=`echo $saPassword | cut -c-3`
-echo "launch-or-update-azure.sh $namespace $dbServer $saUserStart* $saPassStart*"  
-
-#helm dependency update src/buyingcatalogue/
+echo "launch-or-update-azure.sh c=$chart n=$namespace d=$dbServer u=$saUserStart* p=$saPassStart* v=$version w=$wait b=$baseUrl"  
 
 sed "s/REPLACENAMESPACE/$namespace/g" environments/azure-namespace-template.yml > namespace.yaml
 cat namespace.yaml
 kubectl apply -f namespace.yaml
 
-#helm upgrade bc gpitfuturesdevacr/buyingcatalogue -n $namespace -i -f environments/azure.yaml --debug \
-helm upgrade bc src/buyingcatalogue -n $namespace -i -f environments/azure.yaml \
+helm upgrade bc $chart -n $namespace -i -f environments/azure.yaml \
+  --timeout 10m0s \
   --set saUserName=$saUserName \
   --set saPassword=$saPassword \
   --set dbPassword=DisruptTheMarket1! \
@@ -58,4 +105,6 @@ helm upgrade bc src/buyingcatalogue -n $namespace -i -f environments/azure.yaml 
   --set admin.hostAliases[0].hostnames[0]=$basePath \
   --set of.ingress.hosts[0].host=$basePath \
   --set of.hostAliases[0].hostnames[0]=$basePath \
-  --set redis-commander.ingress.hosts[0].host=$basePath
+  --set redis-commander.ingress.hosts[0].host=$basePath \
+  $versionArg \
+  $waitArg

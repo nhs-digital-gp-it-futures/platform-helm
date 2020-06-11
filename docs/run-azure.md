@@ -38,8 +38,7 @@ There is a helper script that allows the direct creation of an environment in az
 
 - Point `kubectl` to the development cluster 
   - `az aks get-credentials -n gpitfutures-dev-aks -g gpitfutures-dev-rg-aks` to get the credentials, if you've not previously connected.
-- Create the namespace you wish to use: `kubectl create namespace my-namespace`.
-- Run `launch-or-update-azure.sh my-namespace` to deploy the system.
+- Run `launch-or-update-azure.sh <chart> <namespace> <azure sql server> <azure sql user> <azure sql pass>` to deploy the system. 
 
 ## PR Process
 
