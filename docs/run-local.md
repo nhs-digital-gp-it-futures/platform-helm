@@ -87,11 +87,25 @@ If you update the local image, e.g. by running `docker-compose build` in the com
 
 ### Local Charts
 
-Each component, e.g. public browse, bapi, now has its' charts in their respective repository, with the expectation that the chart will evolve with the code.
+Each component, e.g. public browse, bapi etc. now has its' charts in their respective repository, with the expectation that the chart will evolve with the code.
 
 When updating the chart for a component, it is useful to be able to deploy that local version of the chart within the cluster to confirm it works as expected.
 
-To do so, update the dependencies in `src/buyingcatalogue/Chart.yaml` to use a file repository, instead of the acr, e.g. for isapi:
+To do so, ensure the local image for a component is built. Run the following command in the directory of the component:
+
+`docker-compose build`
+
+To use a file repository instead of the Azure Container Registry (ACR), edit the following file in the `platform-helm` repository:
+
+ `src/buyingcatalogue/Chart.yaml`
+
+Using ISAPI as an example, within this file, look for the section with the line:
+
+`- name: isapi`
+
+The `version` will need to be changed to `~0.1.0` and the `repository` value will need to be altered to use a file.
+
+Here is an example of the final settings for ISAPI with these changes:
 
 ```yaml
 - name: isapi
@@ -100,17 +114,23 @@ To do so, update the dependencies in `src/buyingcatalogue/Chart.yaml` to use a f
   repository: "file://../../../BuyingCatalogueIdentity/charts/isapi/"  #path to isapi chart. This assumes platform-helm and BuyingCatalogueIdentity repositories are cloned to the same root folder
 ```
 
-***Don't check in the version change in `Chart.yaml`***
+***Please remember to NOT commit this change to source control.***
 
-After amending the components chart, you need to run `helm dependency update src/buyingcatalogue` for it to pick up the updated chart in the component git repository.
+For it to pick up the updated chart in the component directory, you need to run
 
-You will almost certainly want to use your local image as well, so amend `local-overrides.yaml`, e.g. for isapi:
+`helm dependency update src/buyingcatalogue`
+
+To introduce this to the local environment, you will need to amend the `local-overrides.yaml` file.
+
+Using ISAPI as an example, add the `useLocalImage: true` line as shown below:
 
 ```yaml
 isapi:
   enabled: true
   useLocalImage: true
 ```
+
+Now when the local environment is launched it will contain your new version of a component.
 
 ## Tearing Down the Environment
 
