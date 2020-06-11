@@ -40,6 +40,8 @@ service:
   queuePort: 10001
   tablePort: 10002
 
+connectionString:
+
 resources:      
   requests:
     cpu: 10m
