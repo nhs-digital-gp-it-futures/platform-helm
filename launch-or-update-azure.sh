@@ -30,12 +30,14 @@ function displayHelp {
             [REQUIRED] Url to connect to Redis
           -q, --redis-password <redis host password>
             [REQUIRED] Password connect to Redis
-          "   
+          -e, --environment
+            The environment override file to apply. Default is 'all' (which won't apply anything). Other options are currently 'private' and 'public'.
+          "
   exit
 }
 # Option strings
-SHORT="hc:n:d:u:p:v:wb:s:a:i:r:q:"
-LONG="help,chart:,namespace:,db-server:,db-admin-user:,db-admin-pass:,version:,wait,base-path:,sql-package-args:,azure-storage-connection-string:,ip,redis-server:,redis-password:"
+SHORT="hc:n:d:u:p:v:wb:s:a:i:r:q:e:"
+LONG="help,chart:,namespace:,db-server:,db-admin-user:,db-admin-pass:,version:,wait,base-path:,sql-package-args:,azure-storage-connection-string:,ip,redis-server:,redis-password:,environment:"
 
 # read the options
 OPTS=$(getopt --options $SHORT --long $LONG --name "$0" -- "$@")
@@ -111,6 +113,10 @@ while true ; do
       redisPassword="$2"
       shift 2
       ;;
+    -e | --environment )
+      environment="$2"
+      shift 2
+      ;;
     -- )
       shift
       break
@@ -147,6 +153,11 @@ fi
 if [ "$wait" = "true" ]
 then  
   waitArg="--wait"  
+fi
+
+if [ -n "$environment" ] && [ "$environment" != "all" ]
+then  
+  environmentArg="-f environments/$environment.yaml"  
 fi
 
 basePath=${basePath:-"$namespace-dev.buyingcatalogue.digital.nhs.uk"}
@@ -221,4 +232,5 @@ helm upgrade bc $chart -n $namespace -i -f environments/azure.yaml \
   --set redisPassword="$redisPassword" \
   $versionArg \
   $waitArg \
+  $environmentArg \
   $hostAliases

@@ -1,0 +1,23 @@
+isapi:
+  enabled: false
+isapi-db:
+  enabled: false
+oapi:
+  enabled: false
+ordapi:
+  enabled: false
+ordapi-db:
+  enabled: false
+email:
+  enabled: false
+pb:
+  featureFlags:
+    loginEnabled: false
+admin:
+  enabled: false
+of:
+  enabled: false
+redis:
+  enabled: false
+redis-commander:
+  enabled: false
