@@ -71,7 +71,8 @@ The script will start [all services available on these ports](../README.md#confi
 
 Ingress is also set up, so the front ends are exposed on localhost, as they would be when running in production.
 
-### Overrides 
+### Overrides
+
 Overrides in [local-overrides.yaml](../local-overrides.yaml) can be set to choose whether to run a component in Kubernetes, or to consider it as running on the developers machine. When a service is disabled, anything that uses that service routes out to the developers machine, using `host.docker.internal` or `docker.for.mac.localhost` for mac.
 
 By default cluster spins up containers ~~from latest images built from development branches ~~ with the latest specified versions. You can, however, override this and use a locally build image.
@@ -81,6 +82,55 @@ mp:
   enabled: true
   useLocalImage: true
 ```
+
+If you update the local image, e.g. by running `docker-compose build` in the component directory, you will need to redeploy it / delete the pod for the new image to be used.
+
+### Local Charts
+
+Each component, e.g. public browse, bapi etc. now has its' charts in their respective repository, with the expectation that the chart will evolve with the code.
+
+When updating the chart for a component, it is useful to be able to deploy that local version of the chart within the cluster to confirm it works as expected.
+
+To do so, ensure the local image for a component is built. Run the following command in the directory of the component:
+
+`docker-compose build`
+
+To use a file repository instead of the Azure Container Registry (ACR), edit the following file in the `platform-helm` repository:
+
+ `src/buyingcatalogue/Chart.yaml`
+
+Using ISAPI as an example, within this file, look for the section with the line:
+
+`- name: isapi`
+
+The `version` will need to be changed to `~0.1.0` and the `repository` value will need to be altered to use a file.
+
+Here is an example of the final settings for ISAPI with these changes:
+
+```yaml
+- name: isapi
+  condition: isapi.enabled
+  version: ~0.1.0           #local charts are all left at v0.1.0
+  repository: "file://../../../BuyingCatalogueIdentity/charts/isapi/"  #path to isapi chart. This assumes platform-helm and BuyingCatalogueIdentity repositories are cloned to the same root folder
+```
+
+***Please remember to NOT commit this change to source control.***
+
+For it to pick up the updated chart in the component directory, you need to run
+
+`helm dependency update src/buyingcatalogue`
+
+To introduce this to the local environment, you will need to amend the `local-overrides.yaml` file.
+
+Using ISAPI as an example, add the `useLocalImage: true` line as shown below:
+
+```yaml
+isapi:
+  enabled: true
+  useLocalImage: true
+```
+
+Now when the local environment is launched it will contain your new version of a component.
 
 ## Tearing Down the Environment
 

@@ -15,16 +15,25 @@ clientSecret: SampleClientSecret
 azurite:
   enabled: true
   disabledUrl: "host.docker.internal"
-  
+
+db:
+  enabled: true
+  disabledUrl: "host.docker.internal"
+
+bapi-db-deploy:
+  enabled: true
+
+isapi-db-deploy:
+  enabled: true
+
+ordapi-db-deploy:
+  enabled: true
+
 dapi:
   enabled: true
   disabledUrl: "host.docker.internal"
 
 bapi:  
-  enabled: true
-  disabledUrl: "host.docker.internal"
-
-isapi-db:
   enabled: true
   disabledUrl: "host.docker.internal"
 
@@ -35,10 +44,6 @@ isapi:
 oapi:  
   enabled: true
   disabledUrl: "host.docker.internal"  
-
-ordapi-db:
-  enabled: true
-  disabledUrl: "host.docker.internal"
 
 ordapi:  
   enabled: true
@@ -72,11 +77,4 @@ redis:
   disabledUrl: "TODO"
 
 redis-commander:
-  enabled: true
-
-db:
-  enabled: true
-  disabledUrl: "host.docker.internal"
-
-bapi-dacpac-applier:
   enabled: true

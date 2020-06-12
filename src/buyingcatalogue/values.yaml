@@ -2,6 +2,7 @@ saUserName:
 saPassword:
 dbPassword:
 clientSecret:
+redisPassword:
 
 appBaseUrl: 
 baseIsapiEnabledUrl: 
@@ -42,7 +43,19 @@ db:
   dbs:
     bapi:
       name: buyingcatalogue
-      user: NHSD
+      user: NHSD-BAPI
+      userPasswordSecret:
+        name: "bc-buyingcatalogue"
+        key: db-password
+    isapi:
+      name: CatalogueUsers
+      user: NHSD-ISAPI
+      userPasswordSecret:
+        name: "bc-buyingcatalogue"
+        key: db-password
+    ordapi:
+      name: CatalogueOrdering
+      user: NHSD-ORDAPI
       userPasswordSecret:
         name: "bc-buyingcatalogue"
         key: db-password
@@ -76,6 +89,70 @@ bapi-db-deploy:
     includeImport: "FALSE"
     includePublish: "FALSE"
     insertTestData: "FALSE"
+
+isapi-db-deploy:
+  enabled: false
+  replicaCount: 1
+  image:
+    repository: gpitfuturesdevacr.azurecr.io/nhsd/buying-catalogue/isapi-db-deploy
+  useLocalImage: false
+  imagePullSecrets: 
+  nameOverride: "isapi-db-deploy"
+  fullnameOverride: "gpitfutures-bc-isapi-db-deploy"
+  db:
+    name: CatalogueUsers
+    serverConfig:
+      name: "bc-buyingcatalogue"
+      key: db-url
+    serverPortConfig:
+      name: "bc-buyingcatalogue"
+      key: db-port
+    saUserNameSecret: 
+      name: "bc-buyingcatalogue"
+      key: sa-user-name
+    saPasswordSecret: 
+      name: "bc-buyingcatalogue"
+      key: sa-password 
+    dbPasswordSecret:
+      name: "bc-buyingcatalogue"
+      key: db-password  
+  insertTestData: true
+  createEaUser: true
+  eaUser:
+    firstName: Agency
+    lastName: User
+    email: user@agency.com
+    passwordHash:
+      name: "bc-buyingcatalogue"
+      key: ea-user-password   
+    phone: "01234567890"    
+
+ordapi-db-deploy:
+  enabled: false
+  replicaCount: 1
+  image:
+    repository: gpitfuturesdevacr.azurecr.io/nhsd/buying-catalogue/ordapi-db-deploy
+  useLocalImage: false
+  imagePullSecrets: 
+  nameOverride: "ordapi-db-deploy"
+  fullnameOverride: "gpitfutures-bc-ordapi-db-deploy"
+  db:
+    name: CatalogueOrdering
+    serverConfig:
+      name: "bc-buyingcatalogue"
+      key: db-url
+    serverPortConfig:
+      name: "bc-buyingcatalogue"
+      key: db-port
+    saUserNameSecret: 
+      name: "bc-buyingcatalogue"
+      key: sa-user-name
+    saPasswordSecret: 
+      name: "bc-buyingcatalogue"
+      key: sa-password 
+    dbPasswordSecret:
+      name: "bc-buyingcatalogue"
+      key: db-password
 
 dapi:
   enabled: true
@@ -116,38 +193,6 @@ bapi:
   connectionStringSecret: 
     name: "bc-buyingcatalogue"
     key: bapi-db-connection-string  
-
-isapi-db:
-  enabled: true
-  disabledUrl: 
-  replicaCount: 1
-  image:
-    repository: gpitfuturesdevacr.azurecr.io/nhsd/buying-catalogue/identity-api-user-db
-  useLocalImage: false
-  imagePullSecrets: 
-  nameOverride: "isapi-sql"
-  fullnameOverride: "gpitfutures-bc-isapi-sql"
-  service:
-    type: ClusterIP
-    port: 1451  
-  saPasswordSecret: 
-    name: "bc-buyingcatalogue"
-    key: sa-password    
-  dbName: CatalogueUsers
-  dbUser: NHSD
-  dbPasswordSecret: 
-    name: "bc-buyingcatalogue"
-    key: db-password   
-  insertTestData: true
-  createEaUser: true
-  eaUser:
-    firstName: Agency
-    lastName: User
-    email: user@agency.com
-    passwordHash:
-      name: "bc-buyingcatalogue"
-      key: ea-user-password   
-    phone: "01234567890"
  
 isapi:
   enabled: true
@@ -205,6 +250,13 @@ isapi:
         name: "bc-buyingcatalogue"
         key: email-url      
       port: 587
+      authenticationRequired: false
+      userName:
+        name: "bc-buyingcatalogue"
+        key: email-user-name
+      password:
+        name: "bc-buyingcatalogue"
+        key: email-password
     pb:
       baseAddressConfig:
         name: "bc-buyingcatalogue"
@@ -219,6 +271,23 @@ isapi:
     useDeveloperCertificate: false
     certificatePath: "/cert/tls.crt"
     privateKeyPath: "/cert/tls.key"
+  # use these settings to adjust the password reset email
+  # passwordReset:
+  #   emailMessage:
+  #     senderName:
+  #     senderAddress:
+  #     subject:
+  #     htmlBody:
+  #     textBody:
+
+  # use these settings to adjust the registration email
+  # registration:
+  #   emailMessage:
+  #     senderName:
+  #     senderAddress:
+  #     subject:
+  #     htmlBody:
+  #     textBody:
   ingress:
     enabled: true
     hosts:
@@ -283,34 +352,15 @@ ordapi:
         name: "bc-buyingcatalogue"
         key: issuer-url
 
-ordapi-db:
-  enabled: true
-  disabledUrl: 
-  replicaCount: 1
-  image:
-    repository: gpitfuturesdevacr.azurecr.io/nhsd/buying-catalogue/ordering-api-ordering-db
-  useLocalImage: false
-  imagePullSecrets: 
-  nameOverride: "ordapi-sql"
-  fullnameOverride: "gpitfutures-bc-ordapi-sql"
-  service:
-    type: ClusterIP
-    port: 1452
-  saPasswordSecret: 
-    name: "bc-buyingcatalogue"
-    key: sa-password    
-  dbName: CatalogueOrdering
-  dbUser: NHSD
-  dbPasswordSecret: 
-    name: "bc-buyingcatalogue"
-    key: db-password    
-
 email:
-  enabled: true
+  enabled: true  
   replicaCount: 1
   image:
     repository: gpitfuturesdevacr.azurecr.io/nhsd/buying-catalogue/smtp-server
   useLocalImage: false
+  disabledUrl:
+  disabledUserName:
+  disabledPassword:
   imagePullSecrets: 
   nameOverride: "email"
   fullnameOverride: "gpitfutures-bc-email"

@@ -22,6 +22,16 @@ bapi-db-deploy:
     includeImport: "TRUE"
     includePublish: "TRUE"
     insertTestData: "TRUE"
+
+isapi-db-deploy:
+  enabled: true
+  imagePullSecrets: 
+  - name: regcredlocal
+
+ordapi-db-deploy:
+  enabled: true
+  imagePullSecrets: 
+  - name: regcredlocal
   
 dapi:
   enabled: true
@@ -36,15 +46,6 @@ bapi:
   disabledUrl: "host.docker.internal"
   imagePullSecrets: 
   - name: regcredlocal
-  service:
-    type: LoadBalancer
-
-isapi-db:
-  enabled: true
-  disabledUrl: "host.docker.internal"
-  useLocalImage: false
-  imagePullSecrets: 
-  - name: regcredlocal  
   service:
     type: LoadBalancer
 
@@ -145,12 +146,6 @@ ordapi:
   service:
     type: LoadBalancer
   allowInvalidCertificate: true
-
-ordapi-db:
-  imagePullSecrets: 
-  - name: regcredlocal
-  service:
-    type: LoadBalancer
 
 email:
   enabled: true
