@@ -68,14 +68,14 @@ jobs:
       SourceFolder: 'environments'
       Contents: '**'
       TargetFolder: '$(build.artifactStagingDirectory)/environments'
-      CleanTargetFolder: true
+      CleanTargetFolder: false
       OverWrite: true
   - task: CopyFiles@2
     inputs:
       SourceFolder: ''
       Contents: '*.sh'
       TargetFolder: '$(build.artifactStagingDirectory)'
-      CleanTargetFolder: true
+      CleanTargetFolder: false
       OverWrite: true
   - publish: $(build.artifactStagingDirectory)
     artifact: build-artifact    
