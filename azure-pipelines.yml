@@ -31,15 +31,15 @@ jobs:
     inputs:
       helmVersionToInstall: 'latest'
   - bash: |
-      helm repo add gpitfuturesdevacr https://gpitfuturesdevacr.azurecr.io/helm/v1/repo --username gpitfuturesdevacr --password $(gpitfuturesdevacr-pass)            
-      helm dependency update src/buyingcatalogue          
+      helm repo add gpitfuturesdevacr https://gpitfuturesdevacr.azurecr.io/helm/v1/repo --username gpitfuturesdevacr --password $(gpitfuturesdevacr-pass)
+      helm dependency update src/buyingcatalogue
       helm package \
           --version $(GitVersion.SemVer) \
           --app-version $(GitVersion.SemVer) \
           src/buyingcatalogue
     displayName: 'helm package'
-  - bash: |            
-      chartPackage=$(ls buyingcatalogue-*.tgz)      
+  - bash: |
+      chartPackage=$(ls buyingcatalogue-*.tgz)
       echo "Chart Package $chartPackage"
       sudo apt-get update -o Dir::Etc::sourcelist="sources.list.d/azure-cli.list" -o Dir::Etc::sourceparts="-" -o APT::Get::List-Cleanup="0"
       sudo apt-get install --only-upgrade -y azure-cli
@@ -49,8 +49,8 @@ jobs:
           -u gpitfuturesdevacr \
           -p $(gpitfuturesdevacr-pass) \
           $chartPackage
-      echo $(jq -n --arg version "$(GitVersion.SemVer)" '{helmChartVersion: $version}') > $(build.artifactStagingDirectory)/variables.json      
-    failOnStderr: true               
+      echo $(jq -n --arg version "$(GitVersion.SemVer)" '{helmChartVersion: $version}') > $(build.artifactStagingDirectory)/variables.json
+    failOnStderr: true
     name: helmPush
     displayName: 'az acr helm push'
   - script: echo "##vso[task.setvariable variable=semVer;isOutput=true]$(GitVersion.SemVer)"
@@ -70,6 +70,13 @@ jobs:
       TargetFolder: '$(build.artifactStagingDirectory)/environments'
       CleanTargetFolder: true
       OverWrite: true
+  - task: CopyFiles@2
+    inputs:
+      SourceFolder: ''
+      Contents: '*.sh'
+      TargetFolder: '$(build.artifactStagingDirectory)'
+      CleanTargetFolder: true
+      OverWrite: true
   - publish: $(build.artifactStagingDirectory)
     artifact: build-artifact    
 - job: deployToDev
@@ -77,118 +84,47 @@ jobs:
   condition: and(succeeded(), ne(variables['Build.SourceBranch'], 'refs/heads/master'))
   variables:
     - group: dev-acr-secrets
-    - group: "Azure Keyvault - Dev Environment"
     - name: semVer
       value: $[ dependencies.packageAndPublish.outputs['setVersionStep.semVer'] ]
     - name: sqlPackageArgs
       value: "/p:DatabaseEdition=Standard /p:DatabaseServiceObjective=S0"
   steps:
-  - bash: | 
+  - bash: |
       if [ $(Build.Reason) = "PullRequest" ]
       then
         namespace=`echo 'buyingcatalogue-$(Build.SourceBranchName)-$(System.PullRequest.PullRequestNumber)' | sed 's/[[:punct:]]/-/g'`
       else
         namespace=`echo 'buyingcatalogue-$(Build.SourceBranchName)' | sed 's/[[:punct:]]/-/g'`
       fi
-      basePath="$namespace-dev.buyingcatalogue.digital.nhs.uk"
-      baseUrl="https://$basePath"
-      baseIdentityUrl="$baseUrl/identity"
-      containerName=$namespace-documents
       echo "namespace=$namespace, basePath=$basePath, baseUrl=$baseUrl, baseIdentityUrl"
       echo "##vso[task.setvariable variable=Namespace;isOutput=true]$namespace"
-      echo "##vso[task.setvariable variable=BasePath;isOutput=true]$basePath"
-      echo "##vso[task.setvariable variable=BaseUrl;isOutput=true]$baseUrl"
-      echo "##vso[task.setvariable variable=BaseIdentityUrl;isOutput=true]$baseIdentityUrl"
-      echo "##vso[task.setvariable variable=ContainerName;isOutput=true]$containerName"
     name: DeployVars
-    # create namespace if it doesn't exist
-  - task: Kubernetes@1
+  - task: AzureCLI@2
     inputs:
-      connectionType: 'Azure Resource Manager'
-      azureSubscriptionEndpoint: 'NHSAPP-BuyingCatalogue (Non-Prod)'
-      azureResourceGroup: 'gpitfutures-dev-rg-aks'
-      kubernetesCluster: 'gpitfutures-dev-aks'
-      command: 'apply'
-      useConfigurationFile: true
-      configurationType: 'inline'
-      inline: |
-        {
-          "apiVersion": "v1",
-          "kind": "Namespace",
-          "metadata": {
-            "name": "$(DeployVars.Namespace)",
-            "labels": {
-              "name": "$(DeployVars.Namespace)"
-            }
-          }
-        }
-      secretType: 'dockerRegistry'
-      containerRegistryType: 'Azure Container Registry'
-  - bash: |      
-      helm repo add \
-      gpitfuturesdevacr \
-      https://gpitfuturesdevacr.azurecr.io/helm/v1/repo \
-      --username gpitfuturesdevacr \
-      --password $(gpitfuturesdevacr-pass)
-    failOnStderr: true
-    displayName: 'helm repo add'
-    # deploy chart to namespace
-  - task: HelmDeploy@0
-    inputs:
-      connectionType: 'Azure Resource Manager'
       azureSubscription: 'NHSAPP-BuyingCatalogue (Non-Prod)'
-      azureResourceGroup: 'gpitfutures-dev-rg-aks'
-      kubernetesCluster: 'gpitfutures-dev-aks'
-      namespace: '$(DeployVars.Namespace)'
-      command: 'upgrade'
-      chartType: 'Name'
-      chartName: 'gpitfuturesdevacr/buyingcatalogue'
-      releaseName: 'bc'
-      overrideValues:
-      valueFile: 'environments/azure.yaml'
-      arguments: >   
-        --version $(semVer)
-        --timeout 10m0s
-        --set saUserName=$(gpitdevsqladminusername)
-        --set saPassword=$(gpitdevsqladminpassword)
-        --set dbPassword=$(gpitfuturesdevdbpassword)-$(DeployVars.Namespace)
-        --set db.disabledUrl=gpitfutures-dev-sql-pri.database.windows.net
-        --set db.dbs.bapi.name=$(DeployVars.Namespace)-bapi
-        --set bapi-db-deploy.db.name=$(DeployVars.Namespace)-bapi
-        --set bapi-db-deploy.db.sqlPackageArgs="${{ variables.sqlPackageArgs }}"
-        --set db.dbs.isapi.name=$(DeployVars.Namespace)-isapi
-        --set isapi-db-deploy.db.name=$(DeployVars.Namespace)-isapi
-        --set isapi-db-deploy.db.sqlPackageArgs="${{ variables.sqlPackageArgs }}"
-        --set db.dbs.ordapi.name=$(DeployVars.Namespace)-ordapi
-        --set ordapi-db-deploy.db.name=$(DeployVars.Namespace)-ordapi
-        --set ordapi-db-deploy.db.sqlPackageArgs="/p:DatabaseEdition=Standard /p:DatabaseServiceObjective=S0"
-        --set db.disabledUrl=gpitfutures-dev-sql-pri.database.windows.net
-        --set azurite.connectionString=$(gpitdevstorageaccountconnectionstring)
-        --set file-loader.azureBlobStorage.containerName=$(DeployVars.ContainerName)
-        --set dapi.azureBlobStorage.containerName=$(DeployVars.ContainerName)
-        --set clientSecret=$(gpitfuturesdevclientsecret)-$(DeployVars.Namespace)
-        --set appBaseUrl=$(DeployVars.BaseUrl)
-        --set baseIsapiEnabledUrl=$(DeployVars.BaseIdentityUrl)
-        --set isapi.clients[0].redirectUrls[0]=$(DeployVars.BaseUrl)/oauth/callback
-        --set isapi.clients[0].redirectUrls[1]=$(DeployVars.BaseUrl)/admin/oauth/callback
-        --set isapi.clients[0].redirectUrls[2]=$(DeployVars.BaseUrl)/order/oauth/callback
-        --set isapi.clients[0].postLogoutRedirectUrls[0]=$(DeployVars.BaseUrl)/signout-callback-oidc
-        --set isapi.clients[0].postLogoutRedirectUrls[1]=$(DeployVars.BaseUrl)/admin/signout-callback-oidc
-        --set isapi.clients[0].postLogoutRedirectUrls[2]=$(DeployVars.BaseUrl)/order/signout-callback-oidc
-        --set isapi.ingress.hosts[0].host=$(DeployVars.BasePath)
-        --set isapi.hostAliases[0].hostnames[0]=$(DeployVars.BasePath)
-        --set oapi.hostAliases[0].hostnames[0]=$(DeployVars.BasePath)
-        --set ordapi.hostAliases[0].hostnames[0]=$(DeployVars.BasePath)
-        --set email.ingress.hosts[0].host=$(DeployVars.BasePath)
-        --set mp.ingress.hosts[0].host=$(DeployVars.BasePath)
-        --set pb.ingress.hosts[0].host=$(DeployVars.BasePath)
-        --set pb.baseUri=$(DeployVars.BaseUrl)
-        --set pb.hostAliases[0].hostnames[0]=$(DeployVars.BasePath)
-        --set admin.ingress.hosts[0].host=$(DeployVars.BasePath)
-        --set admin.hostAliases[0].hostnames[0]=$(DeployVars.BasePath)
-        --set of.ingress.hosts[0].host=$(DeployVars.BasePath)
-        --set of.hostAliases[0].hostnames[0]=$(DeployVars.BasePath)
-        --set redis-commander.ingress.hosts[0].host=$(DeployVars.BasePath)
+      scriptType: 'bash'
+      scriptLocation: 'inlineScript'
+      inlineScript: 'az aks get-credentials -n gpitfutures-dev-aks -g gpitfutures-dev-rg-aks'
+    name: kubectlContext
+    displayName: Get Kubernetes Context
+  - bash: |
+      helm repo add gpitfuturesdevacr https://gpitfuturesdevacr.azurecr.io/helm/v1/repo --username gpitfuturesdevacr --password $(gpitfuturesdevacr-pass)
+    name: addRepo
+    displayName: Add gpitfuturesdevacr repo
+  - bash: |
+      ./launch-or-update-azure.sh -c remote \
+        -n $(DeployVars.Namespace) \
+        -d gpitfutures-dev-sql-pri.database.windows.net \
+        -u $(gpitdevsqladminusername) \
+        -p $(gpitdevsqladminpassword) \
+        -w true \
+        -v $(semVer) \
+        -s "/p:DatabaseEdition=Standard /p:DatabaseServiceObjective=S0" \
+        -a "$(gpitdevstorageaccountconnectionstring)" \
+        -i "51.11.46.27"
+    name: deploySystem
+    displayName: Deploy System
+# TODO
 # - job: runAcceptanceTests
 #   dependsOn: packageAndPublish
 #   variables:
