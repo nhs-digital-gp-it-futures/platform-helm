@@ -2,6 +2,7 @@ saUserName:
 saPassword:
 dbPassword:
 clientSecret:
+redisPassword:
 
 appBaseUrl: 
 baseIsapiEnabledUrl: 

@@ -121,7 +121,9 @@ jobs:
         -v $(semVer) \
         -s "/p:DatabaseEdition=Standard /p:DatabaseServiceObjective=S0" \
         -a "$(gpitdevstorageaccountconnectionstring)" \
-        -i "51.11.46.27"
+        -i "51.11.46.27" \
+        -r $(srt-redishost) \
+        -q $(srt-redispass)
     name: deploySystem
     displayName: Deploy System
 # TODO
