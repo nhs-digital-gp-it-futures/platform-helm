@@ -129,7 +129,7 @@ mp:
   replicaCount: 1
   serviceDependencies:
     redis:
-      port: "6080"
+      port: "6380"
       tls: true
   ingress:
     enabled: true
@@ -147,7 +147,7 @@ pb:
   replicaCount: 1
   serviceDependencies:
     redis:
-      port: "6080"
+      port: "6380"
       tls: true
   ingress:
     enabled: true
@@ -175,7 +175,7 @@ admin:
   replicaCount: 1
   serviceDependencies:
     redis:
-      port: "6080"
+      port: "6380"
       tls: true
   ingress:
     enabled: true
@@ -198,7 +198,7 @@ of:
   replicaCount: 1
   serviceDependencies:
     redis:
-      port: "6080"
+      port: "6380"
       tls: true
   ingress:
     enabled: true
