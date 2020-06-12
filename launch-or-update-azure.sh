@@ -2,35 +2,40 @@
 
 # Help Text
 function displayHelp {
-  echo "usage ./launch-or-update-azure.sh [OPTIONS]"
-  echo "-h, --help"
-  echo "  Display help"
-  echo "-c, --chart [local|remote]"
-  echo "  chart is (default) remote(gpitfuturesdevacr/buyingcatalogue), or local (src/buyingcatalogue)" 
-  echo "-n, --namespace <namespace>"
-  echo "  Namespace to deploy to; otherwise generated to be a random 8 characters"
-  echo "-d, --db-server <database server>"
-  echo "  [REQUIRED] SQL database server to deploy to"
-  echo "-u, --db-admin-user <user name>"
-  echo "  [REQUIRED] SQL Admin User Name"
-  echo "-p, --db-pass <password>"
-  echo "  [REQUIRED] SQL Admin Password"
-  echo "-v, --version <version>"
-  echo "  Version to deploy (Remote Chart Only)"
-  echo "-w --wait"
-  echo "  wait for deployment to complete successfully (up to 10 minutes)"
-  echo "-b, --base-path <path>"
-  echo "  Base path to application, will default to '\$namespace-dev.buyingcatalogue.digital.nhs.uk'"
-  echo "-s, --sql-package-args"
-  echo "-a, --azure-storage-connection-string <connection string>"
-  echo "  [Required] Azure Storage Connection String"
-  echo "-i, --ip <IP Address>"
-  echo "  Overrides host config and sets IP for the given base path"  
+  printf "usage: ./launch-or-update-azure.sh [OPTIONS]
+          -h, --help
+            Display help
+          -c, --chart [local|remote]
+            chart is (default) remote(gpitfuturesdevacr/buyingcatalogue), or local (src/buyingcatalogue) 
+          -n, --namespace <namespace>
+            Namespace to deploy to; otherwise generated to be a random 8 characters
+          -d, --db-server <database server>
+            [REQUIRED] SQL database server to deploy to
+          -u, --db-admin-user <user name>
+            [REQUIRED] SQL Admin User Name
+          -p, --db-pass <password>
+            [REQUIRED] SQL Admin Password
+          -v, --version <version>
+            Version to deploy (Remote Chart Only)
+          -w --wait
+            wait for deployment to complete successfully (up to 10 minutes)
+          -b, --base-path <path>
+            Base path to application, will default to '\$namespace-dev.buyingcatalogue.digital.nhs.uk'
+          -s, --sql-package-args
+          -a, --azure-storage-connection-string <connection string>
+            [REQUIRED] Azure Storage Connection String
+          -i, --ip <IP Address>
+            Overrides host config and sets IP for the given base path 
+          -r, --redis-server <redis host url>
+            [REQUIRED] Url to connect to Redis
+          -q, --redis-password <redis host password>
+            [REQUIRED] Password connect to Redis
+          "   
   exit
 }
 # Option strings
-SHORT="hc:n:d:u:p:v:wb:s:a:i:"
-LONG="help,chart:,namespace:,db-server:,db-admin-user:,db-admin-pass:,version:,wait,base-path:,sql-package-args:,azure-storage-connection-string:,ip:"
+SHORT="hc:n:d:u:p:v:wb:s:a:i:r:q:"
+LONG="help,chart:,namespace:,db-server:,db-admin-user:,db-admin-pass:,version:,wait,base-path:,sql-package-args:,azure-storage-connection-string:,ip,redis-server:,redis-password:"
 
 # read the options
 OPTS=$(getopt --options $SHORT --long $LONG --name "$0" -- "$@")
@@ -98,6 +103,14 @@ while true ; do
       ipOverride="$2"
       shift 2
       ;;
+    -r | --redis-server )
+      redisServer="$2"
+      shift 2
+      ;;
+    -q | --redis-password )
+      redisPassword="$2"
+      shift 2
+      ;;
     -- )
       shift
       break
@@ -118,6 +131,11 @@ fi
 if [ -z ${dbServer+x} ] || [ -z ${saUserName+x} ] || [ -z ${saPassword+x} ]
 then   
   echo "db server not set"
+  exit
+fi
+
+if [ -z ${redisServer+x} ] || [ -z ${redisPassword+x} ]; then   
+  echo "redis server not set properly"
   exit
 fi
 
@@ -157,7 +175,8 @@ containerName=$namespace-documents
 
 saUserStart=`echo $saUserName | cut -c-3`
 saPassStart=`echo $saPassword | cut -c-3`
-echo "launch-or-update-azure.sh c=$chart n=$namespace d=$dbServer u=$saUserStart* p=$saPassStart* v=$version w=$wait b=$baseUrl a=$azureStorageConnectionString"  
+redisPassStart=`echo $redisPassword | cut -c-3`
+echo "launch-or-update-azure.sh c=$chart n=$namespace d=$dbServer u=$saUserStart* p=$saPassStart* v=$version w=$wait b=$baseUrl a=$azureStorageConnectionString r=$redisServer q=$redisPassStart*"  
 
 sed "s/REPLACENAMESPACE/$namespace/g" environments/azure-namespace-template.yml > namespace.yaml
 cat namespace.yaml
@@ -178,7 +197,6 @@ helm upgrade bc $chart -n $namespace -i -f environments/azure.yaml \
   --set ordapi-db-deploy.db.name=$dbName-ordapi \
   --set ordapi-db-deploy.db.sqlPackageArgs="$sqlPackageArgs" \
   --set db.disabledUrl=$dbServer \
-  --set azurite.connectionString="$azureStorageConnectionString" \
   --set clientSecret=SampleClientSecret \
   --set appBaseUrl=$baseUrl \
   --set baseIsapiEnabledUrl=$baseIdentityUrl \
@@ -196,8 +214,11 @@ helm upgrade bc $chart -n $namespace -i -f environments/azure.yaml \
   --set admin.ingress.hosts[0].host=$basePath \
   --set of.ingress.hosts[0].host=$basePath \
   --set redis-commander.ingress.hosts[0].host=$basePath \
+  --set azurite.connectionString="$azureStorageConnectionString" \
   --set file-loader.azureBlobStorage.containerName=$containerName \
   --set dapi.azureBlobStorage.containerName=$containerName \
+  --set redis.disabledUrl=$redisServer \
+  --set redisPassword="$redisPassword" \
   $versionArg \
   $waitArg \
   $hostAliases

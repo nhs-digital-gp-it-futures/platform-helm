@@ -127,6 +127,10 @@ file-loader:
 mp:
   enabled: true
   replicaCount: 1
+  serviceDependencies:
+    redis:
+      port: "6380"
+      tls: true
   ingress:
     enabled: true
     annotations: 
@@ -141,6 +145,10 @@ mp:
 pb: 
   enabled: true
   replicaCount: 1
+  serviceDependencies:
+    redis:
+      port: "6380"
+      tls: true
   ingress:
     enabled: true
     annotations: 
@@ -165,6 +173,10 @@ pb:
 admin: 
   enabled: true
   replicaCount: 1
+  serviceDependencies:
+    redis:
+      port: "6380"
+      tls: true
   ingress:
     enabled: true
     annotations: 
@@ -184,6 +196,10 @@ admin:
 of: 
   enabled: true
   replicaCount: 1
+  serviceDependencies:
+    redis:
+      port: "6380"
+      tls: true
   ingress:
     enabled: true
     annotations: 
@@ -202,7 +218,8 @@ of:
           value: "0"
 
 redis:
-  enabled: true
+  enabled: false
+  disabledUrl:                                            # Override per environment
   cluster:
     enabled: false
   usePassword: false
