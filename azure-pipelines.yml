@@ -31,15 +31,15 @@ jobs:
     inputs:
       helmVersionToInstall: 'latest'
   - bash: |
-      helm repo add gpitfuturesdevacr https://gpitfuturesdevacr.azurecr.io/helm/v1/repo --username gpitfuturesdevacr --password $(gpitfuturesdevacr-pass)            
-      helm dependency update src/buyingcatalogue          
+      helm repo add gpitfuturesdevacr https://gpitfuturesdevacr.azurecr.io/helm/v1/repo --username gpitfuturesdevacr --password $(gpitfuturesdevacr-pass)
+      helm dependency update src/buyingcatalogue
       helm package \
           --version $(GitVersion.SemVer) \
           --app-version $(GitVersion.SemVer) \
           src/buyingcatalogue
     displayName: 'helm package'
-  - bash: |            
-      chartPackage=$(ls buyingcatalogue-*.tgz)      
+  - bash: |
+      chartPackage=$(ls buyingcatalogue-*.tgz)
       echo "Chart Package $chartPackage"
       sudo apt-get update -o Dir::Etc::sourcelist="sources.list.d/azure-cli.list" -o Dir::Etc::sourceparts="-" -o APT::Get::List-Cleanup="0"
       sudo apt-get install --only-upgrade -y azure-cli
@@ -49,8 +49,8 @@ jobs:
           -u gpitfuturesdevacr \
           -p $(gpitfuturesdevacr-pass) \
           $chartPackage
-      echo $(jq -n --arg version "$(GitVersion.SemVer)" '{helmChartVersion: $version}') > $(build.artifactStagingDirectory)/variables.json      
-    failOnStderr: true               
+      echo $(jq -n --arg version "$(GitVersion.SemVer)" '{helmChartVersion: $version}') > $(build.artifactStagingDirectory)/variables.json
+    failOnStderr: true
     name: helmPush
     displayName: 'az acr helm push'
   - script: echo "##vso[task.setvariable variable=semVer;isOutput=true]$(GitVersion.SemVer)"
@@ -106,7 +106,11 @@ jobs:
       scriptLocation: 'inlineScript'
       inlineScript: 'az aks get-credentials -n gpitfutures-dev-aks -g gpitfutures-dev-rg-aks'
     name: kubectlContext
-    displayName: Get Kubernetes Context     
+    displayName: Get Kubernetes Context
+  - bash: |
+      helm repo add gpitfuturesdevacr https://gpitfuturesdevacr.azurecr.io/helm/v1/repo --username gpitfuturesdevacr --password $(gpitfuturesdevacr-pass)
+    name: addRepo
+    displayName: Add gpitfuturesdevacr repo
   - bash: |
       ./launch-or-update-azure.sh -c remote \
         -n $(DeployVars.Namespace) \
