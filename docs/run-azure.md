@@ -38,7 +38,7 @@ There is a helper script that allows the direct creation of an environment in az
 
 - Point `kubectl` to the development cluster 
   - `az aks get-credentials -n gpitfutures-dev-aks -g gpitfutures-dev-rg-aks` to get the credentials, if you've not previously connected.
-- Run `launch-or-update-azure.sh <chart> <namespace> <azure sql server> <azure sql user> <azure sql pass>` to deploy the system. 
+- Run `launch-or-update-azure.sh -h` for details of the parameters needed to deploy the system in the cloud. 
 
 ## PR Process
 
@@ -50,4 +50,5 @@ The deployment is also hooked up to the PR process, which will create another en
 To do so, connect `kubectl` as above, and run:
 
 - `tear-down-azure.sh <namespace>` to remove the deployment
-- `kubectl delete ns <namespace>` to remove the namespace
+- Remove any created DBs in the azure database server
+- Remove the created container on the azure storage account
