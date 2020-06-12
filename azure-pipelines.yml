@@ -120,7 +120,8 @@ jobs:
         -w true \
         -v $(semVer) \
         -s "/p:DatabaseEdition=Standard /p:DatabaseServiceObjective=S0" \
-        -a "$(gpitdevstorageaccountconnectionstring)"
+        -a "$(gpitdevstorageaccountconnectionstring)" \
+        -i "51.11.46.27"
     name: deploySystem
     displayName: Deploy System
 # TODO

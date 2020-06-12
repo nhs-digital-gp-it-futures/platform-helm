@@ -89,10 +89,6 @@ isapi:
           - /identity/error/*
           - /identity/connect/*
           - /identity/.well-known/*
-  hostAliases:  #remove this cheat
-  - ip: "51.11.46.27"
-    hostnames:
-    - "<namespace>.dev.buyingcatalogue.digital.nhs.uk"
 
 oapi:
   enabled: true  
@@ -107,10 +103,6 @@ ordapi:
   enabled: true  
   replicaCount: 1
   allowInvalidCertificate: true #set to false once we have dns / actual certs set up
-  hostAliases:  #remove this cheat
-  - ip: "51.11.46.27"
-    hostnames:
-    - "<namespace>.dev.buyingcatalogue.digital.nhs.uk"
 
 email:
   enabled: true  #probably leave enabled apart from prod  
@@ -169,10 +161,6 @@ pb:
     values:
       - name: NODE_TLS_REJECT_UNAUTHORIZED
         value: "0"
-  hostAliases:  #remove this cheat
-  - ip: "51.11.46.27"
-    hostnames:
-    - "<namespace>.dev.buyingcatalogue.digital.nhs.uk"
 
 admin: 
   enabled: true
@@ -192,10 +180,6 @@ admin:
       values:
         - name: NODE_TLS_REJECT_UNAUTHORIZED
           value: "0"
-  hostAliases:  #remove this cheat
-  - ip: "51.11.46.27"
-    hostnames:
-    - "buyingcatalogue-master.dev.buyingcatalogue.digital.nhs.uk"
 
 of: 
   enabled: true
@@ -216,10 +200,6 @@ of:
       values:
         - name: NODE_TLS_REJECT_UNAUTHORIZED
           value: "0"
-  hostAliases:  #remove this cheat
-  - ip: "51.11.46.27"
-    hostnames:
-    - "buyingcatalogue-master.dev.buyingcatalogue.digital.nhs.uk"
 
 redis:
   enabled: true

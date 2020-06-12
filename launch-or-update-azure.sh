@@ -3,9 +3,9 @@
 chart="gpitfuturesdevacr/buyingcatalogue"
 wait="true"
 
-while getopts "hc:n:d:u:p:v:w:b:s:a:" opt; do
+while getopts "hc:n:d:u:p:v:w:b:s:a:i:" opt; do
   case $opt in
-    h)  echo "usage ./launch-or-update-azure.sh c=<local | remote> n=<namespace> d=<azure sql server> s=<azure sql user> p=<azure sql pass> v=<version> w=<wait?> b=<base path> s=<sql package args> a=<azure storage connection string>"
+    h)  echo "usage ./launch-or-update-azure.sh c=<local | remote> n=<namespace> d=<azure sql server> s=<azure sql user> p=<azure sql pass> v=<version> w=<wait?> b=<base path> s=<sql package args> a=<azure storage connection string> i=<ip>"
         echo "chart is (default)remote(gpitfuturesdevacr/buyingcatalogue), or local (src/buyingcatalogue). Version paramter (-v) applies to remote only"
         echo "wait=(default)true or false, whether helm will wait for the intallation to be complete"
         exit
@@ -35,6 +35,8 @@ while getopts "hc:n:d:u:p:v:w:b:s:a:" opt; do
     ;;
     a) azureStorageConnectionString="$OPTARG"
     ;;
+    i) ipOverride="$OPTARG"
+    ;;
     \?) echo "Invalid option -$OPTARG" >&2
     ;;
   esac
@@ -63,6 +65,24 @@ then
 fi
 
 basePath=${basePath:-"$namespace-dev.buyingcatalogue.digital.nhs.uk"}
+
+if [ -n "$ipOverride" ]
+then  
+  hostAliases="--set isapi.hostAliases[0].ip=$ipOverride \
+  --set isapi.hostAliases[0].hostnames[0]=$basePath \
+  --set oapi.hostAliases[0].ip=$ipOverride \
+  --set oapi.hostAliases[0].hostnames[0]=$basePath \
+  --set ordapi.hostAliases[0].ip=$ipOverride \
+  --set ordapi.hostAliases[0].hostnames[0]=$basePath
+  --set pb.hostAliases[0].ip=$ipOverride \
+  --set pb.hostAliases[0].hostnames[0]=$basePath \
+  --set admin.hostAliases[0].ip=$ipOverride \
+  --set admin.hostAliases[0].hostnames[0]=$basePath \
+  --set of.hostAliases[0].ip=$ipOverride \
+  --set of.hostAliases[0].hostnames[0]=$basePath"
+  echo "$hostAliases"
+fi
+
 baseUrl="https://$basePath"
 baseIdentityUrl="$baseUrl/identity"
 dbName=bc-$namespace
@@ -103,20 +123,15 @@ helm upgrade bc $chart -n $namespace -i -f environments/azure.yaml \
   --set isapi.clients[0].postLogoutRedirectUrls[1]=$baseUrl/admin/signout-callback-oidc \
   --set isapi.clients[0].postLogoutRedirectUrls[2]=$baseUrl/order/signout-callback-oidc \
   --set isapi.ingress.hosts[0].host=$basePath \
-  --set isapi.hostAliases[0].hostnames[0]=$basePath \
-  --set oapi.hostAliases[0].hostnames[0]=$basePath \
-  --set ordapi.hostAliases[0].hostnames[0]=$basePath \
   --set email.ingress.hosts[0].host=$basePath \
   --set mp.ingress.hosts[0].host=$basePath \
   --set pb.ingress.hosts[0].host=$basePath \
   --set pb.baseUri=$baseUrl \
-  --set pb.hostAliases[0].hostnames[0]=$basePath \
   --set admin.ingress.hosts[0].host=$basePath \
-  --set admin.hostAliases[0].hostnames[0]=$basePath \
   --set of.ingress.hosts[0].host=$basePath \
-  --set of.hostAliases[0].hostnames[0]=$basePath \
   --set redis-commander.ingress.hosts[0].host=$basePath \
   --set file-loader.azureBlobStorage.containerName=$containerName \
   --set dapi.azureBlobStorage.containerName=$containerName \
   $versionArg \
-  $waitArg
+  $waitArg \
+  $hostAliases
