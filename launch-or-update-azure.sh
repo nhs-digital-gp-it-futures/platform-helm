@@ -1,50 +1,117 @@
 #!/bin/bash
 
-chart="gpitfuturesdevacr/buyingcatalogue"
-wait="true"
+# Help Text
+function displayHelp {
+  echo "usage ./launch-or-update-azure.sh [OPTIONS]"
+  echo "-h, --help"
+  echo "  Display help"
+  echo "-c, --chart [local|remote]"
+  echo "  chart is (default) remote(gpitfuturesdevacr/buyingcatalogue), or local (src/buyingcatalogue)" 
+  echo "-n, --namespace <namespace>"
+  echo "  Namespace to deploy to; otherwise generated to be a random 8 characters"
+  echo "-d, --db-server <database server>"
+  echo "  [REQUIRED] SQL database server to deploy to"
+  echo "-u, --db-admin-user <user name>"
+  echo "  [REQUIRED] SQL Admin User Name"
+  echo "-p, --db-pass <password>"
+  echo "  [REQUIRED] SQL Admin Password"
+  echo "-v, --version <version>"
+  echo "  Version to deploy (Remote Chart Only)"
+  echo "-w --wait"
+  echo "  wait for deployment to complete successfully (up to 10 minutes)"
+  echo "-b, --base-path <path>"
+  echo "  Base path to application, will default to '\$namespace-dev.buyingcatalogue.digital.nhs.uk'"
+  echo "-s, --sql-package-args"
+  echo "-a, --azure-storage-connection-string <connection string>"
+  echo "  [Required] Azure Storage Connection String"
+  echo "-i, --ip <IP Address>"
+  echo "  Overrides host config and sets IP for the given base path"  
+  exit
+}
+# Option strings
+SHORT="hc:n:d:u:p:v:wb:s:a:i:"
+LONG="help,chart:,namespace:,db-server:,db-admin-user:,db-admin-pass:,version:,wait,base-path:,sql-package-args:,azure-storage-connection-string:,ip:"
 
-while getopts "hc:n:d:u:p:v:w:b:s:a:i:" opt; do
-  case $opt in
-    h)  echo "usage ./launch-or-update-azure.sh c=<local | remote> n=<namespace> d=<azure sql server> s=<azure sql user> p=<azure sql pass> v=<version> w=<wait?> b=<base path> s=<sql package args> a=<azure storage connection string> i=<ip>"
-        echo "chart is (default)remote(gpitfuturesdevacr/buyingcatalogue), or local (src/buyingcatalogue). Version paramter (-v) applies to remote only"
-        echo "wait=(default)true or false, whether helm will wait for the intallation to be complete"
-        exit
-    ;;
-    c)  if [ "$OPTARG" = "local" ]
+# read the options
+OPTS=$(getopt --options $SHORT --long $LONG --name "$0" -- "$@")
+if [ $? != 0 ] ; then echo "Failed to parse options...exiting." >&2 ; exit 1 ; fi
+eval set -- "$OPTS"
+
+# set initial values
+chart="gpitfuturesdevacr/buyingcatalogue"
+wait="false"
+
+# extract options and their arguments into variables.
+while true ; do
+  case "$1" in
+    -h | --help )
+      displayHelp
+      shift
+      ;;
+    
+    -c | --chart )
+      if [ "$2" = "local" ]
         then 
           chart="src/buyingcatalogue"
           rm $chart/charts/*.tgz
           helm dependency update $chart
         fi
-    ;;
-    n) namespace="$OPTARG"
-    ;;
-    d) dbServer="$OPTARG"
-    ;;
-    u) saUserName="$OPTARG"
-    ;;
-    p) saPassword="$OPTARG"
-    ;;
-    v) version="$OPTARG"
-    ;;
-    w) wait="$OPTARG"
-    ;;
-    b) basePath="$OPTARG"
-    ;;
-    s) sqlPackageArgs="$OPTARG"
-    ;;
-    a) azureStorageConnectionString="$OPTARG"
-    ;;
-    i) ipOverride="$OPTARG"
-    ;;
-    \?) echo "Invalid option -$OPTARG" >&2
-    ;;
+      shift 2
+      ;;
+    -n | --namespace )
+      namespace="$2"
+      shift 2
+      ;;
+    -d | --db-server )
+      dbServer="$2"
+      shift 2
+      ;;
+    -u | --db-admin-user )
+      saUserName="$2"
+      shift 2
+      ;;
+    -p | --db-admin-pass )
+      saPassword="$2"
+      shift 2
+      ;;
+    -v | --version )
+      version="$2"
+      shift 2
+      ;;
+    -w | --wait )
+      wait="true"
+      shift 1
+      ;;
+    -b | --base-path )
+      basePath="$2"
+      shift 2
+      ;;
+    -s | --sql-package-args )
+      sqlPackageArgs="$2"
+      shift 2
+      ;;
+    -a | --azure-storage-connection-string )
+      azureStorageConnectionString="$2"
+      shift 2
+      ;;
+    -i | --ip )
+      ipOverride="$2"
+      shift 2
+      ;;
+    -- )
+      shift
+      break
+      ;;
+    *)
+      echo "Internal error!"
+      exit 1
+      ;;
   esac
 done
 
 if [ -z ${namespace+x} ]
 then 
-  namespace=`cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 8 | head -n 1`
+  namespace=`cat /dev/urandom | tr -dc 'a-zA-Z' | fold -w 8 | head -n 1`
   echo "namespace not set: generated $namespace"
 fi
 
@@ -79,8 +146,7 @@ then
   --set admin.hostAliases[0].ip=$ipOverride \
   --set admin.hostAliases[0].hostnames[0]=$basePath \
   --set of.hostAliases[0].ip=$ipOverride \
-  --set of.hostAliases[0].hostnames[0]=$basePath"
-  echo "$hostAliases"
+  --set of.hostAliases[0].hostnames[0]=$basePath"  
 fi
 
 baseUrl="https://$basePath"
