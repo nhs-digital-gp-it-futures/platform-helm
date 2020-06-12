@@ -230,6 +230,10 @@ helm upgrade bc $chart -n $namespace -i -f environments/azure.yaml \
   --set dapi.azureBlobStorage.containerName=$containerName \
   --set redis.disabledUrl=$redisServer \
   --set redisPassword="$redisPassword" \
+  --set file-loader.fullnameOverride="gpitfutures-bc-file-loader-v:$version" \
+  --set bapi-db-deploy.fullnameOverride="gpitfutures-bc-bapi-db-deploy-v:$version" \
+  --set isapi-db-deploy.fullnameOverride="gpitfutures-bc-isapi-db-deploy-v:$version" \
+  --set ordapi-db-deploy.fullnameOverride="gpitfutures-bc-ordapi-db-deploy-v:$version" \
   $versionArg \
   $waitArg \
   $environmentArg \
