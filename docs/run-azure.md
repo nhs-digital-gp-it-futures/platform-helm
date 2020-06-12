@@ -10,6 +10,7 @@ Resources on the cluster are limited, so please try not too create many environm
 To view the kubernetes dashboar din dev, run the below (assumming you have the [azure cli](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli?view=azure-cli-latest) installed)
 
 ```PS
+az aks get-credentials --name gpitfutures-dev-aks -g gpitfutures-dev-rg-aks --admin # note --admin at end is required for k8s v1.16+
 az aks browse --name gpitfutures-dev-aks -g gpitfutures-dev-rg-aks
 ```
 
