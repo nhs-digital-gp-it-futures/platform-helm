@@ -184,7 +184,7 @@ dbName=bc-$namespace
 containerName=$namespace-documents
 versionPrefix=$(echo $version | cut -c-6)
 randomSuffix=$(cat /dev/urandom | tr -dc 'a-z0-9' | fold -w 2 | head -n 1)
-jobVersion=$(echo "$versionPrefix$randomSuffix" |  awk '{print tolower($0)}')
+jobVersion=$(echo "$versionPrefix$randomSuffix" |  awk '{print tolower($0)}' | tr .+ -)
 
 saUserStart=`echo $saUserName | cut -c-3`
 saPassStart=`echo $saPassword | cut -c-3`
