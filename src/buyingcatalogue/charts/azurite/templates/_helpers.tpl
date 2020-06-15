@@ -68,7 +68,7 @@ Defines which image and what pull policy to use
 {{- define "image.properties" -}}
 {{- $localImageName := .Values.image.repository | replace "gpitfuturesdevacr.azurecr.io/" "" -}}
 {{- $imageName := ternary $localImageName .Values.image.repository .Values.useLocalImage -}}
-{{- $imagePullPolicy := ternary "IfNotPresent" "Always" .Values.useLocalImage -}}
+{{- $imagePullPolicy := "IfNotPresent" -}}
 image: {{ $imageName | quote }}
 imagePullPolicy: {{ $imagePullPolicy | quote }}
 {{- end }}
