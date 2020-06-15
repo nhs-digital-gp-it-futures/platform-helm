@@ -14,6 +14,8 @@ az aks get-credentials --name gpitfutures-dev-aks -g gpitfutures-dev-rg-aks --ad
 az aks browse --name gpitfutures-dev-aks -g gpitfutures-dev-rg-aks
 ```
 
+Note: In the event of issues accessing 127.0.0.1 '(NET::ERR_CERT_INVALID)' that CANNOT be overriden in Chrome, a [setting can be changed here to allow access - chrome://flags/#allow-insecure-localhost](chrome://flags/#allow-insecure-localhost)
+
 ## Creating & Viewing an environment
 
 Create a branch & push it
@@ -28,7 +30,7 @@ The pipeline will start creating an environment. Progress can be viewed here: [n
 
 Once the environment is created, you'll see a namespace in the dashboard called `buyingcatalogue-<branch name>`.
 
-If you amend your hosts file as below (replacing <namespace>), you'll be able to browse to the environment:
+If you amend your hosts file as below (replacing \<namespace>), you'll be able to browse to the environment:
 ```text
 51.11.46.27 <namespace>-dev.buyingcatalogue.digital.nhs.uk
 ```
