@@ -5,7 +5,7 @@ function displayHelp {
   printf "usage: ./launch-or-update-azure.sh [OPTIONS]
           -h, --help
             Display help
-          -c, --chart [local|remote]
+          -c, --chart [local|local-cache|remote]
             chart is (default) remote(gpitfuturesdevacr/buyingcatalogue), or local (src/buyingcatalogue) 
           -n, --namespace <namespace>
             Namespace to deploy to; otherwise generated to be a random 8 characters
@@ -13,7 +13,7 @@ function displayHelp {
             [REQUIRED] SQL database server to deploy to
           -u, --db-admin-user <user name>
             [REQUIRED] SQL Admin User Name
-          -p, --db-pass <password>
+          -p, --db-admin-pass <password>
             [REQUIRED] SQL Admin Password
           -v, --version <version>
             Version to deploy (Remote Chart Only)
@@ -32,12 +32,22 @@ function displayHelp {
             [REQUIRED] Password connect to Redis
           -e, --environment
             The environment override file to apply. Default is 'all' (which won't apply anything). Other options are currently 'private' and 'public'.
+          --client-secret <client secret>
+            The client secret to use for the cookie encryption. Default 'NodeClientSecret'
+          --db-pass <pass>
+            The password for use by the api db users Default 'DisruptTheMarket1!'
+          --email-server
+            If set, disable the internal email server, and use external. Email Username & password must also be set.
+          --email-user
+            Email username if email-server is set
+          --email-pass
+            Email password if email-server is set
           "
   exit
 }
 # Option strings
 SHORT="hc:n:d:u:p:v:wb:s:a:i:r:q:e:"
-LONG="help,chart:,namespace:,db-server:,db-admin-user:,db-admin-pass:,version:,wait,base-path:,sql-package-args:,azure-storage-connection-string:,ip,redis-server:,redis-password:,environment:"
+LONG="help,chart:,namespace:,db-server:,db-admin-user:,db-admin-pass:,version:,wait,base-path:,sql-package-args:,azure-storage-connection-string:,ip,redis-server:,redis-password:,environment:,client-secret:,db-pass:,email-server:email-user:,email-pass:"
 
 # read the options
 OPTS=$(getopt --options $SHORT --long $LONG --name "$0" -- "$@")
@@ -47,6 +57,8 @@ eval set -- "$OPTS"
 # set initial values
 chart="gpitfuturesdevacr/buyingcatalogue"
 wait="false"
+clientSecret="NodeClientSecret"
+dbPassword="DisruptTheMarket1!"
 
 # extract options and their arguments into variables.
 while true ; do
@@ -58,11 +70,14 @@ while true ; do
     
     -c | --chart )
       if [ "$2" = "local" ]
-        then 
-          chart="src/buyingcatalogue"
-          rm $chart/charts/*.tgz
-          helm dependency update $chart
-        fi
+      then 
+        chart="src/buyingcatalogue"
+        rm $chart/charts/*.tgz
+        helm dependency update $chart
+      elif [ "$2" = "local-cache" ]
+      then
+        chart="src/buyingcatalogue"
+      fi
       shift 2
       ;;
     -n | --namespace )
@@ -117,6 +132,26 @@ while true ; do
       environment="$2"
       shift 2
       ;;
+    --client-secret )
+      clientSecret="$2"
+      shift 2
+      ;;
+    --db-pass )
+      dbPassword="$2"
+      shift 2
+      ;;
+    --email-server )
+      emailServer="$2"
+      shift 2
+      ;;
+    --email-user )
+      emailUser="$2"
+      shift 2
+      ;;
+    --email-pass )
+      emailPassword="$2"
+      shift 2
+      ;;
     -- )
       shift
       break
@@ -127,6 +162,12 @@ while true ; do
       ;;
   esac
 done
+
+context=`kubectl config current-context`
+if [[ "$context" = "docker-desktop" ]]; then 
+  >&2 echo "Error - Local Context - $context"
+  exit 1
+fi
 
 if [ -z ${namespace+x} ]
 then 
@@ -157,8 +198,26 @@ fi
 
 if [ -n "$environment" ] && [ "$environment" != "all" ]
 then  
-  environmentArg="-f environments/$environment.yaml"  
+  environmentArg="-f environments/$environment.yaml"
 fi
+
+if [ -z ${emailServer+x} ] || [ -z ${emailUser+x} ] || [ -z ${emailPassword+x} ]
+then
+  #no email set, so use internal
+  emailArg="--set email.ingress.hosts[0].host=$basePath"
+else
+  #email set
+  emailArg="--set email.enabled=false \\
+  --set email.disabledUrl=$emailServer \\
+  --set email.disabledUserName=$emailUserName \\
+  --set email.disabledPassword=$emailPassword \\
+  --set isapi.serviceDependencies.email.authenticationRequired=true \\
+  --set isapi.serviceDependencies.email.allowInvalidCertificate=true \\
+  --set isapi.passwordReset.emailMessage.senderAddress=$emailUserName \\
+  --set isapi.registration.emailMessage.senderAddress=$emailUserName"
+fi
+
+
 
 basePath=${basePath:-"$namespace-dev.buyingcatalogue.digital.nhs.uk"}
 
@@ -186,18 +245,39 @@ containerName=$namespace-documents
 
 saUserStart=`echo $saUserName | cut -c-3`
 saPassStart=`echo $saPassword | cut -c-3`
+dbPassStart=`echo $dbPassword | cut -c-3`
 redisPassStart=`echo $redisPassword | cut -c-3`
-echo "launch-or-update-azure.sh c=$chart n=$namespace d=$dbServer u=$saUserStart* p=$saPassStart* v=$version w=$wait b=$baseUrl a=$azureStorageConnectionString r=$redisServer q=$redisPassStart*"  
+azureStorageConnectionStringStart=`echo $azureStorageConnectionString | cut -c-10`
+
+printf "launch-or-update-azure.sh
+        chart = $chart
+        namespace = $namespace
+        db-server = $dbServer
+        db-admin-user = $saUserStart*
+        db-admin-pass = $saPassStart*
+        version = $version
+        wait = $wait
+        base-path = $basePath
+        sql-package-args = $sqlPackageArgs
+        azure-storage-connection-string = $azureStorageConnectionStringStart*
+        ip = $ipOverride
+        redis-server = $redisServer
+        redis-password = $redisPassStart
+        environment = $environment
+        client-secret = $clientSecret
+        db-pass = $dbPassStart
+        "
 
 sed "s/REPLACENAMESPACE/$namespace/g" environments/azure-namespace-template.yml > namespace.yaml
 cat namespace.yaml
 kubectl apply -f namespace.yaml
 
 helm upgrade bc $chart -n $namespace -i -f environments/azure.yaml \
+  $environmentArg \
   --timeout 10m0s \
   --set saUserName="$saUserName" \
   --set saPassword="$saPassword" \
-  --set dbPassword=DisruptTheMarket1! \
+  --set dbPassword="$dbPassword" \
   --set db.dbs.bapi.name=$dbName-bapi \
   --set bapi-db-deploy.db.name=$dbName-bapi \
   --set bapi-db-deploy.db.sqlPackageArgs="$sqlPackageArgs" \
@@ -208,7 +288,7 @@ helm upgrade bc $chart -n $namespace -i -f environments/azure.yaml \
   --set ordapi-db-deploy.db.name=$dbName-ordapi \
   --set ordapi-db-deploy.db.sqlPackageArgs="$sqlPackageArgs" \
   --set db.disabledUrl=$dbServer \
-  --set clientSecret=SampleClientSecret \
+  --set clientSecret=$clientSecret \
   --set appBaseUrl=$baseUrl \
   --set baseIsapiEnabledUrl=$baseIdentityUrl \
   --set isapi.clients[0].redirectUrls[0]=$baseUrl/oauth/callback \
@@ -218,7 +298,6 @@ helm upgrade bc $chart -n $namespace -i -f environments/azure.yaml \
   --set isapi.clients[0].postLogoutRedirectUrls[1]=$baseUrl/admin/signout-callback-oidc \
   --set isapi.clients[0].postLogoutRedirectUrls[2]=$baseUrl/order/signout-callback-oidc \
   --set isapi.ingress.hosts[0].host=$basePath \
-  --set email.ingress.hosts[0].host=$basePath \
   --set mp.ingress.hosts[0].host=$basePath \
   --set pb.ingress.hosts[0].host=$basePath \
   --set pb.baseUri=$baseUrl \
@@ -232,5 +311,5 @@ helm upgrade bc $chart -n $namespace -i -f environments/azure.yaml \
   --set redisPassword="$redisPassword" \
   $versionArg \
   $waitArg \
-  $environmentArg \
+  $emailArg \
   $hostAliases

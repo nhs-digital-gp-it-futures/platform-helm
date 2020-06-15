@@ -1,12 +1,12 @@
 isapi:
   enabled: false
-isapi-db:
+isapi-db-deploy:
   enabled: false
 oapi:
   enabled: false
 ordapi:
   enabled: false
-ordapi-db:
+ordapi-db-deploy:
   enabled: false
 email:
   enabled: false
