@@ -1,13 +1,13 @@
 # Running in Azure
 
-The build pipeline for this repository is set up so that each branch publishes to a its' own namespace in the dev environment, which is then available to look at, when pushed.
+The build pipeline for this repository is set up so that each branch publishes to its own namespace in the dev environment, which is then available when pushed.
 
 *****WARNING*****
 Resources on the cluster are limited, so please try not too create many environments, and remove them once finished.
 
 ## Viewing the Kubernetes Dashboard for the Dev environment
 
-To view the kubernetes dashboar din dev, run the below (assumming you have the [azure cli](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli?view=azure-cli-latest) installed)
+To view the kubernetes dashboard in dev, run the below (assumming you have the [azure cli](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli?view=azure-cli-latest) installed)
 
 ```PS
 az aks get-credentials --name gpitfutures-dev-aks -g gpitfutures-dev-rg-aks --admin # note --admin at end is required for k8s v1.16+
@@ -27,8 +27,8 @@ git push
 The pipeline will start creating an environment. Progress can be viewed here: [nhs-digital-gp-it-futures.platform-helm](https://buyingcatalog.visualstudio.com/Buying%20Catalogue/_build?definitionId=75&_a=summary)
 
 Once the environment is created, you'll see a namespace in the dashboard called `buyingcatalogue-<branch name>`.
-If you amend your hosts file as below (replacing <namespace>), you'll be able to browse to the environment:
 
+If you amend your hosts file as below (replacing <namespace>), you'll be able to browse to the environment:
 ```text
 51.11.46.27 <namespace>-dev.buyingcatalogue.digital.nhs.uk
 ```
