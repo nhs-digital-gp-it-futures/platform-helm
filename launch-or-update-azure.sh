@@ -182,9 +182,7 @@ baseUrl="https://$basePath"
 baseIdentityUrl="$baseUrl/identity"
 dbName=bc-$namespace
 containerName=$namespace-documents
-versionPrefix=$(echo $version | cut -c-6)
-randomSuffix=$(cat /dev/urandom | tr -dc 'a-z0-9' | fold -w 2 | head -n 1)
-jobVersion=$(echo "$versionPrefix$randomSuffix" |  awk '{print tolower($0)}' | tr .+ -)
+jobVersion=$(tr -dc '0-9.' <<< $version | tr .+ -)
 
 saUserStart=`echo $saUserName | cut -c-3`
 saPassStart=`echo $saPassword | cut -c-3`
