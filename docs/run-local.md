@@ -65,8 +65,9 @@ In order to launch or update the system to the latest built images or chosen con
 
 ```Powershell
 ./launch-or-update-local.ps1
-# or 
-./launch-or-update-local.ps1 -update false # to run without downloading updates
+# or to run without downloading updates
+./launch-or-update-local.ps1 -update false 
+./launch-or-update-local.ps1 -u false 
 ```
 
 The script will start [all services available on these ports](../README.md#configuration-overview) on localhost, or update them if they are running.
