@@ -58,7 +58,6 @@ fi
 if [ "$update" = "true" ]
   then 
     echo "Updating Dependencies..."
-    chart="src/buyingcatalogue"
     rm $chart/charts/*.tgz
     helm dependency update $chart
 fi
