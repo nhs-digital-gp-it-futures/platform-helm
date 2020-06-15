@@ -182,7 +182,9 @@ baseUrl="https://$basePath"
 baseIdentityUrl="$baseUrl/identity"
 dbName=bc-$namespace
 containerName=$namespace-documents
-jobVersion=$(echo "$version" | awk '{print tolower($0)}')
+versionPrefix=$(echo $version | cut -c-6)
+randomSuffix=$(cat /dev/urandom | tr -dc 'a-z0-9' | fold -w 2 | head -n 1)
+jobVersion=$(echo "$versionPrefix$randomSuffix" |  awk '{print tolower($0)}')
 
 saUserStart=`echo $saUserName | cut -c-3`
 saPassStart=`echo $saPassword | cut -c-3`
@@ -230,10 +232,10 @@ helm upgrade bc $chart -n $namespace -i -f environments/azure.yaml \
   --set dapi.azureBlobStorage.containerName=$containerName \
   --set redis.disabledUrl=$redisServer \
   --set redisPassword="$redisPassword" \
-  --set file-loader.fullnameOverride="gpitfutures-bc-file-loader-$jobVersion-job" \
-  --set bapi-db-deploy.fullnameOverride="gpitfutures-bc-bapi-db-deploy-$jobVersion-job" \
-  --set isapi-db-deploy.fullnameOverride="gpitfutures-bc-isapi-db-deploy-$jobVersion-job" \
-  --set ordapi-db-deploy.fullnameOverride="gpitfutures-bc-ordapi-db-deploy-$jobVersion-job" \
+  --set file-loader.fullnameOverride="gpitfutures-bc-file-loader-$jobVersion" \
+  --set bapi-db-deploy.fullnameOverride="gpitfutures-bc-bapi-db-deploy-$jobVersion" \
+  --set isapi-db-deploy.fullnameOverride="gpitfutures-bc-isapi-db-deploy-$jobVersion" \
+  --set ordapi-db-deploy.fullnameOverride="gpitfutures-bc-ordapi-db-deploy-$jobVersion" \
   $versionArg \
   $waitArg \
   $environmentArg \
