@@ -44,14 +44,14 @@ function displayHelp {
             Email username if email-server is set
           --email-pass
             Email password if email-server is set
-          --helm-upgrade-args <arguements>
+          --helm-upgrade-args <arguments>
             Pass additional arguements to helm upgrade
           "
   exit
 }
 # Option strings
 SHORT="hc:n:d:u:p:v:wb:s:a:i:r:q:f"
-LONG="help,chart:,namespace:,db-server:,db-admin-user:,db-admin-pass:,version:,wait,base-path:,sql-package-args:,azure-storage-connection-string:,ip,redis-server:,redis-password:,file-overrides,client-secret:,db-pass:,email-server:,email-user:,email-pass:,helm-upgrade-args:"
+LONG="help,chart:,namespace:,db-server:,db-admin-user:,db-admin-pass:,version:,wait,base-path:,sql-package-args:,azure-storage-connection-string:,ip,redis-server:,redis-password:,file-overrides,client-secret:,db-pass:,email-server:,email-user:,email-pass:,helm-upgrade-args"
 
 # read the options
 OPTS=$(getopt --options $SHORT --long $LONG --name "$0" -- "$@")
