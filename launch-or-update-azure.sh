@@ -30,8 +30,10 @@ function displayHelp {
             [REQUIRED] Url to connect to Redis
           -q, --redis-password <redis host password>
             [REQUIRED] Password connect to Redis
-          -e, --environment
-            The environment override file to apply. Default is 'all' (which won't apply anything). Other options are currently 'private' and 'public'.
+          -f, --file-overrides
+            A comma-separated list of file names. These are the names of override files to apply.
+            NOTE: to be in the 'environments' directory
+            E.g: '-f public.yaml,local-docker.yml' will apply environments/public.yaml & environments/local-docker.yml 
           --client-secret <client secret>
             The client secret to use for the cookie encryption. Default 'NodeClientSecret'
           --db-pass <pass>
@@ -46,8 +48,8 @@ function displayHelp {
   exit
 }
 # Option strings
-SHORT="hc:n:d:u:p:v:wb:s:a:i:r:q:e:"
-LONG="help,chart:,namespace:,db-server:,db-admin-user:,db-admin-pass:,version:,wait,base-path:,sql-package-args:,azure-storage-connection-string:,ip,redis-server:,redis-password:,environment:,client-secret:,db-pass:,email-server:,email-user:,email-pass:"
+SHORT="hc:n:d:u:p:v:wb:s:a:i:r:q:f"
+LONG="help,chart:,namespace:,db-server:,db-admin-user:,db-admin-pass:,version:,wait,base-path:,sql-package-args:,azure-storage-connection-string:,ip,redis-server:,redis-password:,file-overrides,client-secret:,db-pass:,email-server:,email-user:,email-pass:"
 
 # read the options
 OPTS=$(getopt --options $SHORT --long $LONG --name "$0" -- "$@")
@@ -128,8 +130,8 @@ while true ; do
       redisPassword="$2"
       shift 2
       ;;
-    -e | --environment )
-      environment="$2"
+    -f | --file-overrides )
+      overrideFiles="$2"
       shift 2
       ;;
     --client-secret )
@@ -196,9 +198,12 @@ then
   waitArg="--wait"  
 fi
 
-if [ -n "$environment" ] && [ "$environment" != "all" ]
-then  
-  environmentArg="-f environments/$environment.yaml"
+if [ -n "$overrideFiles" ]; then  
+  fileOverrideArgs=""
+  IFS=',' read -ra FILES <<< "$overrideFiles"
+  for file in "${FILES[@]}"; do
+      fileOverrideArgs="$fileOverrideArgs -f environments/$file"
+  done
 fi
 
 if [ -z ${emailServer+x} ] || [ -z ${emailUser+x} ] || [ -z ${emailPassword+x} ]
@@ -271,7 +276,7 @@ cat namespace.yaml
 kubectl apply -f namespace.yaml
 
 helm upgrade bc $chart -n $namespace -i -f environments/azure.yaml \
-  $environmentArg \
+  $fileOverrideArgs \
   --timeout 10m0s \
   --set saUserName="$saUserName" \
   --set saPassword="$saPassword" \
