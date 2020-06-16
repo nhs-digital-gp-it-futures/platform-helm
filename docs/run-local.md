@@ -58,13 +58,15 @@ In order to launch or update the system to the latest built images or chosen con
 #### Bash
 
 ```bash
-./launch-or-update-local.sh
+./launch-or-update-local.sh [OPTIONS]
 ```
 
 #### PS
 
 ```Powershell
 ./launch-or-update-local.ps1
+# or to run without downloading updates
+./launch-or-update-local.ps1 -u #(or -update false)
 ```
 
 The script will start [all services available on these ports](../README.md#configuration-overview) on localhost, or update them if they are running.
