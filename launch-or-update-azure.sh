@@ -47,7 +47,7 @@ function displayHelp {
           --email-pass
             Email password if email-server is set
           --helm-upgrade-args <arguments>
-            Pass additional arguements to helm upgrade
+            Pass additional arguments to helm upgrade
           "
   exit
 }
