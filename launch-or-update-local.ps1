@@ -4,21 +4,22 @@
 ###  ./launch-or-update-local.ps1                ###
 ### or without downloading updates...            ###
 ###  ./launch-or-update-local.ps1 -update false  ###
-###  ./launch-or-update-local.ps1 -u false       ###
+###  ./launch-or-update-local.ps1 -u             ###
 ####################################################
 
 param(
         [Parameter()]
-        [ValidateSet('true','false','')]
+        [ValidateSet('true','false')]
         [string]$update,
         [Parameter()]
-        [ValidateSet('true','false','')]
-        [string]$u
+        [switch]$u=$false
     )
     
+# -u, --update [true|false]
+
 $chart="src/buyingcatalogue"
 
-if ($update -ne "false" -and $u -ne "false")
+if (($update -ne "false") -and ($u -eq $false))
 {  
     write-host "Updating Dependencies..."
     Remove-Item $chart/charts/*.tgz

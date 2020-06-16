@@ -55,7 +55,7 @@ if [[ "$context" != "docker-desktop" ]]; then
   exit 1
 fi
 
-if [ "$update" = "true" ]
+if [ "$update" != "false" ]
   then 
     echo "Updating Dependencies..."
     rm $chart/charts/*.tgz
