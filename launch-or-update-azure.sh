@@ -36,6 +36,8 @@ function displayHelp {
             E.g: '-f public.yaml,local-docker.yml' will apply environments/public.yaml & environments/local-docker.yml 
           --client-secret <client secret>
             The client secret to use for the cookie encryption. Default 'NodeClientSecret'
+          --cookie-secret <cookie secret>
+            The cookie secret to use for the cookie encryption. Default 'secret squirrel'
           --db-pass <pass>
             The password for use by the api db users Default 'DisruptTheMarket1!'
           --email-server
@@ -51,7 +53,7 @@ function displayHelp {
 }
 # Option strings
 SHORT="hc:n:d:u:p:v:wb:s:a:i:r:q:f"
-LONG="help,chart:,namespace:,db-server:,db-admin-user:,db-admin-pass:,version:,wait,base-path:,sql-package-args:,azure-storage-connection-string:,ip,redis-server:,redis-password:,file-overrides,client-secret:,db-pass:,email-server:,email-user:,email-pass:,helm-upgrade-args"
+LONG="help,chart:,namespace:,db-server:,db-admin-user:,db-admin-pass:,version:,wait,base-path:,sql-package-args:,azure-storage-connection-string:,ip,redis-server:,redis-password:,file-overrides,client-secret:,cookie-secret,db-pass:,email-server:,email-user:,email-pass:,helm-upgrade-args"
 
 # read the options
 OPTS=$(getopt --options $SHORT --long $LONG --name "$0" -- "$@")
@@ -62,6 +64,7 @@ eval set -- "$OPTS"
 chart="gpitfuturesdevacr/buyingcatalogue"
 wait="false"
 clientSecret="NodeClientSecret"
+cookieSecret="secret squirrel"
 dbPassword="DisruptTheMarket1!"
 
 # extract options and their arguments into variables.
@@ -138,6 +141,10 @@ while true ; do
       ;;
     --client-secret )
       clientSecret="$2"
+      shift 2
+      ;;
+    --cookie-secret )
+      cookieSecret="$2"
       shift 2
       ;;
     --db-pass )
@@ -257,6 +264,8 @@ saPassStart=`echo $saPassword | cut -c-3`
 dbPassStart=`echo $dbPassword | cut -c-3`
 redisPassStart=`echo $redisPassword | cut -c-3`
 azureStorageConnectionStringStart=`echo $azureStorageConnectionString | cut -c-10`
+clientSecretStart= `echo $clientSecret | cut -c-3`
+cookieSecretStart= `echo $cookieSecret | cut -c-3`
 
 printf "launch-or-update-azure.sh
         chart = $chart
@@ -272,8 +281,9 @@ printf "launch-or-update-azure.sh
         ip = $ipOverride
         redis-server = $redisServer
         redis-password = $redisPassStart
-        environment = $environment
-        client-secret = $clientSecret
+        file-overrides = $overrideFiles
+        client-secret = $clientSecretStart*
+        cookie-secret = $cookieSecretStart*
         db-pass = $dbPassStart
         "
 
@@ -298,6 +308,7 @@ helm upgrade bc $chart -n $namespace -i -f environments/azure.yaml \
   --set ordapi-db-deploy.db.sqlPackageArgs="$sqlPackageArgs" \
   --set db.disabledUrl=$dbServer \
   --set clientSecret=$clientSecret \
+  --set cookieSecret=$cookieSecret \
   --set appBaseUrl=$baseUrl \
   --set baseIsapiEnabledUrl=$baseIdentityUrl \
   --set isapi.clients[0].redirectUrls[0]=$baseUrl/oauth/callback \
