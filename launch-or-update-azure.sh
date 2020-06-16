@@ -63,8 +63,6 @@ eval set -- "$OPTS"
 # set initial values
 chart="gpitfuturesdevacr/buyingcatalogue"
 wait="false"
-clientSecret="NodeClientSecret"
-cookieSecret="secret squirrel"
 dbPassword="DisruptTheMarket1!"
 
 # extract options and their arguments into variables.
@@ -141,10 +139,16 @@ while true ; do
       ;;
     --client-secret )
       clientSecret="$2"
+      if [ ! -n "$clientSecret" ]; then
+        clientSecret="NodeClientSecret"
+      fi
       shift 2
       ;;
     --cookie-secret )
       cookieSecret="$2"
+      if [ ! -n "$cookieSecret" ]; then
+        cookieSecret="secret squirrel"
+      fi
       shift 2
       ;;
     --db-pass )
