@@ -332,5 +332,5 @@ helm upgrade bc $chart -n $namespace -i -f environments/azure.yaml \
   $versionArg \
   $waitArg \
   $emailArg \
-  $hostAliases \
-  $helmUpgradeArgs
+  $helmUpgradeArgs \
+  $hostAliases
