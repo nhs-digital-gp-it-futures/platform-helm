@@ -92,9 +92,9 @@ jobs:
   - bash: |
       if [ $(Build.Reason) = "PullRequest" ]
       then
-        namespace=`echo 'buyingcatalogue-$(Build.SourceBranchName)-$(System.PullRequest.PullRequestNumber)' | sed 's/[[:punct:]]/-/g'`
+        namespace=`echo 'bc-$(Build.SourceBranchName)-$(System.PullRequest.PullRequestNumber)' | sed 's/[[:punct:]]/-/g'`
       else
-        namespace=`echo 'buyingcatalogue-$(Build.SourceBranchName)' | sed 's/[[:punct:]]/-/g'`
+        namespace=`echo 'bc-$(Build.SourceBranchName)' | sed 's/[[:punct:]]/-/g'`
       fi
       echo "namespace=$namespace, basePath=$basePath, baseUrl=$baseUrl, baseIdentityUrl"
       echo "##vso[task.setvariable variable=Namespace;isOutput=true]$namespace"
