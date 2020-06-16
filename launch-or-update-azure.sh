@@ -218,13 +218,13 @@ then
   emailArg="--set email.ingress.hosts[0].host=$basePath"
 else
   #email set
-  emailArg="--set email.enabled=false \\
-  --set email.disabledUrl=$emailServer \\
-  --set email.disabledUserName=$emailUserName \\
-  --set email.disabledPassword=$emailPassword \\
-  --set isapi.serviceDependencies.email.authenticationRequired=true \\
-  --set isapi.serviceDependencies.email.allowInvalidCertificate=true \\
-  --set isapi.passwordReset.emailMessage.senderAddress=$emailUserName \\
+  emailArg="--set email.enabled=false 
+  --set email.disabledUrl=$emailServer 
+  --set email.disabledUserName=$emailUserName 
+  --set email.disabledPassword=$emailPassword 
+  --set isapi.serviceDependencies.email.authenticationRequired=true 
+  --set isapi.serviceDependencies.email.allowInvalidCertificate=true 
+  --set isapi.passwordReset.emailMessage.senderAddress=$emailUserName 
   --set isapi.registration.emailMessage.senderAddress=$emailUserName"
 fi
 
@@ -232,17 +232,17 @@ basePath=${basePath:-"$namespace-dev.buyingcatalogue.digital.nhs.uk"}
 
 if [ -n "$ipOverride" ]
 then  
-  hostAliases="--set isapi.hostAliases[0].ip=$ipOverride \\
-  --set isapi.hostAliases[0].hostnames[0]=$basePath \\
-  --set oapi.hostAliases[0].ip=$ipOverride \\
-  --set oapi.hostAliases[0].hostnames[0]=$basePath \\
-  --set ordapi.hostAliases[0].ip=$ipOverride \\
+  hostAliases="--set isapi.hostAliases[0].ip=$ipOverride 
+  --set isapi.hostAliases[0].hostnames[0]=$basePath 
+  --set oapi.hostAliases[0].ip=$ipOverride 
+  --set oapi.hostAliases[0].hostnames[0]=$basePath 
+  --set ordapi.hostAliases[0].ip=$ipOverride 
   --set ordapi.hostAliases[0].hostnames[0]=$basePath
-  --set pb.hostAliases[0].ip=$ipOverride \\
-  --set pb.hostAliases[0].hostnames[0]=$basePath \\
-  --set admin.hostAliases[0].ip=$ipOverride \\
-  --set admin.hostAliases[0].hostnames[0]=$basePath \\
-  --set of.hostAliases[0].ip=$ipOverride \\
+  --set pb.hostAliases[0].ip=$ipOverride 
+  --set pb.hostAliases[0].hostnames[0]=$basePath 
+  --set admin.hostAliases[0].ip=$ipOverride 
+  --set admin.hostAliases[0].hostnames[0]=$basePath 
+  --set of.hostAliases[0].ip=$ipOverride 
   --set of.hostAliases[0].hostnames[0]=$basePath"  
 fi
 
