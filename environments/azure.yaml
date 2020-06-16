@@ -94,10 +94,6 @@ oapi:
   enabled: true  
   replicaCount: 1
   allowInvalidCertificate: true #set to false once we have dns / actual certs set up
-  hostAliases:  #remove this cheat
-  - ip: "51.11.46.27"
-    hostnames:
-    - "<namespace>.dev.buyingcatalogue.digital.nhs.uk"
     
 ordapi:
   enabled: true  
@@ -165,10 +161,6 @@ pb:
     loginEnabled : "true"
     useCapabilitiesSelector: "true"
     showCovid19: "true"
-  env:
-    values:
-      - name: NODE_TLS_REJECT_UNAUTHORIZED
-        value: "0"
 
 admin: 
   enabled: true
@@ -188,10 +180,6 @@ admin:
         paths: 
           - /admin/*
     tls: []      
-  env:
-      values:
-        - name: NODE_TLS_REJECT_UNAUTHORIZED
-          value: "0"
 
 of: 
   enabled: true
@@ -212,10 +200,6 @@ of:
           - /order/*
     tls: []  
   baseUri: "/order"  
-  env:
-      values:
-        - name: NODE_TLS_REJECT_UNAUTHORIZED
-          value: "0"
 
 redis:
   enabled: false

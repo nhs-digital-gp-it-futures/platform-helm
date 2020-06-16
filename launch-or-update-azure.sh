@@ -47,7 +47,7 @@ function displayHelp {
 }
 # Option strings
 SHORT="hc:n:d:u:p:v:wb:s:a:i:r:q:e:"
-LONG="help,chart:,namespace:,db-server:,db-admin-user:,db-admin-pass:,version:,wait,base-path:,sql-package-args:,azure-storage-connection-string:,ip,redis-server:,redis-password:,environment:,client-secret:,db-pass:,email-server:email-user:,email-pass:"
+LONG="help,chart:,namespace:,db-server:,db-admin-user:,db-admin-pass:,version:,wait,base-path:,sql-package-args:,azure-storage-connection-string:,ip,redis-server:,redis-password:,environment:,client-secret:,db-pass:,email-server:,email-user:,email-pass:"
 
 # read the options
 OPTS=$(getopt --options $SHORT --long $LONG --name "$0" -- "$@")
@@ -217,23 +217,21 @@ else
   --set isapi.registration.emailMessage.senderAddress=$emailUserName"
 fi
 
-
-
 basePath=${basePath:-"$namespace-dev.buyingcatalogue.digital.nhs.uk"}
 
 if [ -n "$ipOverride" ]
 then  
-  hostAliases="--set isapi.hostAliases[0].ip=$ipOverride \
-  --set isapi.hostAliases[0].hostnames[0]=$basePath \
-  --set oapi.hostAliases[0].ip=$ipOverride \
-  --set oapi.hostAliases[0].hostnames[0]=$basePath \
-  --set ordapi.hostAliases[0].ip=$ipOverride \
+  hostAliases="--set isapi.hostAliases[0].ip=$ipOverride \\
+  --set isapi.hostAliases[0].hostnames[0]=$basePath \\
+  --set oapi.hostAliases[0].ip=$ipOverride \\
+  --set oapi.hostAliases[0].hostnames[0]=$basePath \\
+  --set ordapi.hostAliases[0].ip=$ipOverride \\
   --set ordapi.hostAliases[0].hostnames[0]=$basePath
-  --set pb.hostAliases[0].ip=$ipOverride \
-  --set pb.hostAliases[0].hostnames[0]=$basePath \
-  --set admin.hostAliases[0].ip=$ipOverride \
-  --set admin.hostAliases[0].hostnames[0]=$basePath \
-  --set of.hostAliases[0].ip=$ipOverride \
+  --set pb.hostAliases[0].ip=$ipOverride \\
+  --set pb.hostAliases[0].hostnames[0]=$basePath \\
+  --set admin.hostAliases[0].ip=$ipOverride \\
+  --set admin.hostAliases[0].hostnames[0]=$basePath \\
+  --set of.hostAliases[0].ip=$ipOverride \\
   --set of.hostAliases[0].hostnames[0]=$basePath"  
 fi
 
