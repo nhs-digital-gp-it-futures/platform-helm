@@ -69,7 +69,7 @@ isapi:
         - profile        
         - Organisation
         - Ordering
-  allowInvalidCertificate: true  #set to false once we have dns / actual certs set up
+  allowInvalidCertificate: false
   dataProtection:
     applicationName: "ISAPI Development"
   ingress:
@@ -93,12 +93,12 @@ isapi:
 oapi:
   enabled: true  
   replicaCount: 1
-  allowInvalidCertificate: true #set to false once we have dns / actual certs set up
+  allowInvalidCertificate: false
     
 ordapi:
   enabled: true  
   replicaCount: 1
-  allowInvalidCertificate: true #set to false once we have dns / actual certs set up
+  allowInvalidCertificate: false
 
 email:
   enabled: true  #probably leave enabled apart from prod  
