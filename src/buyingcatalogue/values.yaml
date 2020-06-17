@@ -576,6 +576,9 @@ of:
     bapi:
       name: "bc-buyingcatalogue"
       key: bapi-url
+    dapi:
+      name: "bc-buyingcatalogue"
+      key: dapi-url   
     redis:
       urlConfig:
         name: "bc-buyingcatalogue"
