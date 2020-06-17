@@ -63,12 +63,7 @@ isapi:
         - https://<namespace>.dev.buyingcatalogue.digital.nhs.uk/signout-callback-oidc        #To override from build
         - https://<namespace>.dev.buyingcatalogue.digital.nhs.uk/admin/signout-callback-oidc  #To override from build
         - https://<namespace>.dev.buyingcatalogue.digital.nhs.uk/order/signout-callback-oidc  #To override from build
-      allowedScopes: 
-        - openid
-        - email
-        - profile        
-        - Organisation
-        - Ordering
+
   allowInvalidCertificate: false
   serviceDependencies:
     email:
