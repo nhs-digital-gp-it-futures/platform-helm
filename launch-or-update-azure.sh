@@ -53,7 +53,7 @@ function displayHelp {
 }
 # Option strings
 SHORT="hc:n:d:u:p:v:wb:s:a:i:r:q:f"
-LONG="help,chart:,namespace:,db-server:,db-admin-user:,db-admin-pass:,version:,wait,base-path:,sql-package-args:,azure-storage-connection-string:,ip,redis-server:,redis-password:,file-overrides,client-secret:,cookie-secret,db-pass:,email-server:,email-user:,email-pass:,helm-upgrade-args"
+LONG="help,chart:,namespace:,db-server:,db-admin-user:,db-admin-pass:,version:,wait,base-path:,sql-package-args:,azure-storage-connection-string:,ip,redis-server:,redis-password:,file-overrides:,client-secret:,cookie-secret:,db-pass:,email-server:,email-user:,email-pass:,helm-upgrade-args:"
 
 # read the options
 OPTS=$(getopt --options $SHORT --long $LONG --name "$0" -- "$@")
@@ -270,8 +270,8 @@ saPassStart=`echo $saPassword | cut -c-3`
 dbPassStart=`echo $dbPassword | cut -c-3`
 redisPassStart=`echo $redisPassword | cut -c-3`
 azureStorageConnectionStringStart=`echo $azureStorageConnectionString | cut -c-10`
-clientSecretStart= `echo $clientSecret | cut -c-3`
-cookieSecretStart= `echo $cookieSecret | cut -c-3`
+clientSecretStart=`echo $clientSecret | cut -c-3`
+cookieSecretStart=`echo $cookieSecret | cut -c-3`
 
 printf "launch-or-update-azure.sh
         chart = $chart
