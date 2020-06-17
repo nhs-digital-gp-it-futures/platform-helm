@@ -41,15 +41,15 @@ dependencies:
   repository: "@gpitfuturesdevacr"
 - name: isapi
   condition: isapi.enabled
-  version: 1.24.1
+  version: 1.24.3
   repository: "@gpitfuturesdevacr"
 - name: isapi-db-deploy
   condition: isapi-db-deploy.enabled
-  version: 1.24.1
+  version: 1.24.3
   repository: "@gpitfuturesdevacr"
 - name: oapi
   condition: oapi.enabled
-  version: 1.24.1
+  version: 1.24.3
   repository: "@gpitfuturesdevacr"
 - name: ordapi
   condition: ordapi.enabled
@@ -61,7 +61,7 @@ dependencies:
   repository: "@gpitfuturesdevacr"
 - name: email
   condition: email.enabled
-  version: 1.24.1
+  version: 1.24.3
   repository: "@gpitfuturesdevacr"
 - name: file-loader
   condition: file-loader.enabled
