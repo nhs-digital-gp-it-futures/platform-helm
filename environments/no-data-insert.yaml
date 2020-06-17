@@ -1,0 +1,11 @@
+bapi-db-deploy:
+  db:
+    insertTestData: false
+
+isapi-db-deploy:
+  insertTestData: false
+  createEaUser: false
+  
+file-uploader:
+  enabled: false
+  
