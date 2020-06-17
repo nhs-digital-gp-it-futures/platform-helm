@@ -13,6 +13,7 @@ email:
 pb:
   featureFlags:
     loginEnabled: false
+    showOrderForm: false
 admin:
   enabled: false
 of:

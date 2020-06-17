@@ -20,7 +20,7 @@ jobs:
   # pool:
   #   name: GP IT Futures AKS Build Agents
   variables:
-    - group: dev-acr-secrets
+    - group: dev-secrets
   steps:
   - task: UseGitVersion@5
     displayName: gitversion
@@ -83,7 +83,7 @@ jobs:
   dependsOn: packageAndPublish
   condition: and(succeeded(), ne(variables['Build.SourceBranch'], 'refs/heads/master'))
   variables:
-    - group: dev-acr-secrets
+    - group: dev-secrets
     - name: semVer
       value: $[ dependencies.packageAndPublish.outputs['setVersionStep.semVer'] ]
     - name: sqlPackageArgs
@@ -130,7 +130,7 @@ jobs:
 # - job: runAcceptanceTests
 #   dependsOn: packageAndPublish
 #   variables:
-#     - group: dev-acr-secrets
+#     - group: dev-secrets
 #   steps:
 #     public browse
 #     marketing pages
