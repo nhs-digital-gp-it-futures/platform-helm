@@ -33,7 +33,7 @@ function displayHelp {
           -f, --file-overrides
             A comma-separated list of file names. These are the names of override files to apply.
             NOTE: these files are expected to be in the 'environments' directory
-            E.g: '-f public.yaml,local-docker.yml' will apply environments/public.yaml & environments/local-docker.yml 
+            E.g: '-f public.yaml,no-data-insert.yaml' will apply environments/public.yaml & environments/no-data-insert.yaml 
           --client-secret <client secret>
             The client secret to use for the cookie encryption. Default 'NodeClientSecret'
           --cookie-secret <cookie secret>
