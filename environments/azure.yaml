@@ -70,6 +70,9 @@ isapi:
         - Organisation
         - Ordering
   allowInvalidCertificate: false
+  serviceDependencies:
+    email:
+      allowInvalidCertificate: true                 # our maildev image uses self-signed certs, override in prod
   dataProtection:
     applicationName: "ISAPI Development"
   ingress:
