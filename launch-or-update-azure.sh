@@ -32,7 +32,7 @@ function displayHelp {
             [REQUIRED] Password connect to Redis
           -f, --file-overrides
             A comma-separated list of file names. These are the names of override files to apply.
-            NOTE: to be in the 'environments' directory
+            NOTE: these files are expected to be in the 'environments' directory
             E.g: '-f public.yaml,local-docker.yml' will apply environments/public.yaml & environments/local-docker.yml 
           --client-secret <client secret>
             The client secret to use for the cookie encryption. Default 'NodeClientSecret'
