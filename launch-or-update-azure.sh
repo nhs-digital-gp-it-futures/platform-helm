@@ -192,6 +192,8 @@ if [ -z ${namespace+x} ]
 then 
   namespace=`cat /dev/urandom | tr -dc 'a-zA-Z' | fold -w 8 | head -n 1`
   echo "namespace not set: generated $namespace"
+else #truncate to 63 chars
+  namespace=`echo "$namespace" | cut -c 1-63`
 fi
 
 if [ -z ${dbServer+x} ] || [ -z ${saUserName+x} ] || [ -z ${saPassword+x} ]
@@ -223,6 +225,8 @@ if [ -n "$overrideFiles" ]; then
   done
 fi
 
+basePath=${basePath:-"$namespace-dev.buyingcatalogue.digital.nhs.uk"}
+
 if [ -z ${emailServer+x} ] || [ -z ${emailUser+x} ] || [ -z ${emailPassword+x} ]
 then
   #no email set, so use internal
@@ -238,8 +242,6 @@ else
   --set isapi.passwordReset.emailMessage.senderAddress=$emailUserName 
   --set isapi.registration.emailMessage.senderAddress=$emailUserName"
 fi
-
-basePath=${basePath:-"$namespace-dev.buyingcatalogue.digital.nhs.uk"}
 
 if [ -n "$ipOverride" ]
 then  
