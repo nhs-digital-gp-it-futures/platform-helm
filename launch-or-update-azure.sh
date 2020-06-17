@@ -30,10 +30,14 @@ function displayHelp {
             [REQUIRED] Url to connect to Redis
           -q, --redis-password <redis host password>
             [REQUIRED] Password connect to Redis
-          -e, --environment
-            The environment override file to apply. Default is 'all' (which won't apply anything). Other options are currently 'private' and 'public'.
+          -f, --file-overrides
+            A comma-separated list of file names. These are the names of override files to apply.
+            NOTE: these files are expected to be in the 'environments' directory
+            E.g: '-f public.yaml,no-data-insert.yaml' will apply environments/public.yaml & environments/no-data-insert.yaml 
           --client-secret <client secret>
             The client secret to use for the cookie encryption. Default 'NodeClientSecret'
+          --cookie-secret <cookie secret>
+            The cookie secret to use for the cookie encryption. Default 'secret squirrel'
           --db-pass <pass>
             The password for use by the api db users Default 'DisruptTheMarket1!'
           --email-server
@@ -42,12 +46,14 @@ function displayHelp {
             Email username if email-server is set
           --email-pass
             Email password if email-server is set
+          --helm-upgrade-args <arguments>
+            Pass additional arguments to helm upgrade
           "
   exit
 }
 # Option strings
-SHORT="hc:n:d:u:p:v:wb:s:a:i:r:q:e:"
-LONG="help,chart:,namespace:,db-server:,db-admin-user:,db-admin-pass:,version:,wait,base-path:,sql-package-args:,azure-storage-connection-string:,ip,redis-server:,redis-password:,environment:,client-secret:,db-pass:,email-server:email-user:,email-pass:"
+SHORT="hc:n:d:u:p:v:wb:s:a:i:r:q:f"
+LONG="help,chart:,namespace:,db-server:,db-admin-user:,db-admin-pass:,version:,wait,base-path:,sql-package-args:,azure-storage-connection-string:,ip,redis-server:,redis-password:,file-overrides,client-secret:,cookie-secret,db-pass:,email-server:,email-user:,email-pass:,helm-upgrade-args"
 
 # read the options
 OPTS=$(getopt --options $SHORT --long $LONG --name "$0" -- "$@")
@@ -57,7 +63,6 @@ eval set -- "$OPTS"
 # set initial values
 chart="gpitfuturesdevacr/buyingcatalogue"
 wait="false"
-clientSecret="NodeClientSecret"
 dbPassword="DisruptTheMarket1!"
 
 # extract options and their arguments into variables.
@@ -128,12 +133,22 @@ while true ; do
       redisPassword="$2"
       shift 2
       ;;
-    -e | --environment )
-      environment="$2"
+    -f | --file-overrides )
+      overrideFiles="$2"
       shift 2
       ;;
     --client-secret )
       clientSecret="$2"
+      if [ ! -n "$clientSecret" ]; then
+        clientSecret="NodeClientSecret"
+      fi
+      shift 2
+      ;;
+    --cookie-secret )
+      cookieSecret="$2"
+      if [ ! -n "$cookieSecret" ]; then
+        cookieSecret="secret squirrel"
+      fi
       shift 2
       ;;
     --db-pass )
@@ -150,6 +165,10 @@ while true ; do
       ;;
     --email-pass )
       emailPassword="$2"
+      shift 2
+      ;;
+    --helm-upgrade-args )
+      helmUpgradeArgs="$2"
       shift 2
       ;;
     -- )
@@ -196,9 +215,12 @@ then
   waitArg="--wait"  
 fi
 
-if [ -n "$environment" ] && [ "$environment" != "all" ]
-then  
-  environmentArg="-f environments/$environment.yaml"
+if [ -n "$overrideFiles" ]; then  
+  fileOverrideArgs=""
+  IFS=',' read -ra FILES <<< "$overrideFiles"
+  for file in "${FILES[@]}"; do
+      fileOverrideArgs="$fileOverrideArgs -f environments/$file"
+  done
 fi
 
 if [ -z ${emailServer+x} ] || [ -z ${emailUser+x} ] || [ -z ${emailPassword+x} ]
@@ -207,33 +229,31 @@ then
   emailArg="--set email.ingress.hosts[0].host=$basePath"
 else
   #email set
-  emailArg="--set email.enabled=false \\
-  --set email.disabledUrl=$emailServer \\
-  --set email.disabledUserName=$emailUserName \\
-  --set email.disabledPassword=$emailPassword \\
-  --set isapi.serviceDependencies.email.authenticationRequired=true \\
-  --set isapi.serviceDependencies.email.allowInvalidCertificate=true \\
-  --set isapi.passwordReset.emailMessage.senderAddress=$emailUserName \\
+  emailArg="--set email.enabled=false 
+  --set email.disabledUrl=$emailServer 
+  --set email.disabledUserName=$emailUserName 
+  --set email.disabledPassword=$emailPassword 
+  --set isapi.serviceDependencies.email.authenticationRequired=true 
+  --set isapi.serviceDependencies.email.allowInvalidCertificate=true 
+  --set isapi.passwordReset.emailMessage.senderAddress=$emailUserName 
   --set isapi.registration.emailMessage.senderAddress=$emailUserName"
 fi
-
-
 
 basePath=${basePath:-"$namespace-dev.buyingcatalogue.digital.nhs.uk"}
 
 if [ -n "$ipOverride" ]
 then  
-  hostAliases="--set isapi.hostAliases[0].ip=$ipOverride \
-  --set isapi.hostAliases[0].hostnames[0]=$basePath \
-  --set oapi.hostAliases[0].ip=$ipOverride \
-  --set oapi.hostAliases[0].hostnames[0]=$basePath \
-  --set ordapi.hostAliases[0].ip=$ipOverride \
+  hostAliases="--set isapi.hostAliases[0].ip=$ipOverride 
+  --set isapi.hostAliases[0].hostnames[0]=$basePath 
+  --set oapi.hostAliases[0].ip=$ipOverride 
+  --set oapi.hostAliases[0].hostnames[0]=$basePath 
+  --set ordapi.hostAliases[0].ip=$ipOverride 
   --set ordapi.hostAliases[0].hostnames[0]=$basePath
-  --set pb.hostAliases[0].ip=$ipOverride \
-  --set pb.hostAliases[0].hostnames[0]=$basePath \
-  --set admin.hostAliases[0].ip=$ipOverride \
-  --set admin.hostAliases[0].hostnames[0]=$basePath \
-  --set of.hostAliases[0].ip=$ipOverride \
+  --set pb.hostAliases[0].ip=$ipOverride 
+  --set pb.hostAliases[0].hostnames[0]=$basePath 
+  --set admin.hostAliases[0].ip=$ipOverride 
+  --set admin.hostAliases[0].hostnames[0]=$basePath 
+  --set of.hostAliases[0].ip=$ipOverride 
   --set of.hostAliases[0].hostnames[0]=$basePath"  
 fi
 
@@ -248,6 +268,8 @@ saPassStart=`echo $saPassword | cut -c-3`
 dbPassStart=`echo $dbPassword | cut -c-3`
 redisPassStart=`echo $redisPassword | cut -c-3`
 azureStorageConnectionStringStart=`echo $azureStorageConnectionString | cut -c-10`
+clientSecretStart= `echo $clientSecret | cut -c-3`
+cookieSecretStart= `echo $cookieSecret | cut -c-3`
 
 printf "launch-or-update-azure.sh
         chart = $chart
@@ -263,8 +285,9 @@ printf "launch-or-update-azure.sh
         ip = $ipOverride
         redis-server = $redisServer
         redis-password = $redisPassStart
-        environment = $environment
-        client-secret = $clientSecret
+        file-overrides = $overrideFiles
+        client-secret = $clientSecretStart*
+        cookie-secret = $cookieSecretStart*
         db-pass = $dbPassStart
         "
 
@@ -273,7 +296,7 @@ cat namespace.yaml
 kubectl apply -f namespace.yaml
 
 helm upgrade bc $chart -n $namespace -i -f environments/azure.yaml \
-  $environmentArg \
+  $fileOverrideArgs \
   --timeout 10m0s \
   --set saUserName="$saUserName" \
   --set saPassword="$saPassword" \
@@ -289,6 +312,7 @@ helm upgrade bc $chart -n $namespace -i -f environments/azure.yaml \
   --set ordapi-db-deploy.db.sqlPackageArgs="$sqlPackageArgs" \
   --set db.disabledUrl=$dbServer \
   --set clientSecret=$clientSecret \
+  --set cookieSecret=$cookieSecret \
   --set appBaseUrl=$baseUrl \
   --set baseIsapiEnabledUrl=$baseIdentityUrl \
   --set isapi.clients[0].redirectUrls[0]=$baseUrl/oauth/callback \
@@ -312,4 +336,5 @@ helm upgrade bc $chart -n $namespace -i -f environments/azure.yaml \
   $versionArg \
   $waitArg \
   $emailArg \
+  $helmUpgradeArgs \
   $hostAliases

@@ -2,6 +2,8 @@ saUserName:
 saPassword:
 dbPassword:
 clientSecret:
+cookieSecret:
+
 redisPassword:
 
 appBaseUrl: 
