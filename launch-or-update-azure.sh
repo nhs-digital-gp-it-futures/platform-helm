@@ -270,8 +270,8 @@ saPassStart=`echo $saPassword | cut -c-3`
 dbPassStart=`echo $dbPassword | cut -c-3`
 redisPassStart=`echo $redisPassword | cut -c-3`
 azureStorageConnectionStringStart=`echo $azureStorageConnectionString | cut -c-10`
-clientSecretStart= `echo $clientSecret | cut -c-3`
-cookieSecretStart= `echo $cookieSecret | cut -c-3`
+clientSecretStart=`echo $clientSecret | cut -c-3`
+cookieSecretStart=`echo $cookieSecret | cut -c-3`
 
 printf "launch-or-update-azure.sh
         chart = $chart
