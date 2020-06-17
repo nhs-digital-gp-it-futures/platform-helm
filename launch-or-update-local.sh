@@ -19,9 +19,8 @@ if [ $? != 0 ] ; then echo "Failed to parse options...exiting." >&2 ; exit 1 ; f
 eval set -- "$OPTS"
 
 # set initial values
-chart="gpitfuturesdevacr/buyingcatalogue"
+chart="src/buyingcatalogue"
 wait="false"
-update="true"
 context=`kubectl config current-context`
 
 # extract options and their arguments into variables.
@@ -33,10 +32,9 @@ while true ; do
       ;;
     
     -u | --update )
-      if [ "$2" = "false" ]
-        then 
-          $update = "false"
-        fi
+      if [ "$2" = "false" ]; then 
+          update="false"
+      fi
       shift 2
       ;;
     -- )
@@ -51,7 +49,7 @@ while true ; do
 done
 
 if [[ "$context" != "docker-desktop" ]]; then 
-  >&2 echo "Not Local Context - $context"
+  >&2 echo "$context is not a local context!"
   exit 1
 fi
 
@@ -63,7 +61,7 @@ if [ "$update" != "false" ]
 fi
 
 if [[ "$OSTYPE" == "darwin"* ]]; then 
-  helm upgrade bc src/buyingcatalogue -n buyingcatalogue -i -f environments/local-docker.yaml -f environments/local-docker-mac.yaml -f local-overrides.yaml $@
+  helm upgrade bc $chart -n buyingcatalogue -i -f environments/local-docker.yaml -f environments/local-docker-mac.yaml -f local-overrides.yaml $@
 else
-  helm upgrade bc src/buyingcatalogue -n buyingcatalogue -i -f environments/local-docker.yaml -f local-overrides.yaml $@
+  helm upgrade bc $chart -n buyingcatalogue -i -f environments/local-docker.yaml -f local-overrides.yaml $@
 fi
