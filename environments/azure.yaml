@@ -102,15 +102,15 @@ email:
   enabled: true  #probably leave enabled apart from prod  
   replicaCount: 1
   ingress:
-      enabled: true
-      annotations: 
-        kubernetes.io/ingress.class: azure/application-gateway
-        appgw.ingress.kubernetes.io/appgw-ssl-certificate: buying-catalogue-digital-nhs-uk 
-        appgw.ingress.kubernetes.io/ssl-redirect: "true"
-      hosts:
-        - host: <namespace>.dev.buyingcatalogue.digital.nhs.uk #To override from build
-          paths: 
-            - /email/*
+    enabled: true
+    annotations: 
+      kubernetes.io/ingress.class: azure/application-gateway
+      appgw.ingress.kubernetes.io/appgw-ssl-certificate: buying-catalogue-digital-nhs-uk 
+      appgw.ingress.kubernetes.io/ssl-redirect: "true"
+    hosts:
+      - host: <namespace>.dev.buyingcatalogue.digital.nhs.uk #To override from build
+        paths: 
+          - /email/*
 
 file-loader:
   enabled: true
