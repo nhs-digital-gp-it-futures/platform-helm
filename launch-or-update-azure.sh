@@ -52,7 +52,7 @@ function displayHelp {
   exit
 }
 # Option strings
-SHORT="hc:n:d:u:p:v:wb:s:a:i:r:q:f"
+SHORT="hc:n:d:u:p:v:wb:s:a:i:r:q:f:"
 LONG="help,chart:,namespace:,db-server:,db-admin-user:,db-admin-pass:,version:,wait,base-path:,sql-package-args:,azure-storage-connection-string:,ip,redis-server:,redis-password:,file-overrides:,client-secret:,cookie-secret:,db-pass:,email-server:,email-user:,email-pass:,helm-upgrade-args:"
 
 # read the options
@@ -64,6 +64,8 @@ eval set -- "$OPTS"
 chart="gpitfuturesdevacr/buyingcatalogue"
 wait="false"
 dbPassword="DisruptTheMarket1!"
+clientSecret="NodeClientSecret"
+cookieSecret="secret squirrel"
 
 # extract options and their arguments into variables.
 while true ; do
@@ -139,16 +141,10 @@ while true ; do
       ;;
     --client-secret )
       clientSecret="$2"
-      if [ ! -n "$clientSecret" ]; then
-        clientSecret="NodeClientSecret"
-      fi
       shift 2
       ;;
     --cookie-secret )
       cookieSecret="$2"
-      if [ ! -n "$cookieSecret" ]; then
-        cookieSecret="secret squirrel"
-      fi
       shift 2
       ;;
     --db-pass )
@@ -313,8 +309,8 @@ helm upgrade bc $chart -n $namespace -i -f environments/azure.yaml \
   --set ordapi-db-deploy.db.name=$dbName-ordapi \
   --set ordapi-db-deploy.db.sqlPackageArgs="$sqlPackageArgs" \
   --set db.disabledUrl=$dbServer \
-  --set clientSecret=$clientSecret \
-  --set cookieSecret=$cookieSecret \
+  --set clientSecret="$clientSecret" \
+  --set cookieSecret="$cookieSecret" \
   --set appBaseUrl=$baseUrl \
   --set baseIsapiEnabledUrl=$baseIdentityUrl \
   --set isapi.clients[0].redirectUrls[0]=$baseUrl/oauth/callback \
