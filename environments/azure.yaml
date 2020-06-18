@@ -63,12 +63,7 @@ isapi:
         - https://<namespace>.dev.buyingcatalogue.digital.nhs.uk/signout-callback-oidc        #To override from build
         - https://<namespace>.dev.buyingcatalogue.digital.nhs.uk/admin/signout-callback-oidc  #To override from build
         - https://<namespace>.dev.buyingcatalogue.digital.nhs.uk/order/signout-callback-oidc  #To override from build
-      allowedScopes: 
-        - openid
-        - email
-        - profile        
-        - Organisation
-        - Ordering
+
   allowInvalidCertificate: false
   serviceDependencies:
     email:
@@ -106,7 +101,7 @@ ordapi:
 email:
   enabled: true  #probably leave enabled apart from prod  
   replicaCount: 1
-ingress:
+  ingress:
     enabled: true
     annotations: 
       kubernetes.io/ingress.class: azure/application-gateway
@@ -115,7 +110,7 @@ ingress:
     hosts:
       - host: <namespace>.dev.buyingcatalogue.digital.nhs.uk #To override from build
         paths: 
-          - /email/*
+          - /email*
 
 file-loader:
   enabled: true

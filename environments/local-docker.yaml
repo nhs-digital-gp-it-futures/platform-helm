@@ -154,6 +154,12 @@ email:
   - name: regcredlocal
   service:
     type: LoadBalancer
+  ingress:
+    enabled: true
+    annotations: 
+      kubernetes.io/ingress.class: nginx
+      ingress.kubernetes.io/ssl-redirect: "true"
+      nginx.ingress.kubernetes.io/ssl-redirect: "true"
 
 file-loader:
   enabled: true
@@ -213,9 +219,9 @@ admin:
           - /admin
     tls: []      
   env:
-      values:
-        - name: NODE_TLS_REJECT_UNAUTHORIZED
-          value: "0"
+    values:
+      - name: NODE_TLS_REJECT_UNAUTHORIZED
+        value: "0"
 
 of: 
   enabled: true 
@@ -235,9 +241,9 @@ of:
     tls: []  
   baseUri: "/order"  
   env:
-      values:
-        - name: NODE_TLS_REJECT_UNAUTHORIZED
-          value: "0"
+    values:
+      - name: NODE_TLS_REJECT_UNAUTHORIZED
+        value: "0"
 
 redis:
   enabled: true
