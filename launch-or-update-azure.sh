@@ -309,8 +309,8 @@ helm upgrade bc $chart -n $namespace -i -f environments/azure.yaml \
   --set ordapi-db-deploy.db.name=$dbName-ordapi \
   --set ordapi-db-deploy.db.sqlPackageArgs="$sqlPackageArgs" \
   --set db.disabledUrl=$dbServer \
-  --set clientSecret=$clientSecret \
-  --set cookieSecret=$cookieSecret \
+  --set clientSecret="$clientSecret" \
+  --set cookieSecret="$cookieSecret" \
   --set appBaseUrl=$baseUrl \
   --set baseIsapiEnabledUrl=$baseIdentityUrl \
   --set isapi.clients[0].redirectUrls[0]=$baseUrl/oauth/callback \
