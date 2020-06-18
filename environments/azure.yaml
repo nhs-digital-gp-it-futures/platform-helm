@@ -83,7 +83,7 @@ isapi:
           - /identity/css/*  
           - /identity/nhsuk-frontend/*          
           - /identity/account/*          
-          - /identity/consent/*          
+          - /identity/consent*          
           - /identity/error/*
           - /identity/connect/*
           - /identity/.well-known/*
