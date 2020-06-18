@@ -110,7 +110,7 @@ email:
     hosts:
       - host: <namespace>.dev.buyingcatalogue.digital.nhs.uk #To override from build
         paths: 
-          - /email/*
+          - /email*
 
 file-loader:
   enabled: true
