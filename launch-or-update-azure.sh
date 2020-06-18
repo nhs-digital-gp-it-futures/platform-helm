@@ -231,12 +231,12 @@ else
   #email set
   emailArg="--set email.enabled=false 
   --set email.disabledUrl=$emailServer 
-  --set email.disabledUserName=$emailUserName 
+  --set email.disabledUserName=$emailUser 
   --set email.disabledPassword=$emailPassword 
   --set isapi.serviceDependencies.email.authenticationRequired=true 
   --set isapi.serviceDependencies.email.allowInvalidCertificate=true 
-  --set isapi.passwordReset.emailMessage.senderAddress=$emailUserName 
-  --set isapi.registration.emailMessage.senderAddress=$emailUserName"
+  --set isapi.passwordReset.emailMessage.senderAddress=$emailUser 
+  --set isapi.registration.emailMessage.senderAddress=$emailUser"
 fi
 
 if [ -n "$ipOverride" ]
@@ -268,6 +268,7 @@ redisPassStart=`echo $redisPassword | cut -c-3`
 azureStorageConnectionStringStart=`echo $azureStorageConnectionString | cut -c-10`
 clientSecretStart=`echo $clientSecret | cut -c-3`
 cookieSecretStart=`echo $cookieSecret | cut -c-3`
+emailPassStart=`echo $emailPassword | cut -c-3`
 
 printf "launch-or-update-azure.sh
         chart = $chart
@@ -287,6 +288,9 @@ printf "launch-or-update-azure.sh
         client-secret = $clientSecretStart*
         cookie-secret = $cookieSecretStart*
         db-pass = $dbPassStart
+        email-server = $emailServer 
+        email-user = $emailUser 
+        email-pass = $emailPassStart
         "
 
 sed "s/REPLACENAMESPACE/$namespace/g" environments/azure-namespace-template.yml > namespace.yaml
