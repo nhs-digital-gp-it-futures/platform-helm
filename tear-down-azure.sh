@@ -1,13 +1,26 @@
 #!/bin/bash
 
-if [ $# -ne 1  ]
-then
-  echo "usage ./launch-or-update-azure.sh <namespace>"
-  exit
+commitMessage=$1
+containsReferenceToPR='^(.*)([#][0-9]{1,3})[^0-9](.*)$'
+
+
+if [[ $commitMessage =~ $containsReferenceToPR ]]; then
+    prNumber=$(echo ${BASH_REMATCH[2]} | tr -d '#') # grab the matched group
+    echo $prNumber
+else
+   echo "Couldn't extract PR number from the commit message, exiting."
+   exit 1
 fi
 
-namespace=$1
+branchName=$(curl https://api.github.com/repos/nhs-digital-gp-it-futures/platform-helm/pulls/$prNumber | jq --raw-output '.head.ref')
+echo $branchName
+branchNamespace=`echo $branchName | sed 's/feature[[:punct:]]/bc-/g'`
+prNamespace="bc-merge-$prNumber"
 
-helm delete bc -n $namespace
+echo "going to delete ns $branchNamespace"
+echo "going to delete ns $prNamespace"
 
-kubectl delete ns $namespace
+
+# helm delete bc -n $namespace
+
+# kubectl delete ns $namespace
