@@ -149,7 +149,12 @@ jobs:
       echo "##vso[task.setvariable variable=Namespace;isOutput=true]$namespace"
     name: SetUpVars
   - bash: |
-      ./tear-down-azure.sh '$(Build.SourceVersionMessage)'
+      ./tear-down-azure.sh -m '$(Build.SourceVersionMessage)' \
+        -d gpitfutures-dev-sql-pri.database.windows.net \
+        -u $(gpitdevsqladminusername) \
+        -p $(gpitdevsqladminpassword) \
+        -a "$(gpitdevstorageaccountconnectionstring)" \
+
 
     name: deploySystem
 
