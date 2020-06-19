@@ -15,21 +15,6 @@ pool:
   vmImage: 'ubuntu-latest'
 
 jobs:
-- job: cleanUpDynamicEnv
-  dependsOn: packageAndPublish
-  #condition: and(succeeded(), variables['Build.SourceBranch'], 'refs/heads/master')
-  variables:
-    - group: dev-secrets
-    - name: semVer
-      value: $[ dependencies.packageAndPublish.outputs['setVersionStep.semVer'] ]
-  steps:
-  - bash: |
-      namespace=`echo 'bc-$(Build.SourceBranchName)' | sed 's/[[:punct:]]/-/g'`
-      echo "namespace=$namespace
-      echo "##vso[task.setvariable variable=Namespace;isOutput=true]$namespace"
-      echo "$(Build.SourceVersionMessage)"
-    name: SetUpVars
-
 - job: packageAndPublish
   condition: eq(1,2)
   displayName: Package And Publish Buyingcatalogue
@@ -148,6 +133,22 @@ jobs:
         -q $(srt-redispass)
     name: deploySystem
     displayName: Deploy System
+    
+- job: cleanUpDynamicEnv
+  dependsOn: packageAndPublish
+  condition: always() # this job will only run if Foo fails
+  #condition: and(succeeded(), variables['Build.SourceBranch'], 'refs/heads/master')
+  variables:
+    - group: dev-secrets
+    - name: semVer
+      value: $[ dependencies.packageAndPublish.outputs['setVersionStep.semVer'] ]
+  steps:
+  - bash: |
+      namespace=`echo 'bc-$(Build.SourceBranchName)' | sed 's/[[:punct:]]/-/g'`
+      echo "namespace=$namespace
+      echo "##vso[task.setvariable variable=Namespace;isOutput=true]$namespace"
+      echo "$(Build.SourceVersionMessage)"
+    name: SetUpVars
 
 
 
