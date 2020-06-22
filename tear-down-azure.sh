@@ -81,11 +81,7 @@ branchName=$(curl https://api.github.com/repos/nhs-digital-gp-it-futures/platfor
 branchNamespace=`echo $branchName | sed 's/feature[[:punct:]]/bc-/g'`
 prNamespace="bc-merge-$prNumber"
 
-helm delete bc -n $branchNamespace
-helm delete bc -n $prNamespace
-
-kubectl delete ns $branchNamespace
-kubectl delete ns $prNamespace
+kubectl delete ns $branchNamespace $prNamespace
 
 az storage container delete --name $branchNamespace-documents --connection-string "$azureStorageConnectionString"
 az storage container delete --name $prNamespace-documents --connection-string "$azureStorageConnectionString"
@@ -96,8 +92,8 @@ services=("bapi"  "isapi"  "ordapi")
 deleteQueries=()
 
 for service in ${services[*]}; do
-     deleteQueries+=("DROP DATABASE bc-$branchNamespace-$service;")
-     deleteQueries+=("DROP DATABASE bc-$prNamespace-$service;")
+     deleteQueries+=("DROP DATABASE [bc-$branchNamespace-$service];")
+     deleteQueries+=("DROP DATABASE [bc-$prNamespace-$service;]")
 done
 
 for query in ${deleteQueries[*]}; do
