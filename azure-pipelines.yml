@@ -143,16 +143,26 @@ jobs:
     - name: semVer
       value: $[ dependencies.packageAndPublish.outputs['setVersionStep.semVer'] ]
   steps:
+  - task: AzureCLI@2
+    inputs:
+      azureSubscription: 'NHSAPP-BuyingCatalogue (Non-Prod)'
+      scriptType: 'bash'
+      scriptLocation: 'inlineScript'
+      inlineScript: 'az aks get-credentials -n gpitfutures-dev-aks -g gpitfutures-dev-rg-aks'
+    name: kubectlContext
+    displayName: Get Kubernetes Context
+  - bash: |
+      helm repo add gpitfuturesdevacr https://gpitfuturesdevacr.azurecr.io/helm/v1/repo --username gpitfuturesdevacr --password $(gpitfuturesdevacr-pass)
+    name: addRepo
+    displayName: Add gpitfuturesdevacr repo
   - bash: |
       ./tear-down-azure.sh -m '$(Build.SourceVersionMessage)' \
         -d gpitfutures-dev-sql-pri.database.windows.net \
         -u $(gpitdevsqladminusername) \
         -p $(gpitdevsqladminpassword) \
         -a "$(gpitdevstorageaccountconnectionstring)"
-    failOnStderr: false
+    failOnStderr: "false"
     name: cleanUpEnvironments
-
-
 
 # TODO
 # - job: runAcceptanceTests
