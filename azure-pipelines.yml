@@ -148,7 +148,8 @@ jobs:
         -d gpitfutures-dev-sql-pri.database.windows.net \
         -u $(gpitdevsqladminusername) \
         -p $(gpitdevsqladminpassword) \
-        -a "$(gpitdevstorageaccountconnectionstring)" \
+        -a "$(gpitdevstorageaccountconnectionstring)"
+    failOnStderr: false
     name: cleanUpEnvironments
 
 

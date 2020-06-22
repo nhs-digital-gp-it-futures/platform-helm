@@ -83,19 +83,14 @@ branchName=$(curl https://api.github.com/repos/nhs-digital-gp-it-futures/platfor
 branchNamespace=`echo $branchName | sed 's/feature[[:punct:]]/bc-/g'`
 prNamespace="bc-merge-$prNumber"
 
-echo "helm delete bc -n $branchNamespace"
-echo "kubectl delete ns $prNamespace"
+helm delete bc -n $branchNamespace
+helm delete bc -n $prNamespace
 
-#test az storage works
-az storage container list --connection-string "$azureStorageConnectionString"
+kubectl delete ns $branchNamespace
+kubectl delete ns $prNamespace
 
-#az storage container delete --name $branchNamespace --connection-string "$azureStorageConnectionString"
-#az storage container delete --name $prNamespace --connection-string "$azureStorageConnectionString"
-
-#db
-
-# check sqlcmd is installed
-sqlcmd -?
+az storage container delete --name $branchNamespace-documents --connection-string "$azureStorageConnectionString"
+az storage container delete --name $prNamespace-documents --connection-string "$azureStorageConnectionString"
 
 # modify IFS to allow spaces in array elements
 IFS=""
@@ -108,5 +103,5 @@ for service in ${services[*]}; do
 done
 
 for query in ${deleteQueries[*]}; do
-     echo "sqlcmd -S dbServer -U saUserName -P saPassword -d master -i $query"
+     sqlcmd -S $dbServer -U $saUserName -P $saPassword -d master -i $query
 done
