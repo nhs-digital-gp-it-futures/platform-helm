@@ -161,7 +161,6 @@ jobs:
         -u $(gpitdevsqladminusername) \
         -p $(gpitdevsqladminpassword) \
         -a "$(gpitdevstorageaccountconnectionstring)"
-    failOnStderr: "false"
     name: cleanUpEnvironments
 
 # TODO

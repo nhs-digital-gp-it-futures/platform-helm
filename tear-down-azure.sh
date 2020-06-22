@@ -81,10 +81,10 @@ branchName=$(curl https://api.github.com/repos/nhs-digital-gp-it-futures/platfor
 branchNamespace=`echo $branchName | sed 's/feature[[:punct:]]/bc-/g'`
 prNamespace="bc-merge-$prNumber"
 
-kubectl delete ns $branchNamespace $prNamespace
+kubectl delete ns $branchNamespace $prNamespace || true 
 
-az storage container delete --name $branchNamespace-documents --connection-string "$azureStorageConnectionString"
-az storage container delete --name $prNamespace-documents --connection-string "$azureStorageConnectionString"
+az storage container delete --name $branchNamespace-documents --connection-string "$azureStorageConnectionString" || true 
+az storage container delete --name $prNamespace-documents --connection-string "$azureStorageConnectionString" || true 
 
 # modify IFS to allow spaces in array elements
 IFS=""
@@ -92,10 +92,10 @@ services=("bapi"  "isapi"  "ordapi")
 deleteQueries=()
 
 for service in ${services[*]}; do
-     deleteQueries+=("DROP DATABASE [bc-$branchNamespace-$service];")
-     deleteQueries+=("DROP DATABASE [bc-$prNamespace-$service;]")
+     deleteQueries+=("DROP DATABASE [bc-$branchNamespace-$service]; || true ")
+     deleteQueries+=("DROP DATABASE [bc-$prNamespace-$service]; || true ")
 done
 
 for query in ${deleteQueries[*]}; do
-     sqlcmd -S $dbServer -U $saUserName -P $saPassword -d master -q $query
+     sqlcmd -S $dbServer -U $saUserName -P $saPassword -d master -q $query || true 
 done
