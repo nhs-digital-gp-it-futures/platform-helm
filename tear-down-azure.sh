@@ -67,7 +67,7 @@ while true ; do
 done
 
 
-containsReferenceToPR='^(.*)([#][0-9]{1,3})[^0-9](.*)$'
+containsReferenceToPR='^(.*)([#][0-9]{1,3})[^0-9]?(.*)$'
 
 if [[ $commitMessage =~ $containsReferenceToPR ]]; then
     prNumber=$(echo ${BASH_REMATCH[2]} | tr -d '#') # grab the matched group
