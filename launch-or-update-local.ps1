@@ -2,9 +2,17 @@
 ### Deploy local cluster                         ###
 ### usage:                                       ###
 ###  ./launch-or-update-local.ps1                ###
-### or without downloading updates...            ###
+###                                              ###
+### without getting latest version from repo     ###
+###  ./launch-or-update-local.ps1 -latest false  ###
+###  ./launch-or-update-local.ps1 -l             ###
+###                                              ###
+### without downloading updates...               ###
 ###  ./launch-or-update-local.ps1 -update false  ###
 ###  ./launch-or-update-local.ps1 -u             ###
+###                                              ###
+### without refreshing at all...                 ###
+###  ./launch-or-update-local.ps1 -l -u          ###
 ####################################################
 
 param(
@@ -18,67 +26,21 @@ param(
         [Parameter()]
         [switch]$l=$false
     )
-    
-# -u, --update [true|false]
 
 $chart="src/buyingcatalogue"
 
-### Build array of versions ###
-$index = 0
-$ChartVersions = @()
-
-$LatestChartVersions = helm search repo gpit --devel | ConvertFrom-String -Delimiter "`t" -PropertyNames NAME,"CHART VERSION","APP VERSION",DESCRIPTION | select -Skip 1
-$CurrentFile = @(Get-Content ./$chart/chart.yaml)
-
-$DateStamp = get-date -uformat "%Y-%m-%d"
-if (!(Test-Path "./$chart/Chart-$DateStamp.yaml") -and ($latest -ne "false") -and ($l -eq $false))
+if (($latest -ne "false") -and ($l -eq $false))
 {
-    Rename-Item -Path ./$chart/Chart.yaml -NewName "Chart-$DateStamp.yaml"
+    write-host "Updating helm charts in $chart"
+    invoke-expression -Command "./get-latest-charts.ps1 -chart $chart"
 }
-
-foreach ($line in $CurrentFile)
-{
-    if ($line.startswith("- name:") -and ($latest -ne "false") -and ($l -eq $false))
-    {
-        $Chartver = @{}
-        $Chartver.name = "$line" -replace "- name: "
-        $Chartver.currentversion = $CurrentFile[$index+2] -replace "  version: "
-        # Check if it exists in the repo
-        if (($LatestChartVersions -match "gpitfuturesdevacr/"+$Chartver.name)[0])
-        {
-            [string]$Chartver.latestversion = (($LatestChartVersions -match "gpitfuturesdevacr/"+$Chartver.name)[0] | select -ExpandProperty "Chart Version").trim()
-            if ($Chartver.latestversion -gt $Chartver.currentversion)
-            {
-                # Update desired version to latest
-                $CurrentFile[$index+2]="  version: " + $Chartver.latestversion
-                $Chartver.updated = "True"
-                $Chartver.updatedversion = $CurrentFile[$index+2] -replace "  version: "
-            }
-            else 
-            {
-                $Chartver.updated = "False"
-            }
-        }
-        else 
-        {
-            $Chartver.updated = "False"
-        }
-        $ChartVersions += [pscustomobject]$Chartver | select name,currentversion,latestversion,updated,updatedversion
-    }
-
-    $index = $index+1
-}
-
-$ChartVersions | ft
-
-set-content -path ./$chart/Chart.yaml -Value $CurrentFile -force
 
 if (($update -ne "false") -and ($u -eq $false))
 {  
-    write-host "Updating Dependencies..."
+    write-host "`nUpdating Dependencies..."
     Remove-Item $chart/charts/*.tgz
     helm dependency update $chart
 }
 
-write-host "Deploying helm charts"
+write-host "`nDeploying helm charts"
 #helm upgrade bc $chart -n buyingcatalogue -i -f environments/local-docker.yaml -f local-overrides.yaml
