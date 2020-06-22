@@ -97,5 +97,5 @@ for service in ${services[*]}; do
 done
 
 for query in ${deleteQueries[*]}; do
-     sqlcmd -b -S $dbServer -U $saUserName -P $saPassword -d master -q $query
+     sqlcmd -S $dbServer -U $saUserName -P $saPassword -d master -Q $query || true
 done
