@@ -96,7 +96,7 @@ function calculateNamespaceNames {
     branchNamespace="$1"
 }
 
-function deleteKuberetesResources {
+function deleteKubernetesResources {
     kubectl delete ns $branchNamespace $prNamespace || true
 }
 
