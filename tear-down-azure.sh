@@ -92,3 +92,21 @@ az storage container list --connection-string "$azureStorageConnectionString"
 #az storage container delete --name $branchNamespace --connection-string "$azureStorageConnectionString"
 #az storage container delete --name $prNamespace --connection-string "$azureStorageConnectionString"
 
+#db
+
+# check sqlcmd is installed
+sqlcmd -?
+
+# modify IFS to allow spaces in array elements
+IFS=""
+services=("bapi"  "isapi"  "ordapi")
+deleteQueries=()
+
+for service in ${services[*]}; do
+     deleteQueries+=("DROP DATABASE bc-$branchNamespace-$service;")
+     deleteQueries+=("DROP DATABASE bc-$prNamespace-$service;")
+done
+
+for query in ${deleteQueries[*]}; do
+     echo "sqlcmd -S dbServer -U saUserName -P saPassword -d master -i $query"
+done
