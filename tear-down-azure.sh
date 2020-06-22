@@ -83,8 +83,8 @@ prNamespace="bc-merge-$prNumber"
 
 kubectl delete ns $branchNamespace $prNamespace || true 
 
-az storage container delete --name $branchNamespace-documents --connection-string "$azureStorageConnectionString" || true 
-az storage container delete --name $prNamespace-documents --connection-string "$azureStorageConnectionString" || true 
+az storage container delete --name "$branchNamespace-documents" --connection-string "$azureStorageConnectionString" || true 
+az storage container delete --name "$prNamespace-documents" --connection-string "$azureStorageConnectionString" || true 
 
 # modify IFS to allow spaces in array elements
 IFS=""
@@ -92,8 +92,8 @@ services=("bapi"  "isapi"  "ordapi")
 deleteQueries=()
 
 for service in ${services[*]}; do
-     deleteQueries+=("DROP DATABASE [bc-$branchNamespace-$service]; || true ")
-     deleteQueries+=("DROP DATABASE [bc-$prNamespace-$service]; || true ")
+     deleteQueries+=("DROP DATABASE [bc-$branchNamespace-$service];")
+     deleteQueries+=("DROP DATABASE [bc-$prNamespace-$service];")
 done
 
 for query in ${deleteQueries[*]}; do
