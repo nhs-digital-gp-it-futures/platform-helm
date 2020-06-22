@@ -73,7 +73,7 @@ if [[ $commitMessage =~ $containsReferenceToPR ]]; then
     prNumber=$(echo ${BASH_REMATCH[2]} | tr -d '#') # grab the matched group
 else
    echo "Couldn't extract PR number from the commit message, exiting."
-   exit 1
+   exit 0
 fi
 
 branchName=$(curl https://api.github.com/repos/nhs-digital-gp-it-futures/platform-helm/pulls/$prNumber | jq --raw-output '.head.ref')
@@ -97,5 +97,5 @@ for service in ${services[*]}; do
 done
 
 for query in ${deleteQueries[*]}; do
-     sqlcmd -S $dbServer -U $saUserName -P $saPassword -d master -Q $query || true
+     sqlcmd -S $dbServer -U "$saUserName" -P "$saPassword" -d master -Q $query || true
 done

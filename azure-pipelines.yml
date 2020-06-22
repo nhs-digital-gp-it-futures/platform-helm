@@ -16,7 +16,6 @@ pool:
 
 jobs:
 - job: packageAndPublish
-  condition: eq(1,2)
   displayName: Package And Publish Buyingcatalogue
   # pool:
   #   name: GP IT Futures AKS Build Agents
@@ -85,9 +84,8 @@ jobs:
     artifact: build-artifact 
 
 - job: deployToDev
-  condition: eq(1,2)
   dependsOn: packageAndPublish
-#  condition: and(succeeded(), ne(variables['Build.SourceBranch'], 'refs/heads/master'))
+  condition: and(succeeded(), ne(variables['Build.SourceBranch'], 'refs/heads/master'))
   variables:
     - group: dev-secrets
     - name: semVer
@@ -136,8 +134,7 @@ jobs:
 
 - job: cleanUpDynamicEnv
   dependsOn: packageAndPublish
-  condition: always() # this job will only run if Foo fails
-  #condition: and(succeeded(), variables['Build.SourceBranch'], 'refs/heads/master')
+  condition: and(succeeded(), variables['Build.SourceBranch'], 'refs/heads/master')
   variables:
     - group: dev-secrets
     - name: semVer
