@@ -9,20 +9,20 @@ function displayHelp {
           -m, --commit-message <commit-message>
             Message of the latest commit on this branch
           -d, --db-server <database server>
-            [REQUIRED] SQL database server to deploy to
-          -u, --db-admin-user <user name>
-            [REQUIRED] SQL Admin User Name
-          -p, --db-admin-pass <password>
-            [REQUIRED] SQL Admin Password
+            [OPTIONAL] SQL database server to delete databases from
+            defaults to: gpitfutures-dev-sql-pri
           -a, --azure-storage-connection-string <connection string>
             [REQUIRED] Azure Storage Connection String
+          -g, --resource-group <rg>
+            [OPTIONAL] Resource group of the db 
+            defaults to: gpitfutures-dev-rg-sql-pri
           "
   exit
 }
 
 # Option strings
-SHORT="hn:m:d:u:p:a:"
-LONG="help,namespace:,commit-message:,db-server:,db-admin-user:,db-admin-pass:,azure-storage-connection-string:"
+SHORT="hn:m:d:a:g:"
+LONG="help,namespace:,commit-message:,db-server:,azure-storage-connection-string:,resource-group:"
 
 # read the options
 OPTS=$(getopt --options $SHORT --long $LONG --name "$0" -- "$@")
@@ -46,14 +46,6 @@ while true ; do
       ;;
     -d | --db-server )
       dbServer="$2"
-      shift 2
-      ;;
-    -u | --db-admin-user )
-      saUserName="$2"
-      shift 2
-      ;;
-    -p | --db-admin-pass )
-      saPassword="$2"
       shift 2
       ;;
     -a | --azure-storage-connection-string )
@@ -109,33 +101,43 @@ function deleteDatabases {
     # modify IFS to allow spaces in array elements
     IFS=""
     services=("bapi"  "isapi"  "ordapi")
-    deleteQueries=()
+    databaseNames=()
 
     for service in ${services[*]}; do
-        deleteQueries+=("DROP DATABASE [bc-$branchNamespace-$service];")
-        deleteQueries+=("DROP DATABASE [bc-$prNamespace-$service];")
+        databaseNames+=("bc-$branchNamespace-$service")
+        databaseNames+=("bc-$prNamespace-$service")
     done
 
-    for query in ${deleteQueries[*]}; do
-        sqlcmd -S $dbServer -U "$saUserName" -P "$saPassword" -d master -Q $query || true
+    for dbName in ${databaseNames[*]}; do
+        az sql db delete --name "$dbName" --resource-group "$resourceGroup" --server "$dbServer" --yes
     done
 }
 
 function deleteAllResources {
-    deleteKuberetesResources
-    deleteBlobStoreContainers
+    deleteKubernetesResources
+    deleteBlobStoreContainers 2> /dev/null
     deleteDatabases
 }
 
+
+# Defaults
+dbServer="gpitfutures-dev-sql-pri"
+resourceGroup="gpitfutures-dev-rg-sql-pri"
+
+if [ -z "$azureStorageConnectionString" ]; then
+    echo "Missing blob storage connection string argument, exiting..."
+    exit
+fi
+
 if [ -z "$commitMessage" ]; then
-    echo "missing commit message argument, relying on provided namespace name..."
+    echo "Missing commit message argument, relying on provided namespace name..."
     calculateNamespaceNames "$namespace"
     deleteAllResources
     exit
 fi
 
 if [ -z "$commitMessage" ] && [ -z "$namespace" ]; then
-    echo "missing commit message and namespace name, cannot calculate namespace name, exiting..."
+    echo "Missing commit message and namespace name, cannot calculate namespace name, exiting..."
     exit
 fi
 
@@ -144,3 +146,4 @@ calculateBranchName
 calculateNamespaceNames
 
 deleteAllResources
+

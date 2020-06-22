@@ -154,9 +154,8 @@ jobs:
     displayName: Add gpitfuturesdevacr repo
   - bash: |
       ./tear-down-azure.sh -m '$(Build.SourceVersionMessage)' \
-        -d gpitfutures-dev-sql-pri.database.windows.net \
-        -u $(gpitdevsqladminusername) \
-        -p $(gpitdevsqladminpassword) \
+        -d gpitfutures-dev-sql-pri \
+        -g gpitfutures-dev-rg-sql-pri \
         -a "$(gpitdevstorageaccountconnectionstring)"
     name: cleanUpEnvironments
 
