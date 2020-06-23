@@ -58,13 +58,19 @@ In order to launch or update the system to the latest built images or chosen con
 #### Bash
 
 ```bash
-./launch-or-update-local.sh [OPTIONS]
+./launch-or-update-local.sh
+# or to run without getting the latest development chart versions
+./launch-or-update-local.sh -l false #(or --latest false)
+# or to run without downloading updates
+./launch-or-update-local.sh -u false #(or --update false)
 ```
 
 #### PS
 
 ```Powershell
 ./launch-or-update-local.ps1
+# or to run without getting the latest development chart versions
+./launch-or-update-local.ps1 -l #(or -latest false)
 # or to run without downloading updates
 ./launch-or-update-local.ps1 -u #(or -update false)
 ```

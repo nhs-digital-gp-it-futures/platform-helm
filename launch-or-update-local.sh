@@ -4,14 +4,16 @@ function displayHelp {
   printf "usage: ./launch-or-update-local.sh [OPTIONS]
           -h, --help
             Display help
+          -l, --latest [true|false]
+            Set repo to latest dev versions (defaults to true)
           -u, --update [true|false]
             Update Helm Charts (defaults to true)
           "
   exit
 }
 # Option strings
-SHORT="h:u:"
-LONG="help,update:"
+SHORT="h:l:u:"
+LONG="help:,latest:,update:"
 
 # read the options
 OPTS=$(getopt --options $SHORT --long $LONG --name "$0" -- "$@")
@@ -31,7 +33,13 @@ while true ; do
       shift
       ;;
     
-    -u | --update )
+    -l | --latest )
+      if [ "$2" = "false" ]; then 
+          latest="false"
+      fi
+      shift 2
+      ;;
+      -u | --update )
       if [ "$2" = "false" ]; then 
           update="false"
       fi
@@ -53,9 +61,15 @@ if [[ "$context" != "docker-desktop" ]]; then
   exit 1
 fi
 
+if [ "$latest" != "false" ]
+  then 
+    echo "Getting Latest Chart Versions..."$'\n'
+    ./get-latest-charts.sh
+fi
+
 if [ "$update" != "false" ]
   then 
-    echo "Updating Dependencies..."
+    echo $'\n'"Updating Dependencies..."$'\n'
     rm $chart/charts/*.tgz
     helm dependency update $chart
 fi

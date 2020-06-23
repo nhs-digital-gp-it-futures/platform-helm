@@ -18,8 +18,6 @@ eval set -- "$OPTS"
 
 # set initial values
 chart="src/buyingcatalogue"
-#index = 0
-#ChartVersions = @()
 
 # extract options and their arguments into variables.
 while true ; do
@@ -39,8 +37,16 @@ while true ; do
   esac
 done
 
-CurrentFile=$(cat ./$chart/chart.yaml)
+CurrentFile=$(cat ./$chart/Chart.yaml)
 Dependencies="false"
+
+# Move or Remove old file
+DateStamp=`date +%Y-%m-%d`
+if test -f ./$chart/Chart-$DateStamp.yaml; then
+  rm ./$chart/Chart.yaml
+else
+  mv ./$chart/Chart.yaml ./$chart/Chart-$DateStamp.yaml  
+fi
 
 echo "$CurrentFile"| while read line
 do 
@@ -50,11 +56,10 @@ do
     
     if [[ $line =~ ^"- name: "* ]]; then
         componentname=$(echo "$line" | cut -d " " -f3 | sed -r 's/\r$//')
-#        echo "$componentname"
         compversion="$(helm search repo "$componentname" --devel --output table | grep "gpitfuturesdevacr/$componentname" | grep -v "$componentname-" | cut -f2)"
         if [[ $compversion != "" ]]; then
           newversion="version: $compversion"
-#          echo "$newversion"
+          echo "$componentname updated: $compversion"
         fi
     fi
 
@@ -72,5 +77,5 @@ do
       fi
     fi
 
-    echo "$line" | tee -a ./$chart/chartnew.yaml
+    echo "$line" | tee -a ./$chart/Chart.yaml >/dev/null
 done
