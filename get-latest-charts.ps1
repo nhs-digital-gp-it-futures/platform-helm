@@ -13,6 +13,9 @@ param(
 $index = 0
 $ChartVersions = @()
 
+# Update the local cache from the Repo
+helm repo update
+
 ### Build array of versions ###
 $LatestChartVersions = helm search repo gpit --devel | ConvertFrom-String -Delimiter "`t" -PropertyNames NAME,"CHART VERSION","APP VERSION",DESCRIPTION | select -Skip 1
 $CurrentFile = @(Get-Content ./$chart/chart.yaml)

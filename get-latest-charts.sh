@@ -40,6 +40,16 @@ done
 CurrentFile=$(cat ./$chart/Chart.yaml)
 Dependencies="false"
 
+# Update the local cache from the Repo and confirm dev repo is queried
+updaterepos=$(helm repo update|grep "gpitfuturessevacr")
+
+if [[ $updaterepos != "" ]]; then
+  echo $'\n'"$updaterepos"$'\n'
+else
+  echo $'\n'"gpitfuturesdevacr not found in helm repos"$'\n'
+  exit
+fi
+
 # Move or Remove old file
 DateStamp=`date +%Y-%m-%d`
 if test -f ./$chart/Chart-$DateStamp.yaml; then
