@@ -113,7 +113,7 @@ jobs:
       inlineScript: |
         az aks get-credentials -n gpitfutures-dev-aks -g gpitfutures-dev-rg-aks
         echo "####################"
-        az ad signed-in-user show
+        az account list
         echo "####################"
     name: kubectlContext
     displayName: Get Kubernetes Context
