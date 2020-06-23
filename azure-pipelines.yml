@@ -152,12 +152,16 @@ jobs:
       helm repo add gpitfuturesdevacr https://gpitfuturesdevacr.azurecr.io/helm/v1/repo --username gpitfuturesdevacr --password $(gpitfuturesdevacr-pass)
     name: addRepo
     displayName: Add gpitfuturesdevacr repo
-  - bash: |
-      ./tear-down-azure.sh -m '$(Build.SourceVersionMessage)' \
-        -d gpitfutures-dev-sql-pri \
-        -g gpitfutures-dev-rg-sql-pri \
-        -a "$(gpitdevstorageaccountconnectionstring)"
-    name: cleanUpEnvironments
+  - task: AzureCLI@2
+    inputs:
+      azureSubscription: 'NHSAPP-BuyingCatalogue (Non-Prod)'
+      scriptType: 'bash'
+      scriptLocation: 'scriptPath'
+      scriptPath: 'tear-down-azure.sh'
+      arguments: '-m "$(Build.SourceVersionMessage)" -d gpitfutures-dev-sql-pri -g gpitfutures-dev-rg-sql-pri -a "$(gpitdevstorageaccountconnectionstring)"'
+    name: cleanUp
+    displayName: Clean up dynamic environments
+
 
 # TODO
 # - job: runAcceptanceTests

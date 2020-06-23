@@ -123,7 +123,6 @@ function deleteAllResources {
     deleteDatabases
 }
 
-
 # Defaults
 dbServer="gpitfutures-dev-sql-pri"
 resourceGroup="gpitfutures-dev-rg-sql-pri"
