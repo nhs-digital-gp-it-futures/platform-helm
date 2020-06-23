@@ -6,6 +6,6 @@ isapi-db-deploy:
   insertTestData: false
   createEaUser: false
   
-file-uploader:
-  enabled: false
+file-loader:
+  insertTestData: false
   
