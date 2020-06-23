@@ -89,6 +89,3 @@ for file in $files; do
         echo $file
     fi
 done
-
-
-#find ./$chart/ -name "*.yaml" -type f -mtime +3 -exec echo {} \;

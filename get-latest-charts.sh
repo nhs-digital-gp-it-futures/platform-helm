@@ -89,3 +89,6 @@ do
 
     echo "$line" | tee -a ./$chart/Chart.yaml >/dev/null
 done
+
+# Remove old versions of Chart-<date>.yaml (older than 2 days)
+find ./$chart/ -name "Chart-*.yaml" -type f -mtime +3 -exec rm -f {} \;
