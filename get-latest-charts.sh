@@ -1,15 +1,15 @@
 #!/bin/bash
 
 function displayHelp {
-  printf "usage: ./launch-or-update-local.sh [OPTIONS]
+  printf "usage: ./get-latest-charts.sh [OPTIONS]
           -h, --help
             Display help
           "
   exit
 }
 # Option strings
-SHORT="h:"
-LONG="help:"
+SHORT="h"
+LONG="help"
 
 # read the options
 OPTS=$(getopt --options $SHORT --long $LONG --name "$0" -- "$@")

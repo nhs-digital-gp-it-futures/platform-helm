@@ -9,7 +9,7 @@ param(
         [string]$chart="src/buyingcatalogue"
     )
 
-# Global Variables and retun code
+# Global Variables and return code
 $index = 0
 $ChartVersions = @()
 
@@ -34,30 +34,30 @@ foreach ($line in $CurrentFile)
 {
     if ($line.startswith("- name:"))
     {
-        $Chartver = @{}
-        $Chartver.name = "$line" -replace "- name: "
-        $Chartver.currentversion = $CurrentFile[$index+2] -replace "  version: "
+        $ChartLine = @{}
+        $ChartLine.name = "$line" -replace "- name: "
+        $ChartLine.currentVersion = $CurrentFile[$index+2] -replace "  version: "
         # Check if it exists in the repo
-        if (($LatestChartVersions -match "gpitfuturesdevacr/"+$Chartver.name)[0])
+        if (($LatestChartVersions -match "gpitfuturesdevacr/"+$ChartLine.name)[0])
         {
-            [string]$Chartver.latestversion = (($LatestChartVersions -match "gpitfuturesdevacr/"+$Chartver.name)[0] | select -ExpandProperty "Chart Version").trim()
-            if ($Chartver.latestversion -gt $Chartver.currentversion)
+            [string]$ChartLine.latestVersion = (($LatestChartVersions -match "gpitfuturesdevacr/"+$ChartLine.name)[0] | select -ExpandProperty "Chart Version").trim()
+            if ($ChartLine.latestVersion -gt $ChartLine.currentVersion)
             {
                 # Update desired version to latest for component
-                $CurrentFile[$index+2]="  version: " + $Chartver.latestversion
-                $Chartver.updated = "True"
-                $Chartver.updatedversion = $CurrentFile[$index+2] -replace "  version: "
+                $CurrentFile[$index+2]="  version: " + $ChartLine.latestVersion
+                $ChartLine.updated = "True"
+                $ChartLine.updatedVersion = $CurrentFile[$index+2] -replace "  version: "
             }
             else 
             {
-                $Chartver.updated = "False"
+                $ChartLine.updated = "False"
             }
         }
         else 
         {
-            $Chartver.updated = "False"
+            $ChartLine.updated = "False"
         }
-        $ChartVersions += [pscustomobject]$Chartver | select name,currentversion,latestversion,updated,updatedversion
+        $ChartVersions += [pscustomobject]$ChartLine | select name,currentVersion,latestVersion,updated,updatedVersion
     }
 
     $index = $index+1

@@ -12,8 +12,8 @@ function displayHelp {
   exit
 }
 # Option strings
-SHORT="h:l:u:"
-LONG="help:,latest:,update:"
+SHORT="hl:u:"
+LONG="help,latest:,update:"
 
 # read the options
 OPTS=$(getopt --options $SHORT --long $LONG --name "$0" -- "$@")
@@ -61,14 +61,12 @@ if [[ "$context" != "docker-desktop" ]]; then
   exit 1
 fi
 
-if [ "$latest" != "false" ]
-  then 
+if [[ "$latest" != "false" ]]; then
     echo "Getting Latest Chart Versions..."$'\n'
     ./get-latest-charts.sh
 fi
 
-if [ "$update" != "false" ]
-  then 
+if [[ "$update" != "false" ]]; then
     echo $'\n'"Updating Dependencies..."$'\n'
     rm $chart/charts/*.tgz
     helm dependency update $chart
@@ -79,13 +77,3 @@ if [[ "$OSTYPE" == "darwin"* ]]; then
 else
   helm upgrade bc $chart -n buyingcatalogue -i -f environments/local-docker.yaml -f local-overrides.yaml $@
 fi
-
-date=$(date +%Y-%m-%d -d "-2 days")
-#charts=$(ls ./$chart/Chart-*.yaml)
-files=$(ls ./$chart/)
-for file in $files; do
-    if [ stat -c %y $file <= $date ]; then
-        #rm -f $file
-        echo $file
-    fi
-done
