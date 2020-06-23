@@ -134,7 +134,7 @@ jobs:
 
 - job: cleanUpDynamicEnv
   dependsOn: packageAndPublish
-  #condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+  #condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master')) 
   variables:
     - group: dev-secrets
     - name: semVer
