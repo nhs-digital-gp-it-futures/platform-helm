@@ -1,19 +1,19 @@
-####################################################
-### Deploy local cluster                         ###
-### usage:                                       ###
-###  ./launch-or-update-local.ps1                ###
-###                                              ###
-### without getting latest version from repo     ###
-###  ./launch-or-update-local.ps1 -latest false  ###
-###  ./launch-or-update-local.ps1 -l             ###
-###                                              ###
-### without downloading updates...               ###
-###  ./launch-or-update-local.ps1 -update false  ###
-###  ./launch-or-update-local.ps1 -u             ###
-###                                              ###
-### without refreshing at all...                 ###
-###  ./launch-or-update-local.ps1 -l -u          ###
-####################################################
+#######################################################
+### Deploy local cluster                            ###
+### usage:                                          ###
+###  ./launch-or-update-local.ps1                   ###
+###                                                 ###
+### without setting repo latest versions            ###
+###  ./launch-or-update-local.ps1 -latest false     ###
+###  ./launch-or-update-local.ps1 -l                ###
+###                                                 ###
+### without downloading updates for set versions    ###
+###  ./launch-or-update-local.ps1 -update false     ###
+###  ./launch-or-update-local.ps1 -u                ###
+###                                                 ###
+### without refreshing at all...                    ###
+###  ./launch-or-update-local.ps1 -l -u             ###
+#######################################################
 
 param(
         [Parameter()]
@@ -43,4 +43,4 @@ if (($update -ne "false") -and ($u -eq $false))
 }
 
 write-host "`nDeploying helm charts"
-#helm upgrade bc $chart -n buyingcatalogue -i -f environments/local-docker.yaml -f local-overrides.yaml
+helm upgrade bc $chart -n buyingcatalogue -i -f environments/local-docker.yaml -f local-overrides.yaml

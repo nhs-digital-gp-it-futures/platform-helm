@@ -19,7 +19,7 @@ $CurrentFile = @(Get-Content ./$chart/chart.yaml)
 
 foreach ($line in $CurrentFile)
 {
-    if ($line.startswith("- name:")<# -and ($latest -ne "false") -and ($l -eq $false)#>)
+    if ($line.startswith("- name:"))
     {
         $Chartver = @{}
         $Chartver.name = "$line" -replace "- name: "
@@ -53,7 +53,7 @@ foreach ($line in $CurrentFile)
 $ChartVersions | ft
 
 $DateStamp = get-date -uformat "%Y-%m-%d"
-if (!(Test-Path "./$chart/Chart-$DateStamp.yaml")<# -and ($latest -ne "false") -and ($l -eq $false)#>)
+if (!(Test-Path "./$chart/Chart-$DateStamp.yaml"))
 {
     Rename-Item -Path ./$chart/Chart.yaml -NewName "Chart-$DateStamp.yaml"
 }
