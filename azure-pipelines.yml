@@ -16,6 +16,7 @@ pool:
 
 jobs:
 - job: packageAndPublish
+  condition: eq(1,2)
   displayName: Package And Publish Buyingcatalogue
   # pool:
   #   name: GP IT Futures AKS Build Agents
@@ -85,7 +86,8 @@ jobs:
 
 - job: deployToDev
   dependsOn: packageAndPublish
-  condition: and(succeeded(), ne(variables['Build.SourceBranch'], 'refs/heads/master'))
+  #condition: and(succeeded(), ne(variables['Build.SourceBranch'], 'refs/heads/master'))
+  condition: eq(1,2)
   variables:
     - group: dev-secrets
     - name: semVer
@@ -133,7 +135,7 @@ jobs:
     displayName: Deploy System
 
 - job: cleanUpDynamicEnv
-  dependsOn: packageAndPublish
+  #dependsOn: packageAndPublish
   #condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master')) 
   variables:
     - group: dev-secrets
@@ -148,10 +150,12 @@ jobs:
       inlineScript: 'az aks get-credentials -n gpitfutures-dev-aks -g gpitfutures-dev-rg-aks'
     name: kubectlContext
     displayName: Get Kubernetes Context
+    enabled: "false"
   - bash: |
       helm repo add gpitfuturesdevacr https://gpitfuturesdevacr.azurecr.io/helm/v1/repo --username gpitfuturesdevacr --password $(gpitfuturesdevacr-pass)
     name: addRepo
     displayName: Add gpitfuturesdevacr repo
+    enabled: "false"
   - task: AzureCLI@2
     inputs:
       azureSubscription: 'NHSAPP-BuyingCatalogue (Non-Prod)'
@@ -160,6 +164,15 @@ jobs:
       scriptPath: 'tear-down-azure.sh'
       arguments: '-m "$(Build.SourceVersionMessage)" -d gpitfutures-dev-sql-pri -g gpitfutures-dev-rg-sql-pri -a "$(gpitdevstorageaccountconnectionstring)"'
     name: cleanUpEnvironments
+    enabled: "false"
+  - task: AzureCLI@2
+    inputs:
+      azureSubscription: 'NHSAPP-BuyingCatalogue (Non-Prod)'
+      scriptType: 'bash'
+      scriptLocation: 'inlineScript'
+      inlineScript: 'az sql db delete --name "bc-bc-6636-cleanup-quickfix-ordapi" --resource-group gpitfutures-dev-rg-sql-pri --server gpitfutures-dev-sql-pri --yes --verbose'
+    name: test
+    displayName: test cmd
 
 # TODO
 # - job: runAcceptanceTests
