@@ -113,9 +113,7 @@ function deleteDatabases {
     done
 
     for dbName in ${databaseNames[*]}; do
-        echo $dbName
-        az sql db delete --name "$dbName" --resource-group "$resourceGroup" --server "$dbServer" --yes --debug
-        echo "yay"
+        az sql db delete --name "$dbName" --resource-group "$resourceGroup" --server "$dbServer" --yes
     done
 }
 
@@ -124,7 +122,6 @@ function deleteAllResources {
     deleteBlobStoreContainers 2> /dev/null
     deleteDatabases
 }
-
 
 # Defaults
 dbServer="gpitfutures-dev-sql-pri"

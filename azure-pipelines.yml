@@ -134,7 +134,7 @@ jobs:
 
 - job: cleanUpDynamicEnv
   dependsOn: packageAndPublish
-  #condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master')) 
+  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master')) 
   variables:
     - group: dev-secrets
     - name: semVer
@@ -159,7 +159,9 @@ jobs:
       scriptLocation: 'scriptPath'
       scriptPath: 'tear-down-azure.sh'
       arguments: '-m "$(Build.SourceVersionMessage)" -d gpitfutures-dev-sql-pri -g gpitfutures-dev-rg-sql-pri -a "$(gpitdevstorageaccountconnectionstring)"'
-    name: cleanUpEnvironments
+    name: cleanUp
+    displayName: Clean up dynamic environments
+
 
 # TODO
 # - job: runAcceptanceTests
