@@ -52,6 +52,10 @@ while true ; do
       azureStorageConnectionString="$2"
       shift 2
       ;;
+    -g | --resource-group )
+      resourceGroup="$2"
+      shift 2
+      ;;
     -- )
       shift
       break
