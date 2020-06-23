@@ -79,3 +79,16 @@ if [[ "$OSTYPE" == "darwin"* ]]; then
 else
   helm upgrade bc $chart -n buyingcatalogue -i -f environments/local-docker.yaml -f local-overrides.yaml $@
 fi
+
+date=$(date +%Y-%m-%d -d "-2 days")
+#charts=$(ls ./$chart/Chart-*.yaml)
+files=$(ls ./$chart/)
+for file in $files; do
+    if [ stat -c %y $file <= $date ]; then
+        #rm -f $file
+        echo $file
+    fi
+done
+
+
+#find ./$chart/ -name "*.yaml" -type f -mtime +3 -exec echo {} \;

@@ -41,7 +41,7 @@ CurrentFile=$(cat ./$chart/Chart.yaml)
 Dependencies="false"
 
 # Update the local cache from the Repo and confirm dev repo is queried
-updaterepos=$(helm repo update|grep "gpitfuturessevacr")
+updaterepos=$(helm repo update|grep "gpitfuturesdevacr")
 
 if [[ $updaterepos != "" ]]; then
   echo $'\n'"$updaterepos"$'\n'

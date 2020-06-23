@@ -13,8 +13,18 @@ param(
 $index = 0
 $ChartVersions = @()
 
-# Update the local cache from the Repo
-helm repo update
+# Update the local cache from the Repo and confirm dev repo is queried
+$updaterepos=helm repo update | select-string -SimpleMatch "gpitfuturesdevacr"
+
+if ($updaterepos)
+{
+    write-host "$updaterepos"
+}
+else
+{
+    write-host "`ngpitfuturesdevacr not found in helm repos`n"
+    exit
+}  
 
 ### Build array of versions ###
 $LatestChartVersions = helm search repo gpit --devel | ConvertFrom-String -Delimiter "`t" -PropertyNames NAME,"CHART VERSION","APP VERSION",DESCRIPTION | select -Skip 1
@@ -62,3 +72,6 @@ if (!(Test-Path "./$chart/Chart-$DateStamp.yaml"))
 }
 
 set-content -path ./$chart/Chart.yaml -Value $CurrentFile -force
+
+# Remove old versions of Chart-<date>.yaml (older than 2 days)
+Get-ChildItem -Path ./$chart/ Chart-*.yaml | Where-Object { !$_.PSIsContainer -and $_.CreationTime -lt ((Get-Date).AddDays(-2)) } | Remove-Item -Force
