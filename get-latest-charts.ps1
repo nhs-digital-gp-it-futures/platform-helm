@@ -11,14 +11,14 @@ param(
 
 # Global Variables and return code
 $index = 0
-$ChartVersions = @()
+$chartVersions = @()
 
 # Update the local cache from the Repo and confirm dev repo is queried
-$updaterepos=helm repo update | select-string -SimpleMatch "gpitfuturesdevacr"
+$updateRepos=helm repo update | select-string -SimpleMatch "gpitfuturesdevacr"
 
-if ($updaterepos)
+if ($updateRepos)
 {
-    write-host "$updaterepos"
+    write-host "$updateRepos"
 }
 else
 {
@@ -27,51 +27,51 @@ else
 }  
 
 ### Build array of versions ###
-$LatestChartVersions = helm search repo gpit --devel | ConvertFrom-String -Delimiter "`t" -PropertyNames NAME,"CHART VERSION","APP VERSION",DESCRIPTION | select -Skip 1
-$CurrentFile = @(Get-Content ./$chart/chart.yaml)
+$latestChartVersions = helm search repo gpit --devel | ConvertFrom-String -Delimiter "`t" -PropertyNames NAME,"CHART VERSION","APP VERSION",DESCRIPTION | select -Skip 1
+$currentFile = @(Get-Content ./$chart/chart.yaml)
 
-foreach ($line in $CurrentFile)
+foreach ($line in $currentFile)
 {
     if ($line.startswith("- name:"))
     {
-        $ChartLine = @{}
-        $ChartLine.name = "$line" -replace "- name: "
-        $ChartLine.currentVersion = $CurrentFile[$index+2] -replace "  version: "
+        $chartLine = @{}
+        $chartLine.name = "$line" -replace "- name: "
+        $chartLine.currentVersion = $currentFile[$index+2] -replace "  version: "
         # Check if it exists in the repo
-        if (($LatestChartVersions -match "gpitfuturesdevacr/"+$ChartLine.name)[0])
+        if (($latestChartVersions -match "gpitfuturesdevacr/"+$chartLine.name)[0])
         {
-            [string]$ChartLine.latestVersion = (($LatestChartVersions -match "gpitfuturesdevacr/"+$ChartLine.name)[0] | select -ExpandProperty "Chart Version").trim()
-            if ($ChartLine.latestVersion -gt $ChartLine.currentVersion)
+            [string]$chartLine.latestVersion = (($latestChartVersions -match "gpitfuturesdevacr/"+$chartLine.name)[0] | select -ExpandProperty "Chart Version").trim()
+            if ($chartLine.latestVersion -gt $chartLine.currentVersion)
             {
                 # Update desired version to latest for component
-                $CurrentFile[$index+2]="  version: " + $ChartLine.latestVersion
-                $ChartLine.updated = "True"
-                $ChartLine.updatedVersion = $CurrentFile[$index+2] -replace "  version: "
+                $currentFile[$index+2]="  version: " + $chartLine.latestVersion
+                $chartLine.updated = "True"
+                $chartLine.updatedVersion = $currentFile[$index+2] -replace "  version: "
             }
             else 
             {
-                $ChartLine.updated = "False"
+                $chartLine.updated = "False"
             }
         }
         else 
         {
-            $ChartLine.updated = "False"
+            $chartLine.updated = "False"
         }
-        $ChartVersions += [pscustomobject]$ChartLine | select name,currentVersion,latestVersion,updated,updatedVersion
+        $chartVersions += [pscustomobject]$chartLine | select name,currentVersion,latestVersion,updated,updatedVersion
     }
 
     $index = $index+1
 }
 
-$ChartVersions | ft
+$chartVersions | ft
 
-$DateStamp = get-date -uformat "%Y-%m-%d"
-if (!(Test-Path "./$chart/Chart-$DateStamp.yaml"))
+$dateStamp = get-date -uformat "%Y-%m-%d"
+if (!(Test-Path "./$chart/Chart-$dateStamp.yaml"))
 {
-    Rename-Item -Path ./$chart/Chart.yaml -NewName "Chart-$DateStamp.yaml"
+    Rename-Item -Path ./$chart/Chart.yaml -NewName "Chart-$dateStamp.yaml"
 }
 
-set-content -path ./$chart/Chart.yaml -Value $CurrentFile -force
+set-content -path ./$chart/Chart.yaml -Value $currentFile -force
 
 # Remove old versions of Chart-<date>.yaml (older than 2 days)
 Get-ChildItem -Path ./$chart/ Chart-*.yaml | Where-Object { !$_.PSIsContainer -and $_.CreationTime -lt ((Get-Date).AddDays(-2)) } | Remove-Item -Force

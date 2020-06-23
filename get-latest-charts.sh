@@ -37,39 +37,39 @@ while true ; do
   esac
 done
 
-CurrentFile=$(cat ./$chart/Chart.yaml)
-Dependencies="false"
+currentFile=$(cat ./$chart/Chart.yaml)
+dependencies="false"
 
 # Update the local cache from the Repo and confirm dev repo is queried
-updaterepos=$(helm repo update|grep "gpitfuturesdevacr")
+updateRepos=$(helm repo update|grep "gpitfuturesdevacr")
 
-if [[ $updaterepos != "" ]]; then
-  echo $'\n'"$updaterepos"$'\n'
+if [[ $updateRepos != "" ]]; then
+  echo $'\n'"$updateRepos"$'\n'
 else
   echo $'\n'"gpitfuturesdevacr not found in helm repos"$'\n'
   exit
 fi
 
 # Move or Remove old file
-DateStamp=`date +%Y-%m-%d`
-if test -f ./$chart/Chart-$DateStamp.yaml; then
+dateStamp=`date +%Y-%m-%d`
+if test -f ./$chart/Chart-$dateStamp.yaml; then
   rm ./$chart/Chart.yaml
 else
-  mv ./$chart/Chart.yaml ./$chart/Chart-$DateStamp.yaml  
+  mv ./$chart/Chart.yaml ./$chart/Chart-$dateStamp.yaml  
 fi
 
-echo "$CurrentFile"| while read line
+echo "$currentFile"| while read line
 do 
     if [[ $line =~ ^"dependencies"* ]]; then
-      Dependencies="true"
+      dependencies="true"
     fi
     
     if [[ $line =~ ^"- name: "* ]]; then
-        componentname=$(echo "$line" | cut -d " " -f3 | sed -r 's/\r$//')
-        compversion="$(helm search repo "$componentname" --devel --output table | grep "gpitfuturesdevacr/$componentname" | grep -v "$componentname-" | cut -f2)"
-        if [[ $compversion != "" ]]; then
-          newversion="version: $compversion"
-          echo "$componentname updated: $compversion"
+        componentName=$(echo "$line" | cut -d " " -f3 | sed -r 's/\r$//')
+        compVersion="$(helm search repo "$componentName" --devel --output table | grep "gpitfuturesdevacr/$componentName" | grep -v "$componentName-" | cut -f2)"
+        if [[ $compVersion != "" ]]; then
+          newVersion="version: $compVersion"
+          echo "$componentName updated: $compVersion"
         fi
     fi
 
@@ -78,10 +78,10 @@ do
       line="  $line"
     fi
 
-    if [[ $line =~ ^"version: " ]] && [[ $Dependencies == "true" ]]; then
-      if [[ $newversion != "" ]]; then
-        line="  $newversion"
-        newversion=""
+    if [[ $line =~ ^"version: " ]] && [[ $dependencies == "true" ]]; then
+      if [[ $newVersion != "" ]]; then
+        line="  $newVersion"
+        newVersion=""
       else 
         line="  $line"
       fi
