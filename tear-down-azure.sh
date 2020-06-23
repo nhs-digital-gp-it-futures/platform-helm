@@ -113,7 +113,9 @@ function deleteDatabases {
     done
 
     for dbName in ${databaseNames[*]}; do
-        az sql db delete --name "$dbName" --resource-group "$resourceGroup" --server "$dbServer" --yes
+        echo $dbName
+        az sql db delete --name "$dbName" --resource-group "$resourceGroup" --server "$dbServer" --yes --debug
+        echo "yay"
     done
 }
 
