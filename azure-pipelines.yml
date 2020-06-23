@@ -26,6 +26,7 @@ jobs:
     displayName: gitversion
     inputs:
       versionSpec: '5.x'
+
   - task: HelmInstaller@1
     displayName: 'install helm'
     inputs:
@@ -63,6 +64,7 @@ jobs:
       fi
       env | sort
     name: echovar
+
   - task: CopyFiles@2
     inputs:
       SourceFolder: 'environments'
@@ -70,6 +72,7 @@ jobs:
       TargetFolder: '$(build.artifactStagingDirectory)/environments'
       CleanTargetFolder: false
       OverWrite: true
+
   - task: CopyFiles@2
     inputs:
       SourceFolder: ''
@@ -78,7 +81,8 @@ jobs:
       CleanTargetFolder: false
       OverWrite: true
   - publish: $(build.artifactStagingDirectory)
-    artifact: build-artifact    
+    artifact: build-artifact 
+
 - job: deployToDev
   dependsOn: packageAndPublish
   condition: and(succeeded(), ne(variables['Build.SourceBranch'], 'refs/heads/master'))
@@ -99,6 +103,7 @@ jobs:
       echo "namespace=$namespace, basePath=$basePath, baseUrl=$baseUrl, baseIdentityUrl"
       echo "##vso[task.setvariable variable=Namespace;isOutput=true]$namespace"
     name: DeployVars
+
   - task: AzureCLI@2
     inputs:
       azureSubscription: 'NHSAPP-BuyingCatalogue (Non-Prod)'
@@ -126,6 +131,34 @@ jobs:
         -q $(srt-redispass)
     name: deploySystem
     displayName: Deploy System
+
+- job: cleanUpDynamicEnv
+  dependsOn: packageAndPublish
+  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+  variables:
+    - group: dev-secrets
+    - name: semVer
+      value: $[ dependencies.packageAndPublish.outputs['setVersionStep.semVer'] ]
+  steps:
+  - task: AzureCLI@2
+    inputs:
+      azureSubscription: 'NHSAPP-BuyingCatalogue (Non-Prod)'
+      scriptType: 'bash'
+      scriptLocation: 'inlineScript'
+      inlineScript: 'az aks get-credentials -n gpitfutures-dev-aks -g gpitfutures-dev-rg-aks'
+    name: kubectlContext
+    displayName: Get Kubernetes Context
+  - bash: |
+      helm repo add gpitfuturesdevacr https://gpitfuturesdevacr.azurecr.io/helm/v1/repo --username gpitfuturesdevacr --password $(gpitfuturesdevacr-pass)
+    name: addRepo
+    displayName: Add gpitfuturesdevacr repo
+  - bash: |
+      ./tear-down-azure.sh -m '$(Build.SourceVersionMessage)' \
+        -d gpitfutures-dev-sql-pri \
+        -g gpitfutures-dev-rg-sql-pri \
+        -a "$(gpitdevstorageaccountconnectionstring)"
+    name: cleanUpEnvironments
+
 # TODO
 # - job: runAcceptanceTests
 #   dependsOn: packageAndPublish
