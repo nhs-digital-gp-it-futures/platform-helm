@@ -30,7 +30,7 @@ else
 }  
 
 ### Build array of versions ###
-$latestChartVersions = helm search repo gpit $versionSource | ConvertFrom-String -Delimiter "`t" -PropertyNames NAME,"CHART VERSION","APP VERSION",DESCRIPTION | select -Skip 1
+$latestChartVersions = helm search repo gpit $versionSource 
 $currentFile = @(Get-Content ./$chart/chart.yaml)
 
 foreach ($line in $currentFile)
@@ -43,8 +43,8 @@ foreach ($line in $currentFile)
         # Check if it exists in the repo
         if (($latestChartVersions -match "gpitfuturesdevacr/"+$chartLine.name)[0])
         {
-            [string]$chartLine.latestVersion = (($latestChartVersions -match "gpitfuturesdevacr/"+$chartLine.name)[0] | select -ExpandProperty "Chart Version").trim()
-            if ($chartLine.latestVersion -gt $chartLine.currentVersion)
+            [string]$chartLine.latestVersion = ($latestChartVersions -match "gpitfuturesdevacr/"+$chartLine.name)[0].split("`t")[1]  
+            if ($chartLine.latestVersion -ne $chartLine.currentVersion)
             {
                 # Update desired version to latest for component
                 $currentFile[$index+2]="  version: " + $chartLine.latestVersion
