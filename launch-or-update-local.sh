@@ -65,7 +65,7 @@ if [[ "$latest" != "false" ]]; then
   echo "Getting Latest Chart Versions..."$'\n'
   ./get-latest-charts.sh
 else
-  echo "Getting Main Chart Versions..."$'\n'
+  echo "Getting Master Chart Versions..."$'\n'
   ./get-latest-charts.sh -m
 fi
 

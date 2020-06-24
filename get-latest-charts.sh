@@ -4,14 +4,14 @@ function displayHelp {
   printf "usage: ./get-latest-charts.sh [OPTIONS]
           -h, --help
             Display help
-          -m, --main
-            Get latest from the main release instead of alpha releases
+          -m, --master
+            Get latest from the master release instead of alpha releases
           "
   exit
 }
 # Option strings
 SHORT="hm"
-LONG="help,main"
+LONG="help,master"
 
 # read the options
 OPTS=$(getopt --options $SHORT --long $LONG --name "$0" -- "$@")
@@ -31,7 +31,7 @@ while true ; do
       displayHelp
       shift
       ;;
-    -m | --main )
+    -m | --master )
       unset versionSource
       shift
       ;;

@@ -14,7 +14,7 @@ param(
 # Global Variables and return code
 $index = 0
 $chartVersions = @()
-$versionSource = If ($m) {$null} Else {"--devel"} #If -m flag is present, grab the latest main versions, if not, use the --devel flag
+$versionSource = If ($m) {$null} Else {"--devel"} #If -m flag is present, grab the latest master versions, if not, use the --devel flag
 
 # Update the local cache from the Repo and confirm dev repo is queried
 $updateRepos=helm repo update | select-string -SimpleMatch "gpitfuturesdevacr"
