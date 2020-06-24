@@ -59,7 +59,7 @@ In order to launch or update the system to the latest built images or chosen con
 
 ```bash
 ./launch-or-update-local.sh
-# or to run without getting the latest development chart versions (i.e. run with versions that are currently set)
+# or to run without getting the latest development chart versions (i.e. run with versions that are coming from builds on main branches)
 ./launch-or-update-local.sh -l false #(or --latest false)
 # or to run without downloading updates to charts from the repo (i.e. do not download newer versions if available)
 ./launch-or-update-local.sh -u false #(or --update false)

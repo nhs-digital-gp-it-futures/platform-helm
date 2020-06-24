@@ -6,12 +6,15 @@
 
 param(
         [Parameter()] 
-        [string]$chart="src/buyingcatalogue"
+        [string]$chart="src/buyingcatalogue",
+        [Parameter()] 
+        [switch]$m
     )
 
 # Global Variables and return code
 $index = 0
 $chartVersions = @()
+$versionSource = If ($m) {$null} Else {"--devel"} #If -m flag is present, grab the latest main versions, if not, use the --devel flag
 
 # Update the local cache from the Repo and confirm dev repo is queried
 $updateRepos=helm repo update | select-string -SimpleMatch "gpitfuturesdevacr"
@@ -27,7 +30,7 @@ else
 }  
 
 ### Build array of versions ###
-$latestChartVersions = helm search repo gpit --devel | ConvertFrom-String -Delimiter "`t" -PropertyNames NAME,"CHART VERSION","APP VERSION",DESCRIPTION | select -Skip 1
+$latestChartVersions = helm search repo gpit $versionSource | ConvertFrom-String -Delimiter "`t" -PropertyNames NAME,"CHART VERSION","APP VERSION",DESCRIPTION | select -Skip 1
 $currentFile = @(Get-Content ./$chart/chart.yaml)
 
 foreach ($line in $currentFile)

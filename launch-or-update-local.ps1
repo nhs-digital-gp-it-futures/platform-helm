@@ -31,9 +31,15 @@ $chart="src/buyingcatalogue"
 
 if (($latest -ne "false") -and ($l -eq $false))
 {
-    write-host "Updating helm charts in $chart"
+    write-host "Getting Latest Chart Versions..."
     invoke-expression -Command "./get-latest-charts.ps1 -chart $chart"
 }
+else
+{
+    write-host "Getting Main Chart Versions..."
+    invoke-expression -Command "./get-latest-charts.ps1 -chart $chart -m"
+}
+
 
 if (($update -ne "false") -and ($u -eq $false))
 {  

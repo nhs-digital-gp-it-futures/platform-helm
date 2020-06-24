@@ -4,12 +4,14 @@ function displayHelp {
   printf "usage: ./get-latest-charts.sh [OPTIONS]
           -h, --help
             Display help
+          -m, --main
+            Get latest from the main release instead of alpha releases
           "
   exit
 }
 # Option strings
-SHORT="h"
-LONG="help"
+SHORT="hm"
+LONG="help,main"
 
 # read the options
 OPTS=$(getopt --options $SHORT --long $LONG --name "$0" -- "$@")
@@ -18,12 +20,19 @@ eval set -- "$OPTS"
 
 # set initial values
 chart="src/buyingcatalogue"
+currentFile=$(cat ./$chart/Chart.yaml)
+dependencies="false"
+versionSource='--devel'
 
 # extract options and their arguments into variables.
 while true ; do
   case "$1" in
     -h | --help )
       displayHelp
+      shift
+      ;;
+    -m | --main )
+      unset versionSource
       shift
       ;;
     -- )
@@ -36,9 +45,6 @@ while true ; do
       ;;
   esac
 done
-
-currentFile=$(cat ./$chart/Chart.yaml)
-dependencies="false"
 
 # Update the local cache from the Repo and confirm dev repo is queried
 updateRepos=$(helm repo update|grep "gpitfuturesdevacr")
@@ -66,7 +72,7 @@ do
     
     if [[ $line =~ ^"- name: "* ]]; then
         componentName=$(echo "$line" | cut -d " " -f3 | sed -r 's/\r$//')
-        compVersion="$(helm search repo "$componentName" --devel --output table | grep "gpitfuturesdevacr/$componentName" | grep -v "$componentName-" | cut -f2)"
+        compVersion="$(helm search repo "$componentName" $versionSource --output table | grep "gpitfuturesdevacr/$componentName" | grep -v "$componentName-" | cut -f2)"
         if [[ $compVersion != "" ]]; then
           newVersion="version: $compVersion"
           echo "$componentName updated: $compVersion"
