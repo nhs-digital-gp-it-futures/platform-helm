@@ -178,7 +178,7 @@ while true ; do
   esac
 done
 
-context=`kubectl config current-context`
+context=$(kubectl config current-context)
 if [[ "$context" = "docker-desktop" ]]; then 
   >&2 echo "Error - Local Context - $context"
   exit 1
@@ -186,10 +186,10 @@ fi
 
 if [ -z ${namespace+x} ]
 then 
-  namespace=`cat /dev/urandom | tr -dc 'a-zA-Z' | fold -w 8 | head -n 1`
+  namespace=$(cat /dev/urandom | tr -dc 'a-zA-Z' | fold -w 8 | head -n 1)
   echo "namespace not set: generated $namespace"
 else #truncate to 63 chars && convert to lowercase to be DNS compliant
-  namespace=`echo "$namespace" | cut -c 1-63`
+  namespace=$(echo "$namespace" | cut -c 1-63)
   namespace=$(echo "$namespace" | tr '[:upper:]' '[:lower:]')
 fi
 
@@ -262,14 +262,14 @@ dbName=bc-$namespace
 containerName=$namespace-documents
 
 
-saUserStart=`echo $saUserName | cut -c-3`
-saPassStart=`echo $saPassword | cut -c-3`
-dbPassStart=`echo $dbUserPassword | cut -c-3`
-redisPassStart=`echo $redisPassword | cut -c-3`
-azureStorageConnectionStringStart=`echo $azureStorageConnectionString | cut -c-10`
-clientSecretStart=`echo $clientSecret | cut -c-3`
-cookieSecretStart=`echo $cookieSecret | cut -c-3`
-emailPassStart=`echo $emailPassword | cut -c-3`
+saUserStart=$(echo $saUserName | cut -c-3)
+saPassStart=$(echo $saPassword | cut -c-3)
+dbPassStart=$(echo $dbUserPassword | cut -c-3)
+redisPassStart=$(echo $redisPassword | cut -c-3)
+azureStorageConnectionStringStart=$(echo $azureStorageConnectionString | cut -c-10)
+clientSecretStart=$(echo $clientSecret | cut -c-3)
+cookieSecretStart=$(echo $cookieSecret | cut -c-3)
+emailPassStart=$(echo $emailPassword | cut -c-3)
 
 printf "launch-or-update-azure.sh
         chart = $chart

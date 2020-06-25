@@ -84,7 +84,7 @@ function calculateBranchName {
 
 function calculateNamespaceNames {
     if [ ! $1 ]; then
-        branchNamespace=`echo $branchName | sed 's/feature[[:punct:]]/bc-/g'`
+        branchNamespace=$(echo $branchName | sed 's/feature[[:punct:]]/bc-/g')
         prNamespace="bc-merge-$prNumber"
         return 
     fi
