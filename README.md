@@ -11,6 +11,9 @@ Each change of this repository is considered a new release, which can then be re
 
 The build pipeline creates a dynamic environment for each branch with the prefix 'feature/', this can then be elevated to test any changes madein PRs, but also to allow for [BA horns on dynamic environments](docs/dynamic-env-ba-horn.md) in the cloud. 
 
+
+The APIs in dev environment expose Swagger interface, to access it, please follow these [instructions](docs/port-forwarding-to-cloud-env.md).
+
 ## Configuration overview
 
 |                             Service                              |       Port        |                           Ingress                           |
