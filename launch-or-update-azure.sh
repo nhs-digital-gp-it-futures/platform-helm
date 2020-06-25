@@ -188,8 +188,9 @@ if [ -z ${namespace+x} ]
 then 
   namespace=`cat /dev/urandom | tr -dc 'a-zA-Z' | fold -w 8 | head -n 1`
   echo "namespace not set: generated $namespace"
-else #truncate to 63 chars
+else #truncate to 63 chars && convert to lowercase to be DNS compliant
   namespace=`echo "$namespace" | cut -c 1-63`
+  namespace=$(echo "$namespace" | tr '[:upper:]' '[:lower:]')
 fi
 
 if [ -z ${dbServer+x} ] || [ -z ${saUserName+x} ] || [ -z ${saPassword+x} ]

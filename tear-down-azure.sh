@@ -79,7 +79,7 @@ function calculatePrNumber {
 }
 
 function calculateBranchName {
-    branchName=$(curl https://api.github.com/repos/nhs-digital-gp-it-futures/platform-helm/pulls/$prNumber | jq --raw-output '.head.ref' )
+    branchName=$(curl https://api.github.com/repos/nhs-digital-gp-it-futures/platform-helm/pulls/$prNumber | jq --raw-output '.head.ref' | tr '[:upper:]' '[:lower:]' )
 }
 
 function calculateNamespaceNames {
