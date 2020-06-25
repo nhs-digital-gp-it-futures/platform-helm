@@ -62,8 +62,11 @@ if [[ "$context" != "docker-desktop" ]]; then
 fi
 
 if [[ "$latest" != "false" ]]; then
-    echo "Getting Latest Chart Versions..."$'\n'
-    ./get-latest-charts.sh
+  echo "Getting Latest Chart Versions..."$'\n'
+  ./get-latest-charts.sh
+else
+  echo "Getting Master Chart Versions..."$'\n'
+  ./get-latest-charts.sh -m
 fi
 
 if [[ "$update" != "false" ]]; then
