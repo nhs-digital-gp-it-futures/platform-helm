@@ -38,7 +38,7 @@ function displayHelp {
             The client secret to use for the cookie encryption. Default 'NodeClientSecret'
           --cookie-secret <cookie secret>
             The cookie secret to use for the cookie encryption. Default 'secret squirrel'
-          --db-pass <pass>
+          --db-user-pass <pass>
             The password for use by the api db users Default 'DisruptTheMarket1!'
           --email-server
             If set, disable the internal email server, and use external. Email Username & password must also be set.
@@ -53,7 +53,7 @@ function displayHelp {
 }
 # Option strings
 SHORT="hc:n:d:u:p:v:wb:s:a:i:r:q:f:"
-LONG="help,chart:,namespace:,db-server:,db-admin-user:,db-admin-pass:,version:,wait,base-path:,sql-package-args:,azure-storage-connection-string:,ip,redis-server:,redis-password:,file-overrides:,client-secret:,cookie-secret:,db-pass:,email-server:,email-user:,email-pass:,helm-upgrade-args:"
+LONG="help,chart:,namespace:,db-server:,db-admin-user:,db-admin-pass:,version:,wait,base-path:,sql-package-args:,azure-storage-connection-string:,ip,redis-server:,redis-password:,file-overrides:,client-secret:,cookie-secret:,db-user-pass:,email-server:,email-user:,email-pass:,helm-upgrade-args:"
 
 # read the options
 OPTS=$(getopt --options $SHORT --long $LONG --name "$0" -- "$@")
@@ -63,7 +63,7 @@ eval set -- "$OPTS"
 # set initial values
 chart="gpitfuturesdevacr/buyingcatalogue"
 wait="false"
-dbPassword="DisruptTheMarket1!"
+dbUserPassword="DisruptTheMarket1!"
 clientSecret="NodeClientSecret"
 cookieSecret="secret squirrel"
 
@@ -147,8 +147,8 @@ while true ; do
       cookieSecret="$2"
       shift 2
       ;;
-    --db-pass )
-      dbPassword="$2"
+    --db-user-pass )
+      dbUserPassword="$2"
       shift 2
       ;;
     --email-server )
@@ -263,7 +263,7 @@ containerName=$namespace-documents
 
 saUserStart=`echo $saUserName | cut -c-3`
 saPassStart=`echo $saPassword | cut -c-3`
-dbPassStart=`echo $dbPassword | cut -c-3`
+dbPassStart=`echo $dbUserPassword | cut -c-3`
 redisPassStart=`echo $redisPassword | cut -c-3`
 azureStorageConnectionStringStart=`echo $azureStorageConnectionString | cut -c-10`
 clientSecretStart=`echo $clientSecret | cut -c-3`
@@ -287,7 +287,7 @@ printf "launch-or-update-azure.sh
         file-overrides = $overrideFiles
         client-secret = $clientSecretStart*
         cookie-secret = $cookieSecretStart*
-        db-pass = $dbPassStart
+        db-user-pass = $dbPassStart
         email-server = $emailServer 
         email-user = $emailUser 
         email-pass = $emailPassStart
@@ -302,7 +302,7 @@ helm upgrade bc $chart -n $namespace -i -f environments/azure.yaml \
   --timeout 10m0s \
   --set saUserName="$saUserName" \
   --set saPassword="$saPassword" \
-  --set dbPassword="$dbPassword" \
+  --set dbPassword="$dbUserPassword" \
   --set db.dbs.bapi.name=$dbName-bapi \
   --set bapi-db-deploy.db.name=$dbName-bapi \
   --set bapi-db-deploy.db.sqlPackageArgs="$sqlPackageArgs" \

@@ -128,7 +128,8 @@ jobs:
         -a "$(gpitdevstorageaccountconnectionstring)" \
         -i "51.11.46.27" \
         -r $(srt-redishost) \
-        -q $(srt-redispass)
+        -q $(srt-redispass) \
+        --db-user-pass $(gpitfuturesdevdbpassword)
     name: deploySystem
     displayName: Deploy System
 
