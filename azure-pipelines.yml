@@ -1,6 +1,3 @@
-# Azure pipeline to build & publish buying catalogue system
-# Some parts based on https://cloudblogs.microsoft.com/opensource/2018/11/27/tutorial-azure-devops-setup-cicd-pipeline-kubernetes-docker-helm/
-
 trigger:
   batch: true
   branches:
@@ -10,6 +7,16 @@ trigger:
 
 pr:
 - master
+
+resources:
+  pipelines:
+  - pipeline: ordapi   # Name of the pipeline resource
+    source: nhs-digital-gp-it-futures.BuyingCatalogueOrdering # Name of the triggering pipeline
+    trigger: 
+      branches:
+        include:
+        - feature/*
+        - master
 
 pool:
   vmImage: 'ubuntu-latest'
