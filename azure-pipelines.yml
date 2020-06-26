@@ -10,12 +10,76 @@ pr:
 
 # resources:
 #   pipelines:
-#   - pipeline: ordapi   # Name of the pipeline resource
-#     source: nhs-digital-gp-it-futures.BuyingCatalogueOrdering # Name of the triggering pipeline
+#   - pipeline: bapi   # Name of the pipeline resource
+#     source: nhs-digital-gp-it-futures.BuyingCatalogueService # Name of the triggering pipeline
 #     trigger: 
 #       branches:
 #         include:
 #         - feature/*
+#         - development
+#         - master
+        
+#   - pipeline: dapi   
+#     source: nhs-digital-gp-it-futures.BuyingCatalogueDocumentService
+#     trigger: 
+#       branches:
+#         include:
+#         - feature/*
+#         - development
+#         - master
+
+#   - pipeline: isapi   
+#     source: nhs-digital-gp-it-futures.BuyingCatalogueIdentity
+#     trigger: 
+#       branches:
+#         include:
+#         - feature/*
+#         - development
+#         - master
+
+#   - pipeline: ordapi   
+#     source: nhs-digital-gp-it-futures.BuyingCatalogueOrdering
+#     trigger: 
+#       branches:
+#         include:
+#         - feature/*
+#         - development
+#         - master
+
+#   - pipeline: mp   
+#     source: nhs-digital-gp-it-futures.marketing-pages
+#     trigger: 
+#       branches:
+#         include:
+#         - feature/*
+#         - development
+#         - master
+
+#   - pipeline: pb   
+#     source: nhs-digital-gp-it-futures.public-browse
+#     trigger: 
+#       branches:
+#         include:
+#         - feature/*
+#         - development
+#         - master
+
+#   - pipeline: admin   
+#     source: nhs-digital-gp-it-futures.buying-catalogue-admin
+#     trigger: 
+#       branches:
+#         include:
+#         - feature/*
+#         - development
+#         - master
+
+#   - pipeline: of   
+#     source: nhs-digital-gp-it-futures.order-form
+#     trigger: 
+#       branches:
+#         include:
+#         - feature/*
+#         - development
 #         - master
 
 pool:
