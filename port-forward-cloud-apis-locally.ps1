@@ -52,9 +52,9 @@ catch { }
 finally
 {
     Write-Host "`nStarting cleanup..."
-    foreach ($Job in $JobIds)
+    foreach ($JobId in $JobIds)
     {
-        Stop-Job -Id $Job
+        Stop-Job -Id $JobId
     }
     Write-Host -ForegroundColor Green "Cleanup completed!"
 }
