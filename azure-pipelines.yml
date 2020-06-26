@@ -16,6 +16,7 @@ pr:
 #       branches:
 #         include:
 #         - feature/*
+#         - development
 #         - master
         
 #   - pipeline: dapi   
@@ -24,6 +25,7 @@ pr:
 #       branches:
 #         include:
 #         - feature/*
+#         - development
 #         - master
 
 #   - pipeline: isapi   
@@ -32,6 +34,7 @@ pr:
 #       branches:
 #         include:
 #         - feature/*
+#         - development
 #         - master
 
 #   - pipeline: ordapi   
@@ -40,6 +43,7 @@ pr:
 #       branches:
 #         include:
 #         - feature/*
+#         - development
 #         - master
 
 #   - pipeline: mp   
@@ -48,6 +52,7 @@ pr:
 #       branches:
 #         include:
 #         - feature/*
+#         - development
 #         - master
 
 #   - pipeline: pb   
@@ -56,6 +61,7 @@ pr:
 #       branches:
 #         include:
 #         - feature/*
+#         - development
 #         - master
 
 #   - pipeline: admin   
@@ -64,6 +70,7 @@ pr:
 #       branches:
 #         include:
 #         - feature/*
+#         - development
 #         - master
 
 #   - pipeline: of   
@@ -72,6 +79,7 @@ pr:
 #       branches:
 #         include:
 #         - feature/*
+#         - development
 #         - master
 
 pool:
