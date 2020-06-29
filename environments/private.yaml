@@ -22,3 +22,10 @@ redis:
   enabled: false
 redis-commander:
   enabled: false
+dapi:
+  azureBlobStorage:    
+    containerName: "document"
+file-loader:
+  azureBlobStorage:    
+    containerName: "document"
+    

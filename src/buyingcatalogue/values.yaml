@@ -173,7 +173,7 @@ dapi:
     connectionSecret: 
       name: "bc-buyingcatalogue"
       key: azure-blob-connection-string
-    containerName: container-1
+    containerName: document-container
 
 bapi:  
   enabled: true
@@ -385,7 +385,7 @@ file-loader:
     connectionSecret: 
       name: "bc-buyingcatalogue"
       key: azure-blob-connection-string
-    containerName: container-1
+    containerName: document-container
 
 mp:
   enabled: true
