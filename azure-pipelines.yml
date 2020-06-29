@@ -175,6 +175,7 @@ jobs:
 
   - bash: 'bash determine-namespace.sh'
     name: DeployVars
+    displayName: Set up environment variables for deployment
 
   - bash: |
       helm repo add gpitfuturesdevacr https://gpitfuturesdevacr.azurecr.io/helm/v1/repo --username gpitfuturesdevacr --password $(gpitfuturesdevacr-pass)

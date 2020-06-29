@@ -1,4 +1,5 @@
 #!/bin/bash
+set -e
 
 function extractStoryIdFromBranchName {
     storyIdRegex='^(refs/heads/feature/)([0-9]{4,5})[^0-9]?(.*)$'
@@ -6,17 +7,22 @@ function extractStoryIdFromBranchName {
     if [[ "$1" =~ $storyIdRegex ]]; then
       storyId=$(echo ${BASH_REMATCH[2]}) # get the 2nd captured group
     else
-        echo "Couldn't extract the story Id from branch name, exiting."
+        >&2 echo "Couldn't extract the story Id from branch name, exiting."
         exit 1
     fi
 }
 
-function calculateNamespaceFromRemoteBranch {
+function calculateBranchNameFromBranchOfRemoteTrigger {
   # Gets name of the variable following given pattern
   branchNameVariableName=$(compgen -A variable | grep 'RESOURCES_PIPELINE_.*SOURCEBRANCH')
 
-  # Gets the value from the variable name captured above
-  branchName="${!branchNameVariableName}"
+  # returns the value from the variable name captured above
+  echo ${!branchNameVariableName}
+  return 0
+}
+
+function calculateNamespaceFromBranchName {
+  branchName=$1
 
   extractStoryIdFromBranchName $branchName
 
@@ -34,16 +40,18 @@ function calculateNamespaceFromRemoteBranch {
     featureNamespace=$(echo "${branchName#${unwantedPrefix}}" | sed 's/[[:punct:]]/-/g')
   fi
 
-  namespace=$featureNamespace
+  echo "$featureNamespace"
+  return 0
 }
 
 
 if [ "$BUILD_REASON" = "PullRequest" ]; then
     namespace=$(echo "bc-$BUILD_SOURCEBRANCHNAME-$SYSTEM_PULLREQUEST_PULLREQUESTNUMBER" | sed 's/[[:punct:]]/-/g')
 elif [ "$BUILD_REASON" = "ResourceTrigger" ]; then
-    calculateNamespaceFromRemoteBranch
+    branchName=$(calculateBranchNameFromBranchOfRemoteTrigger)
+    namespace=$(calculateNamespaceFromBranchName $branchName)
 else
-    namespace=$(echo "bc-$BUILD_SOURCEBRANCHNAME" | sed 's/[[:punct:]]/-/g')
+    namespace=$(calculateNamespaceFromBranchName $BUILD_SOURCEBRANCH)
 fi
 
 echo "namespace=$namespace"
