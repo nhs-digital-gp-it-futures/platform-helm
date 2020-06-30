@@ -173,7 +173,7 @@ jobs:
     name: kubectlContext
     displayName: Get Kubernetes Context
 
-  - bash: 'bash determine-namespace.sh'
+  - bash: './determine-namespace.sh'
     name: DeployVars
     displayName: Set up environment variables for deployment
 
