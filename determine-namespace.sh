@@ -26,7 +26,7 @@ function calculateNamespaceFromBranchName {
 
   extractStoryIdFromBranchName $branchName
 
-  allNamespaces=$(kubectl get namespaces | awk 'NR>1{print $1}')
+  allNamespaces=$(kubectl get ns -o=custom-columns=NAME:.metadata.name)
 
   for namespace in ${allNamespaces[*]}; do
     if [[ "$namespace" == *"$storyId"* ]]; then
