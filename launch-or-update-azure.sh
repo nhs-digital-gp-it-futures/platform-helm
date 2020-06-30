@@ -332,8 +332,6 @@ helm upgrade bc $chart -n $namespace -i -f environments/azure.yaml \
   --set of.ingress.hosts[0].host=$basePath \
   --set redis-commander.ingress.hosts[0].host=$basePath \
   --set azurite.connectionString="$azureStorageConnectionString" \
-#  --set file-loader.azureBlobStorage.containerName=$containerName \
-#  --set dapi.azureBlobStorage.containerName=$containerName \
   --set redis.disabledUrl=$redisServer \
   --set redisPassword="$redisPassword" \
   $versionArg \
@@ -341,3 +339,6 @@ helm upgrade bc $chart -n $namespace -i -f environments/azure.yaml \
   $emailArg \
   $helmUpgradeArgs \
   $hostAliases
+
+#  --set file-loader.azureBlobStorage.containerName=$containerName \
+#  --set dapi.azureBlobStorage.containerName=$containerName \
