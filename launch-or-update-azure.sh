@@ -339,6 +339,3 @@ helm upgrade bc $chart -n $namespace -i -f environments/azure.yaml \
   $emailArg \
   $helmUpgradeArgs \
   $hostAliases
-
-#  --set file-loader.azureBlobStorage.containerName=$containerName \
-#  --set dapi.azureBlobStorage.containerName=$containerName \
