@@ -1,3 +1,4 @@
+containerName: "document"
 isapi:
   enabled: false
 isapi-db-deploy:
@@ -23,9 +24,5 @@ redis:
 redis-commander:
   enabled: false
 dapi:
-  azureBlobStorage:    
-    containerName: "document"
 file-loader:
-  azureBlobStorage:    
-    containerName: "document"
     

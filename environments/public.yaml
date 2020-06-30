@@ -1,8 +1,4 @@
 mp:
   enabled: false
 dapi:
-  azureBlobStorage:    
-    containerName: "document"
 file-loader:
-  azureBlobStorage:    
-    containerName: "document"

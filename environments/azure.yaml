@@ -15,8 +15,6 @@ azurite:
 dapi:
   enabled: true  
   replicaCount: 1  
-  azureBlobStorage:    
-    containerName:                           # override per enironment
 
 db:
   enabled: false
@@ -115,8 +113,6 @@ email:
 file-loader:
   enabled: true
   replicaCount: 1
-  azureBlobStorage:    
-    containerName:                            # override per environment
 
 mp:
   enabled: true
