@@ -37,7 +37,7 @@ dependencies:
   repository: "@gpitfuturesdevacr"
 - name: dapi
   condition: dapi.enabled
-  version: 1.24.1       
+  version: 1.24.4       
   repository: "@gpitfuturesdevacr"
 - name: isapi
   condition: isapi.enabled
@@ -65,7 +65,7 @@ dependencies:
   repository: "@gpitfuturesdevacr"
 - name: file-loader
   condition: file-loader.enabled
-  version: 1.24.1       
+  version: 1.24.4       
   repository: "@gpitfuturesdevacr" 
 - name: mp
   condition: mp.enabled
