@@ -37,8 +37,8 @@ dependencies:
   repository: "@gpitfuturesdevacr"
 - name: dapi
   condition: dapi.enabled
-  version: ~0.1.0       
-  repository: "file://../../../BuyingCatalogueDocumentService/charts/dapi/"  
+  version: 1.24.1       
+  repository: "@gpitfuturesdevacr"
 - name: isapi
   condition: isapi.enabled
   version: 1.24.4       
@@ -65,8 +65,8 @@ dependencies:
   repository: "@gpitfuturesdevacr"
 - name: file-loader
   condition: file-loader.enabled
-  version: ~0.1.0       
-  repository: "file://../../../BuyingCatalogueDocumentService/charts/file-loader/"  
+  version: 1.24.1       
+  repository: "@gpitfuturesdevacr" 
 - name: mp
   condition: mp.enabled
   version: 1.26.1       
