@@ -164,17 +164,6 @@ jobs:
     - name: sqlPackageArgs
       value: "/p:DatabaseEdition=Standard /p:DatabaseServiceObjective=S0"
   steps:
-  - bash: |
-      if [ $(Build.Reason) = "PullRequest" ]
-      then
-        namespace=`echo 'bc-$(Build.SourceBranchName)-$(System.PullRequest.PullRequestNumber)' | sed 's/[[:punct:]]/-/g'`
-      else
-        namespace=`echo 'bc-$(Build.SourceBranchName)' | sed 's/[[:punct:]]/-/g'`
-      fi
-      echo "namespace=$namespace, basePath=$basePath, baseUrl=$baseUrl, baseIdentityUrl"
-      echo "##vso[task.setvariable variable=Namespace;isOutput=true]$namespace"
-    name: DeployVars
-
   - task: AzureCLI@2
     inputs:
       azureSubscription: 'NHSAPP-BuyingCatalogue (Non-Prod)'
@@ -183,6 +172,11 @@ jobs:
       inlineScript: 'az aks get-credentials -n gpitfutures-dev-aks -g gpitfutures-dev-rg-aks'
     name: kubectlContext
     displayName: Get Kubernetes Context
+
+  - bash: './determine-namespace.sh'
+    name: DeployVars
+    displayName: Set up environment variables for deployment
+
   - bash: |
       helm repo add gpitfuturesdevacr https://gpitfuturesdevacr.azurecr.io/helm/v1/repo --username gpitfuturesdevacr --password $(gpitfuturesdevacr-pass)
     name: addRepo
