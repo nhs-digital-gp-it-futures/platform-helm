@@ -174,7 +174,8 @@ dapi:
     connectionSecret: 
       name: "bc-buyingcatalogue"
       key: azure-blob-connection-string
-    containerName: document-container
+    containerName: 
+      value: document-container
 
 bapi:  
   enabled: true

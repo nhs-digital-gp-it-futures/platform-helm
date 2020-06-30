@@ -32,7 +32,6 @@ ordapi-db-deploy:
 dapi:
   enabled: true
   disabledUrl: "host.docker.internal"
-  #useLocalImage: true
 
 bapi:  
   enabled: true
@@ -56,7 +55,6 @@ email:
   
 file-loader:
   enabled: true
-  useLocalImage: true
 
 mp:
   enabled: true
