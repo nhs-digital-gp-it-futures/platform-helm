@@ -1,7 +1,7 @@
 ####################################################
 ### Update Charts with Latest Release            ###
 ### usage:                                       ###
-###  ./get-latest-charts.ps1                     ###
+###  ./update-chart-versions.ps1                 ###
 ####################################################
 
 param(
