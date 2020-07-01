@@ -23,6 +23,3 @@ redis:
   enabled: false
 redis-commander:
   enabled: false
-dapi:
-file-loader:
-    
