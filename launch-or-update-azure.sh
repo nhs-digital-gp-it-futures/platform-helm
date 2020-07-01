@@ -259,8 +259,6 @@ fi
 baseUrl="https://$basePath"
 baseIdentityUrl="$baseUrl/identity"
 dbName=bc-$namespace
-containerName=$namespace-documents
-
 
 saUserStart=$(echo $saUserName | cut -c-3)
 saPassStart=$(echo $saPassword | cut -c-3)
@@ -334,7 +332,6 @@ helm upgrade bc $chart -n $namespace -i -f environments/azure.yaml \
   --set azurite.connectionString="$azureStorageConnectionString" \
   --set redis.disabledUrl=$redisServer \
   --set redisPassword="$redisPassword" \
-  --set containerName="$containerName" \
   $versionArg \
   $waitArg \
   $emailArg \
