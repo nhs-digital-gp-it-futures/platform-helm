@@ -1,2 +1,4 @@
 mp:
   enabled: false
+dapi:
+file-loader:

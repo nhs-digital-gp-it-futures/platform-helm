@@ -114,7 +114,7 @@ Using ISAPI as an example, within this file, look for the section with the line:
 The `version` will need to be changed to `~0.1.0` and the `repository` value will need to be altered to use a file.
 
 Here is an example of the final settings for ISAPI with these changes:
-
+ 
 ```yaml
 - name: isapi
   condition: isapi.enabled

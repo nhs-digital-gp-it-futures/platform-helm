@@ -8,6 +8,7 @@ redisPassword:
 
 appBaseUrl: 
 baseIsapiEnabledUrl: 
+containerName: 
 
 keyVault:
   enabled: false
@@ -173,7 +174,11 @@ dapi:
     connectionSecret: 
       name: "bc-buyingcatalogue"
       key: azure-blob-connection-string
-    containerName: container-1
+    containerName:
+      valueFrom:
+        configMapKeyRef:
+          name: "bc-buyingcatalogue"
+          key: document-container
 
 bapi:  
   enabled: true
@@ -385,7 +390,11 @@ file-loader:
     connectionSecret: 
       name: "bc-buyingcatalogue"
       key: azure-blob-connection-string
-    containerName: container-1
+    containerName: 
+      valueFrom:
+        configMapKeyRef:
+          name: "bc-buyingcatalogue"
+          key: document-container
 
 mp:
   enabled: true

@@ -284,14 +284,14 @@ printf "launch-or-update-azure.sh
         azure-storage-connection-string = $azureStorageConnectionStringStart*
         ip = $ipOverride
         redis-server = $redisServer
-        redis-password = $redisPassStart
+        redis-password = $redisPassStart*
         file-overrides = $overrideFiles
         client-secret = $clientSecretStart*
         cookie-secret = $cookieSecretStart*
-        db-user-pass = $dbPassStart
+        db-user-pass = $dbPassStart*
         email-server = $emailServer 
         email-user = $emailUser 
-        email-pass = $emailPassStart
+        email-pass = $emailPassStart*
         "
 
 sed "s/REPLACENAMESPACE/$namespace/g" environments/azure-namespace-template.yml > namespace.yaml
@@ -332,10 +332,9 @@ helm upgrade bc $chart -n $namespace -i -f environments/azure.yaml \
   --set of.ingress.hosts[0].host=$basePath \
   --set redis-commander.ingress.hosts[0].host=$basePath \
   --set azurite.connectionString="$azureStorageConnectionString" \
-  --set file-loader.azureBlobStorage.containerName=$containerName \
-  --set dapi.azureBlobStorage.containerName=$containerName \
   --set redis.disabledUrl=$redisServer \
   --set redisPassword="$redisPassword" \
+  --set containerName="$containerName" \
   $versionArg \
   $waitArg \
   $emailArg \

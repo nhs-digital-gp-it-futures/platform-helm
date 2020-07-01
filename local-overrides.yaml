@@ -78,3 +78,5 @@ redis:
 
 redis-commander:
   enabled: true
+
+  

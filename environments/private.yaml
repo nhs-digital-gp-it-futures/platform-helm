@@ -1,3 +1,4 @@
+containerName: "document"
 isapi:
   enabled: false
 isapi-db-deploy:
@@ -22,3 +23,6 @@ redis:
   enabled: false
 redis-commander:
   enabled: false
+dapi:
+file-loader:
+    
