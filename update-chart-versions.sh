@@ -4,20 +4,22 @@ function displayHelp {
   printf "usage: ./update-chart-versions.sh [OPTIONS]
           -h, --help
             Display help
+          [OPTIONAL]
           -m, --master
             Get latest from the master releases. If not present, pulls the lastest from development.
-          [OPTIONAL]
+          -p, --passed-args-only
+            If present, ignores differences between local / remote and updates passed in components to the specified version
           <component>=<version>
             Specify component's versions to be applied on top of the difference
             Eg: ./update-chart-versions.sh -m bapi=1.30.0
-            will get latest from master for all components except for bapi, that will be 1.30.0 
+            will get latest from master for all components except for bapi, which will be 1.30.0 
           "
   exit
 }
 
 # Option strings
-SHORT="hm"
-LONG="help,master"
+SHORT="hmp"
+LONG="help,master,passed-args-only"
 
 # read the options
 OPTS=$(getopt --options $SHORT --long $LONG --name "$0" -- "$@")
@@ -47,6 +49,10 @@ while true ; do
       unset versionSource
       shift
       ;;
+    -p | --passed-args-only )
+      usePassedArgsOnly="true"
+      shift
+      ;;
     -- )
       shift
       break
@@ -60,7 +66,7 @@ done
 
 # Update the local cache from the Repo and confirm dev repo is queried
 echo -e "Updating local repo cache... \n"
-updateRepos=$(helm.exe repo update|grep "gpitfuturesdevacr")
+updateRepos=$(helm repo update|grep "gpitfuturesdevacr")
 
 if [[ $updateRepos != "" ]]; then
   echo -e "$updateRepos \n"
@@ -94,14 +100,16 @@ for (( i=0; i<${#localComponentNames[@]}; i++ )); do
 done
 
 # build a map (chart => version) for remote charts eg:
-declare -A remoteChartsToVersions
-echo -e "Grabbing Chart information from the acr... \n"
-remoteChartsAndVersions=$(helm.exe search repo gpit $versionSource | sed "s@gpitfuturesdevacr/@@" | awk 'NR>1{printf("%s:%s ", $1, $2)}')
-for entry in ${remoteChartsAndVersions[*]}; do
-  component=$(echo $entry | cut -d: -f1 ) 
-  version=$(echo $entry | cut -d: -f2 ) 
-  remoteChartsToVersions[$component]=$version
-done
+if [ -z $usePassedArgsOnly ]; then
+  declare -A remoteChartsToVersions
+  echo -e "Grabbing Chart information from the acr... \n"
+  remoteChartsAndVersions=$(helm search repo gpit $versionSource | sed "s@gpitfuturesdevacr/@@" | awk 'NR>1{printf("%s:%s ", $1, $2)}')
+  for entry in ${remoteChartsAndVersions[*]}; do
+    component=$(echo $entry | cut -d: -f1 ) 
+    version=$(echo $entry | cut -d: -f2 ) 
+    remoteChartsToVersions[$component]=$version
+  done
+fi
 
 # create a copy of the localChartsToVersions map that will serve as a change set
 declare -A changeSet  
