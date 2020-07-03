@@ -1,4 +1,4 @@
-containerName: "document"
+containerName: "documents"
 isapi:
   enabled: false
 isapi-db-deploy:
