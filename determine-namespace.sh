@@ -37,7 +37,7 @@ function calculateNamespaceFromBranchName {
 
   if [ -z "$featureNamespace" ]; then
     unwantedPrefix="refs/heads/"
-    featureNamespace=$(echo "${branchName#${unwantedPrefix}}" | sed 's/[[:punct:]]/-/g')
+    featureNamespace=$(echo "${branchName#${unwantedPrefix}}" | sed 's/feature[[:punct:]]/bc-/g')
   fi
 
   echo "$featureNamespace"
