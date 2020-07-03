@@ -99,7 +99,7 @@ for (( i=0; i<${#localComponentNames[@]}; i++ )); do
   localChartsToVersions["${localComponentNames[$i]}"]="${localComponentVersions[$i]}"
 done
 
-# build a map (chart => version) for remote charts eg:
+# build a map (chart => version) for remote charts
 if [ -z $usePassedArgsOnly ]; then
   declare -A remoteChartsToVersions
   echo -e "Grabbing Chart information from the acr... \n"
