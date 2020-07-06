@@ -7,8 +7,8 @@ function extractStoryIdFromBranchName {
     if [[ "$1" =~ $storyIdRegex ]]; then
       storyId=$(echo ${BASH_REMATCH[2]}) # get the 2nd captured group
     else
-        >&2 echo "Couldn't extract the story Id from branch name, exiting."
-        exit 1
+        >&2 echo "Couldn't extract the story Id from branch name, assuming a new namespace needs to be made."
+        return 1
     fi
 }
 
@@ -24,20 +24,20 @@ function calculateBranchNameFromBranchOfRemoteTrigger {
 function calculateNamespaceFromBranchName {
   branchName=$1
 
-  extractStoryIdFromBranchName $branchName
-
-  allNamespaces=$(kubectl get ns -o=custom-columns=NAME:.metadata.name)
-
-  for namespace in ${allNamespaces[*]}; do
-    if [[ "$namespace" == *"$storyId"* ]]; then
-      featureNamespace=$namespace
-      break
-    fi
-  done
+# if we can extract the story id from the branch name, look for an existing namespace with that story id in it.
+  if extractStoryIdFromBranchName $branchName ; then
+    allNamespaces=$(kubectl get ns -o=custom-columns=NAME:.metadata.name)
+    for namespace in ${allNamespaces[*]}; do
+      if [[ "$namespace" == *"$storyId"* ]]; then
+        featureNamespace=$namespace
+        break
+      fi
+    done
+  fi
 
   if [ -z "$featureNamespace" ]; then
     unwantedPrefix="refs/heads/"
-    featureNamespace=$(echo "${branchName#${unwantedPrefix}}" | sed 's/[[:punct:]]/-/g')
+    featureNamespace=$(echo "${branchName#${unwantedPrefix}}" | sed 's/feature[[:punct:]]/bc-/g')
   fi
 
   echo "$featureNamespace"
