@@ -11,9 +11,8 @@ function displayHelp {
           -p, --passed-args-only
             If present, ignores differences between local / remote and updates passed in components to the specified version
           -o, --override
-            Override component's versions 
-            NOTE: the string containing components and their versions needs to be escaped (surrounded with single or double quotes)
-            Eg: ./update-chart-versions.sh -v master -o 'bapi=1.30.0 dapi=1.30.2'
+            Override component's version 
+            Eg: ./update-chart-versions.sh -v master -o bapi=1.30.0 -o dapi=1.30.2
             will get latest from master for all components except for bapi, which will be 1.30.0 and dapi, which will be 1.30.2 
           "
   exit
@@ -64,7 +63,7 @@ while true ; do
       shift
       ;;
     -o | --override )    
-      read -ra extraArgs <<< "$2"
+      extraArgs+=("$2")
       shift 2
       ;;
     -- )
