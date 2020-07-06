@@ -15,7 +15,7 @@
    1. Check which component versions you want - you can map commits to builds and find out the version you want [here](https://buyingcatalog.visualstudio.com/Buying%20Catalogue/_build?view=pipelines)
    2. Amend src/buyingcatalogue/Chart.yaml with those versions
 
-      **NOTE:** you can run `./get-latest-charts.sh|ps1` to get latest from the development branches, or `./get-latest-charts.sh|ps1 -m` to get latest from the master branches  
+      **NOTE:** you can run `./update-chart-versions.sh|ps1 -v development` to get latest from the development branches, or `./update-chart-versions.sh|ps1 -v master` to get latest from the master branches, for more options `./update-chart-versions.sh|ps1 -h`
 
 4) Push this branch
 

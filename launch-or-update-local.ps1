@@ -32,12 +32,12 @@ $chart="src/buyingcatalogue"
 if (($latest -ne "false") -and ($l -eq $false))
 {
     write-host "Getting Latest Chart Versions..."
-    invoke-expression -Command "./get-latest-charts.ps1 -chart $chart"
+    invoke-expression -Command "./update-chart-versions.ps1 -chart $chart -v development"
 }
 else
 {
     write-host "Getting Master Chart Versions..."
-    invoke-expression -Command "./get-latest-charts.ps1 -chart $chart -m"
+    invoke-expression -Command "./update-chart-versions.ps1 -chart $chart -v master"
 }
 
 

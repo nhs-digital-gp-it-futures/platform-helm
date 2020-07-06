@@ -11,6 +11,7 @@ function displayHelp {
           "
   exit
 }
+
 # Option strings
 SHORT="hl:u:"
 LONG="help,latest:,update:"
@@ -23,7 +24,7 @@ eval set -- "$OPTS"
 # set initial values
 chart="src/buyingcatalogue"
 wait="false"
-context=`kubectl config current-context`
+context=$(kubectl config current-context)
 
 # extract options and their arguments into variables.
 while true ; do
@@ -32,7 +33,6 @@ while true ; do
       displayHelp
       shift
       ;;
-    
     -l | --latest )
       if [ "$2" = "false" ]; then 
           latest="false"
@@ -62,15 +62,15 @@ if [[ "$context" != "docker-desktop" ]]; then
 fi
 
 if [[ "$latest" != "false" ]]; then
-  echo "Getting Latest Chart Versions..."$'\n'
-  bash get-latest-charts.sh
+  echo -e "Getting Latest Chart Versions... \n"
+  ./update-chart-versions.sh -v development
 else
-  echo "Getting Master Chart Versions..."$'\n'
-  bash get-latest-charts.sh -m
-fi
+  echo -e "Getting Master Chart Versions... \n"
+  ./update-chart-versions.sh -v master
+fi 
 
 if [[ "$update" != "false" ]]; then
-    echo $'\n'"Updating Dependencies..."$'\n'
+    echo -e "\n Updating Dependencies... \n"
     rm $chart/charts/*.tgz
     helm dependency update $chart
 fi

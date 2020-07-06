@@ -1,20 +1,21 @@
 ####################################################
 ### Update Charts with Latest Release            ###
 ### usage:                                       ###
-###  ./get-latest-charts.ps1                     ###
+###  ./update-chart-versions.ps1                 ###
 ####################################################
 
 param(
         [Parameter()] 
         [string]$chart="src/buyingcatalogue",
-        [Parameter()] 
-        [switch]$m
+        [Parameter(Mandatory)]  
+        [ValidateSet('master','development')]
+        [string]$v
     )
 
 # Global Variables and return code
 $index = 0
 $chartVersions = @()
-$versionSource = If ($m) {$null} Else {"--devel"} #If -m flag is present, grab the latest master versions, if not, use the --devel flag
+$versionSource = If ($v -eq "master") {$null} Else {"--devel"} 
 
 # Update the local cache from the Repo and confirm dev repo is queried
 $updateRepos=helm repo update | select-string -SimpleMatch "gpitfuturesdevacr"
