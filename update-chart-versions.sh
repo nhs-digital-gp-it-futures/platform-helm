@@ -4,9 +4,10 @@ function displayHelp {
   printf "usage: ./update-chart-versions.sh [OPTIONS]
           -h, --help
             Display help
+          [REQUIRED]
+          -v, --version <master|development>
+            Get latest component versions from either master or development branches.
           [OPTIONAL]
-          -m, --master
-            Get latest from the master releases. If not present, pulls the lastest from development.
           -p, --passed-args-only
             If present, ignores differences between local / remote and updates passed in components to the specified version
           <component>=<version>
@@ -18,8 +19,8 @@ function displayHelp {
 }
 
 # Option strings
-SHORT="hmp"
-LONG="help,master,passed-args-only"
+SHORT="hv:p"
+LONG="help,version:,passed-args-only"
 
 # read the options
 OPTS=$(getopt --options $SHORT --long $LONG --name "$0" -- "$@")
@@ -35,9 +36,6 @@ versionPrefix="  version: "
 localComponentNames=()
 localComponentVersions=()
 
-versionSource='--devel'
-
-
 # extract options and their arguments into variables.
 while true ; do
   case "$1" in
@@ -45,9 +43,19 @@ while true ; do
       displayHelp
       shift
       ;;
-    -m | --master )
-      unset versionSource
-      shift
+    -v | --version )
+    case "$2" in
+      master)
+          ;;
+      development)
+          versionSource='--devel'
+          ;;
+      *)
+          echo "Unknown version source '$2'. Allowed values are: 'master' or 'development'"
+          exit 1
+    esac
+      versionSourceSet="true"
+      shift 2
       ;;
     -p | --passed-args-only )
       usePassedArgsOnly="true"
@@ -63,6 +71,11 @@ while true ; do
       ;;
   esac
 done
+
+if [ -z "$versionSourceSet" ]; then
+  echo "Version source is not set, please specify which version source you'd like to use and try again. For more info: ./update-chart-versions.sh -h"
+  exit 1
+fi
 
 # Update the local cache from the Repo and confirm dev repo is queried
 echo -e "Updating local repo cache... \n"
@@ -134,7 +147,7 @@ for argument in "$@"; do
   if [ "${changeSet[$component]+isset}" ]; then
     changeSet[$component]=$version
   else
-    echo -e "Component $component passed in is not in Chart.yaml, please double check the spelling and try again. \n"
+    echo -e "Component '$component' passed in is not in Chart.yaml, please double check the spelling and try again. \n"
   fi
 done
 
