@@ -10,17 +10,18 @@ function displayHelp {
           [OPTIONAL]
           -p, --passed-args-only
             If present, ignores differences between local / remote and updates passed in components to the specified version
-          <component>=<version>
-            Specify component's versions to be applied on top of the difference
-            Eg: ./update-chart-versions.sh -m bapi=1.30.0
-            will get latest from master for all components except for bapi, which will be 1.30.0 
+          -o, --override
+            Override component's versions 
+            NOTE: the string containing components and their versions needs to be escaped (surrounded with single or double quotes)
+            Eg: ./update-chart-versions.sh -v master -o 'bapi=1.30.0 dapi=1.30.2'
+            will get latest from master for all components except for bapi, which will be 1.30.0 and dapi, which will be 1.30.2 
           "
   exit
 }
 
 # Option strings
-SHORT="hv:p"
-LONG="help,version:,passed-args-only"
+SHORT="hv:po:"
+LONG="help,version:,passed-args-only,override:"
 
 # read the options
 OPTS=$(getopt --options $SHORT --long $LONG --name "$0" -- "$@")
@@ -35,6 +36,7 @@ versionPrefix="  version: "
 
 localComponentNames=()
 localComponentVersions=()
+extraArgs=()
 
 # extract options and their arguments into variables.
 while true ; do
@@ -60,6 +62,10 @@ while true ; do
     -p | --passed-args-only )
       usePassedArgsOnly="true"
       shift
+      ;;
+    -o | --override )    
+      read -ra extraArgs <<< "$2"
+      shift 2
       ;;
     -- )
       shift
@@ -140,8 +146,8 @@ for component in ${!localChartsToVersions[@]}; do
   fi
 done
 
-# Parse any extra ags, add the versions that need to be changed to the changeSet
-for argument in "$@"; do
+# Override some components and their versions as per args supplied to the -o option
+for argument in ${extraArgs[@]}; do
   component=$(echo $argument | cut -d= -f1 ) 
   version=$(echo $argument | cut -d= -f2 ) 
   if [ "${changeSet[$component]+isset}" ]; then
