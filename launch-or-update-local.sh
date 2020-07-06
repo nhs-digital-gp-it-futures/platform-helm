@@ -63,10 +63,10 @@ fi
 
 if [[ "$latest" != "false" ]]; then
   echo -e "Getting Latest Chart Versions... \n"
-  ./update-chart-versions.sh
+  ./update-chart-versions.sh -v development
 else
   echo -e "Getting Master Chart Versions... \n"
-  ./update-chart-versions.sh -m
+  ./update-chart-versions.sh -v master
 fi 
 
 if [[ "$update" != "false" ]]; then
