@@ -168,7 +168,7 @@ jobs:
       if [ $(DeployVars.IsNewNamespace) ]; then
        echo "This is a new namespace, getting master versions"
        ./update-chart-versions.sh -v master
-      else if [ "$BUILD_REASON" = "ResourceTrigger" ]; then
+      elif [ "$BUILD_REASON" = "ResourceTrigger" ]; then
         buildName=$(compgen -A variable | grep 'RESOURCES_PIPELINE_.*RUNNAME')
         component=$(echo $buildName | cut -d_ -f3)
         arg="$component=${!buildName}"
