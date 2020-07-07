@@ -38,7 +38,7 @@ function calculateNamespaceFromBranchName {
   if [ -z "$featureNamespace" ]; then
     unwantedPrefix="refs/heads/"
     featureNamespace=$(echo "${branchName#${unwantedPrefix}}" | sed 's/feature[[:punct:]]/bc-/g')
-    echo "##vso[task.setvariable variable=IsNewNamespace;isOutput=true]true"
+    isNewNamespace="true"
   fi
 
   echo "$featureNamespace"
@@ -55,5 +55,6 @@ else
     namespace=$(calculateNamespaceFromBranchName $BUILD_SOURCEBRANCH)
 fi
 
+if [ $isNewNamespace ]; then echo "##vso[task.setvariable variable=IsNewNamespace;isOutput=true]true"; fi
 echo "namespace=$namespace"
 echo "##vso[task.setvariable variable=Namespace;isOutput=true]$namespace"
