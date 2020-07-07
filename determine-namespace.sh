@@ -1,6 +1,8 @@
 #!/bin/bash
 set -e
 
+isNewNamespace="false"
+
 function extractStoryIdFromBranchName {
     storyIdRegex='^(refs/heads/feature/)([0-9]{4,5})[^0-9]?(.*)$'
 
@@ -35,11 +37,9 @@ function calculateNamespaceFromBranchName {
     done
   fi
 
-  >&2 echo "NS: $featureNamespace"
   if [ -z "$featureNamespace" ]; then
     unwantedPrefix="refs/heads/"
     featureNamespace=$(echo "${branchName#${unwantedPrefix}}" | sed 's/feature[[:punct:]]/bc-/g')
-    >&2 echo "Marking this as a new namespace"
     isNewNamespace="true"
   fi
 
@@ -57,10 +57,8 @@ else
     namespace=$(calculateNamespaceFromBranchName $BUILD_SOURCEBRANCH)
 fi
 
-echo "$isNewNamespace"
-if [ $isNewNamespace ]; then
- echo "Marking this as a new namespace"
- echo "##vso[task.setvariable variable=IsNewNamespace;isOutput=true]true"
-fi
 echo "namespace=$namespace"
 echo "##vso[task.setvariable variable=Namespace;isOutput=true]$namespace"
+
+echo "New namespace? $isNewNamespace"
+echo "##vso[task.setvariable variable=IsNewNamespace;isOutput=true]true"

@@ -179,7 +179,7 @@ jobs:
     displayName: Add gpitfuturesdevacr repo
 
   - bash: |
-      if [ $(DeployVars.IsNewNamespace) ]; then
+      if [ $(DeployVars.IsNewNamespace) = "true" ]; then
        echo "This is a new namespace, getting master versions"
        ./update-chart-versions.sh -v master
       elif [ "$BUILD_REASON" = "ResourceTrigger" ]; then
