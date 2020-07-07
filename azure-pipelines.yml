@@ -160,6 +160,15 @@ jobs:
     - name: semVer
       value: $[ dependencies.packageAndPublish.outputs['setVersionStep.semVer'] ]
   steps:
+  - task: AzureCLI@2
+    inputs:
+      azureSubscription: 'NHSAPP-BuyingCatalogue (Non-Prod)'
+      scriptType: 'bash'
+      scriptLocation: 'inlineScript'
+      inlineScript: 'az aks get-credentials -n gpitfutures-dev-aks -g gpitfutures-dev-rg-aks'
+    name: kubectlContext
+    displayName: Get Kubernetes Context
+    
   - bash: './determine-namespace.sh'
     name: DeployVars
     displayName: Set up environment variables for deployment
