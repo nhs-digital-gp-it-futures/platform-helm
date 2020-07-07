@@ -180,16 +180,12 @@ jobs:
 
   - bash: |
       if [ $(DeployVars.IsNewNamespace) = "true" ]; then
-       echo "This is a new namespace, getting master versions"
-       ./update-chart-versions.sh -v master
+       echo "This is a new namespace, leaving versions as specified in Chart.yaml"
       elif [ "$BUILD_REASON" = "ResourceTrigger" ]; then
         buildName=$(compgen -A variable | grep 'RESOURCES_PIPELINE_.*RUNNAME')
         component=$(echo $buildName | cut -d_ -f3)
         arg="$component=${!buildName}"
         ./update-chart-versions.sh -m $(DeployVars.Namespace) -o $args
-      else
-        echo "Should update versions to the latest of that ns"
-        ./update-chart-versions.sh -m $(DeployVars.Namespace)
       fi
     name: UpdateVersions
     displayName: Grab and update component versions
