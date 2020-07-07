@@ -35,9 +35,11 @@ function calculateNamespaceFromBranchName {
     done
   fi
 
+  >&2 echo "NS: $featureNamespace"
   if [ -z "$featureNamespace" ]; then
     unwantedPrefix="refs/heads/"
     featureNamespace=$(echo "${branchName#${unwantedPrefix}}" | sed 's/feature[[:punct:]]/bc-/g')
+    >&2 echo "Marking this as a new namespace"
     isNewNamespace="true"
   fi
 
