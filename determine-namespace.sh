@@ -8,7 +8,6 @@ function extractStoryIdFromBranchName {
       storyId=$(echo ${BASH_REMATCH[2]}) # get the 2nd captured group
     else
         >&2 echo "Couldn't extract the story Id from branch name, assuming a new namespace needs to be made."
-        echo "##vso[task.setvariable variable=IsNewNamespace;isOutput=true]true"
         return 1
     fi
 }
@@ -39,6 +38,7 @@ function calculateNamespaceFromBranchName {
   if [ -z "$featureNamespace" ]; then
     unwantedPrefix="refs/heads/"
     featureNamespace=$(echo "${branchName#${unwantedPrefix}}" | sed 's/feature[[:punct:]]/bc-/g')
+    echo "##vso[task.setvariable variable=IsNewNamespace;isOutput=true]true"
   fi
 
   echo "$featureNamespace"
