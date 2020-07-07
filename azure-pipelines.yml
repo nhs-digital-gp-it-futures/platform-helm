@@ -168,7 +168,7 @@ jobs:
       inlineScript: 'az aks get-credentials -n gpitfutures-dev-aks -g gpitfutures-dev-rg-aks'
     name: kubectlContext
     displayName: Get Kubernetes Context
-    
+
   - bash: './determine-namespace.sh'
     name: DeployVars
     displayName: Set up environment variables for deployment
@@ -184,7 +184,7 @@ jobs:
         ./update-chart-versions.sh -m $(DeployVars.Namespace) -o $args
       else
         echo "Should update versions to the latest of that ns"
-        #./update-chart-versions.sh -m $(DeployVars.Namespace)
+        ./update-chart-versions.sh -m $(DeployVars.Namespace)
       fi
     name: UpdateVersions
     displayName: Grab and update component versions
