@@ -154,7 +154,7 @@ jobs:
 
 - job: prepareEnvironment
   dependsOn: packageAndPublish
-  condition: and(succeeded(), ne(variables['Build.Reason'], 'refs/heads/master'))
+  condition: and(succeeded(), ne(variables['Build.SourceBranch'], 'refs/heads/master'))
   variables:
     - group: dev-secrets
     - name: semVer
