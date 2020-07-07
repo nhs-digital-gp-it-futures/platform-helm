@@ -88,8 +88,6 @@ pool:
 jobs:
 - job: packageAndPublish
   displayName: Package And Publish Buyingcatalogue
-  # pool:
-  #   name: GP IT Futures AKS Build Agents
   variables:
     - group: dev-secrets
   steps:
@@ -154,13 +152,45 @@ jobs:
   - publish: $(build.artifactStagingDirectory)
     artifact: build-artifact 
 
-- job: deployToDev
+- job: prepareEnvironment
   dependsOn: packageAndPublish
+  condition: and(succeeded(), ne(variables['Build.Reason'], 'refs/heads/master'))
+  variables:
+    - group: dev-secrets
+    - name: semVer
+      value: $[ dependencies.packageAndPublish.outputs['setVersionStep.semVer'] ]
+  steps:
+  - bash: './determine-namespace.sh'
+    name: DeployVars
+    displayName: Set up environment variables for deployment
+  
+  - bash: |
+      if [ $(DeployVars.IsNewNamespace) ]; then
+       echo "This is a new namespace, getting master versions"
+       ./update-chart-versions.sh -v master
+      else if [ "$BUILD_REASON" = "ResourceTrigger" ]; then
+        buildName=$(compgen -A variable | grep 'RESOURCES_PIPELINE_.*RUNNAME')
+        component=$(echo $buildName | cut -d_ -f3)
+        arg="$component=${!buildName}"
+        ./update-chart-versions.sh -m $(DeployVars.Namespace) -o $args
+      else
+        echo "Should update versions to the latest of that ns"
+        #./update-chart-versions.sh -m $(DeployVars.Namespace)
+      fi
+    name: UpdateVersions
+    displayName: Grab and update component versions
+
+- job: deployToDev
+  dependsOn:
+    - packageAndPublish 
+    - prepareEnvironment
   condition: and(succeeded(), ne(variables['Build.SourceBranch'], 'refs/heads/master'))
   variables:
     - group: dev-secrets
     - name: semVer
       value: $[ dependencies.packageAndPublish.outputs['setVersionStep.semVer'] ]
+    - name: namespace
+      value: $[ dependencies.prepareEnvironment.outputs['DeployVars.Namespace'] ]
     - name: sqlPackageArgs
       value: "/p:DatabaseEdition=Standard /p:DatabaseServiceObjective=S0"
   steps:
@@ -172,18 +202,13 @@ jobs:
       inlineScript: 'az aks get-credentials -n gpitfutures-dev-aks -g gpitfutures-dev-rg-aks'
     name: kubectlContext
     displayName: Get Kubernetes Context
-
-  - bash: './determine-namespace.sh'
-    name: DeployVars
-    displayName: Set up environment variables for deployment
-
   - bash: |
       helm repo add gpitfuturesdevacr https://gpitfuturesdevacr.azurecr.io/helm/v1/repo --username gpitfuturesdevacr --password $(gpitfuturesdevacr-pass)
     name: addRepo
     displayName: Add gpitfuturesdevacr repo
   - bash: |
       ./launch-or-update-azure.sh -c remote \
-        -n $(DeployVars.Namespace) \
+        -n $(namespace) \
         -d gpitfutures-dev-sql-pri.database.windows.net \
         -u $(gpitdevsqladminusername) \
         -p $(gpitdevsqladminpassword) \
