@@ -55,6 +55,10 @@ else
     namespace=$(calculateNamespaceFromBranchName $BUILD_SOURCEBRANCH)
 fi
 
-if [ $isNewNamespace ]; then echo "##vso[task.setvariable variable=IsNewNamespace;isOutput=true]true"; fi
+echo "$isNewNamespace"
+if [ $isNewNamespace ]; then
+ echo "Marking this as a new namespace"
+ echo "##vso[task.setvariable variable=IsNewNamespace;isOutput=true]true"
+fi
 echo "namespace=$namespace"
 echo "##vso[task.setvariable variable=Namespace;isOutput=true]$namespace"

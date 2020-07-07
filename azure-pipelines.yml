@@ -221,7 +221,6 @@ jobs:
     name: addRepo
     displayName: Add gpitfuturesdevacr repo
   - bash: |
-      echo $namespace
       ./launch-or-update-azure.sh -c remote \
         -n $(namespace) \
         -d gpitfutures-dev-sql-pri.database.windows.net \
