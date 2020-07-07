@@ -177,18 +177,17 @@ jobs:
       helm repo add gpitfuturesdevacr https://gpitfuturesdevacr.azurecr.io/helm/v1/repo --username gpitfuturesdevacr --password $(gpitfuturesdevacr-pass)
     name: addRepo
     displayName: Add gpitfuturesdevacr repo
+    condition: eq(variables['Build.Reason'], 'ResourceTrigger')
 
   - bash: |
-      if [ $(DeployVars.IsNewNamespace) = "true" ]; then
-       echo "This is a new namespace, leaving versions as specified in Chart.yaml"
-      elif [ "$BUILD_REASON" = "ResourceTrigger" ]; then
-        buildName=$(compgen -A variable | grep 'RESOURCES_PIPELINE_.*RUNNAME')
-        component=$(echo $buildName | cut -d_ -f3)
-        arg="$component=${!buildName}"
-        ./update-chart-versions.sh -m $(DeployVars.Namespace) -o $args
-      fi
+      buildNameVariableName=$(compgen -A variable | grep 'RESOURCES_PIPELINE_.*RUNNAME')
+      component=$(echo $buildNameVariableName | cut -d_ -f3)
+      version=$(echo ${!buildNameVariableName} | cut -d' ' -f1 )
+      arg="$component=$version"
+      ./update-chart-versions.sh -m $(DeployVars.Namespace) -o $arg
     name: UpdateVersions
     displayName: Grab and update component versions
+    condition: eq(variables['Build.Reason'], 'ResourceTrigger')
 
 - job: deployToDev
   dependsOn:
