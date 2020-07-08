@@ -9,7 +9,6 @@ trigger:
     - /*
     exclude:
     - housekeeping/*
-    - azure-pipelines.yml
 
 pr:
 - master
