@@ -1,7 +1,7 @@
 #!/bin/bash
 
 function displayHelp {
-  printf "usage: ./tear-down-azure.sh [OPTIONS]
+  printf "usage: ./housekeeping.sh [OPTIONS]
           -h, --help
             Display help
           -n, --namespace <namespace>
