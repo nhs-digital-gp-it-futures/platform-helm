@@ -10,9 +10,9 @@
 
 resources:
   repositories:
-  - repository: common
+  - repository: 261810882
     type: github
-    name: Contoso/CommonTools
+    name: nhs-digital-gp-it-futures/platform-helm
     endpoint: MyContosoServiceConnection
 
 pool:

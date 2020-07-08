@@ -9,9 +9,19 @@ trigger:
     - /*
     exclude:
     - housekeeping/*
+    - docs/*
+    - azure-pipelines.yml
 
 pr:
-- master
+  branches:
+    include:
+    - master
+  paths:
+    include:
+    - /*
+    exclude:
+    - housekeeping/*
+    - docs/*
 
 # resources:
 #   pipelines:
