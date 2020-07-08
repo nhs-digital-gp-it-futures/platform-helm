@@ -4,6 +4,12 @@ trigger:
     include:
       - master
       - feature/*
+  paths:
+    include:
+    - /*
+    exclude:
+    - housekeeping/*
+    - azure-pipelines.yml
 
 pr:
 - master
