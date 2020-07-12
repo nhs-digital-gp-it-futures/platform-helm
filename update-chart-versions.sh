@@ -14,13 +14,17 @@ function displayHelp {
             Override component's version 
             Eg: ./update-chart-versions.sh -v master -o bapi=1.30.0 -o dapi=1.30.2
             will get latest from master for all components except for bapi, which will be 1.30.0 and dapi, which will be 1.30.2 
+          -m, --match-deployed <namespace>
+            Get update versions to match those of given namespace. 
+            Eg: ./update-chart-versions.sh -d bc-amazing-feature -o bapi=1.30.0 -o dapi=1.30.2
+            will get the versions that are deployed in 'bc-amazing-feature' namespace and set bapi to 1.30.0 and dapi to 1.30.2
           "
   exit
 }
 
 # Option strings
-SHORT="hv:po:"
-LONG="help,version:,passed-args-only,override:"
+SHORT="hv:po:m:"
+LONG="help,version:,passed-args-only,override:match-deployed:"
 
 # read the options
 OPTS=$(getopt --options $SHORT --long $LONG --name "$0" -- "$@")
@@ -63,7 +67,12 @@ while true ; do
       shift
       ;;
     -o | --override )    
-      extraArgs+=("$2")
+      extraArgs+=("$(echo $2 | tr '[:upper:]' '[:lower:]')")
+      shift 2
+      ;;
+    -m | --match-deployed )
+      namespace="$2"
+      versionSourceSet="true"    
       shift 2
       ;;
     -- )
@@ -118,13 +127,29 @@ for (( i=0; i<${#localComponentNames[@]}; i++ )); do
 done
 
 # build a map (chart => version) for remote charts
-if [ -z $usePassedArgsOnly ]; then
-  declare -A remoteChartsToVersions
+declare -A remoteChartsToVersions
+
+if [ ! "$usePassedArgsOnly" ] && [ ! "$namespace" ]; then
   echo -e "Grabbing Chart information from the acr... \n"
   remoteChartsAndVersions=$(helm search repo gpit $versionSource | sed "s@gpitfuturesdevacr/@@" | awk 'NR>1{printf("%s:%s ", $1, $2)}')
   for entry in ${remoteChartsAndVersions[*]}; do
     component=$(echo $entry | cut -d: -f1 ) 
     version=$(echo $entry | cut -d: -f2 ) 
+    remoteChartsToVersions[$component]=$version
+  done
+fi
+
+# If we've supplied namespace, don't get versions from the acr but rather from that ns.
+if [ "$namespace" ]; then
+  echo -e "Grabbing versions from namespace '$namespace' \n"
+  for deploymentLabel in $(kubectl get deployments -n $namespace -o=jsonpath='{.items[*].metadata.labels.helm\.sh/chart}'); do
+    component=$(echo $deploymentLabel | cut -d- -f1)
+    version=$(echo $deploymentLabel | cut -d- -f2)
+    remoteChartsToVersions[$component]=$version
+  done
+  for jobLabel in $(kubectl get jobs -n $namespace -o=jsonpath='{range .items[*].metadata.labels}{.app\.kubernetes\.io/name}{"="}{.app\.kubernetes\.io/version}{" "}{end}'); do
+    component=$(echo $jobLabel | cut -d= -f1)
+    version=$(echo $jobLabel | cut -d= -f2)
     remoteChartsToVersions[$component]=$version
   done
 fi
