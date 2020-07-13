@@ -4,9 +4,25 @@ trigger:
     include:
       - master
       - feature/*
+  paths:
+    include:
+    - /*
+    exclude:
+    - housekeeping/*
+    - docs/*
+    - azure-pipelines.yml
 
 pr:
-- master
+  branches:
+    include:
+    - master
+  paths:
+    include:
+    - /*
+    exclude:
+    - housekeeping/*
+    - docs/*
+    - azure-pipelines.yml
 
 # resources:
 #   pipelines:
@@ -88,6 +104,8 @@ pool:
 jobs:
 - job: packageAndPublish
   displayName: Package And Publish Buyingcatalogue
+  # pool:
+  #   name: GP IT Futures AKS Build Agents
   variables:
     - group: dev-secrets
   steps:
@@ -152,13 +170,15 @@ jobs:
   - publish: $(build.artifactStagingDirectory)
     artifact: build-artifact 
 
-- job: prepareEnvironment
+- job: deployToDev
   dependsOn: packageAndPublish
   condition: and(succeeded(), ne(variables['Build.SourceBranch'], 'refs/heads/master'))
   variables:
     - group: dev-secrets
     - name: semVer
       value: $[ dependencies.packageAndPublish.outputs['setVersionStep.semVer'] ]
+    - name: sqlPackageArgs
+      value: "/p:DatabaseEdition=Standard /p:DatabaseServiceObjective=S0"
   steps:
   - task: AzureCLI@2
     inputs:
@@ -172,52 +192,14 @@ jobs:
   - bash: './determine-namespace.sh'
     name: DeployVars
     displayName: Set up environment variables for deployment
-  
-  - bash: |
-      helm repo add gpitfuturesdevacr https://gpitfuturesdevacr.azurecr.io/helm/v1/repo --username gpitfuturesdevacr --password $(gpitfuturesdevacr-pass)
-    name: addRepo
-    displayName: Add gpitfuturesdevacr repo
-    condition: eq(variables['Build.Reason'], 'ResourceTrigger')
 
-  - bash: |
-      buildNameVariableName=$(compgen -A variable | grep 'RESOURCES_PIPELINE_.*RUNNAME')
-      component=$(echo $buildNameVariableName | cut -d_ -f3)
-      version=$(echo ${!buildNameVariableName} | cut -d' ' -f1 )
-      arg="$component=$version"
-      ./update-chart-versions.sh -m $(DeployVars.Namespace) -o $arg
-    name: UpdateVersions
-    displayName: Grab and update component versions
-    condition: eq(variables['Build.Reason'], 'ResourceTrigger')
-
-- job: deployToDev
-  dependsOn:
-    - packageAndPublish 
-    - prepareEnvironment
-  condition: and(succeeded(), ne(variables['Build.SourceBranch'], 'refs/heads/master'))
-  variables:
-    - group: dev-secrets
-    - name: semVer
-      value: $[ dependencies.packageAndPublish.outputs['setVersionStep.semVer'] ]
-    - name: namespace
-      value: $[ dependencies.prepareEnvironment.outputs['DeployVars.Namespace'] ]
-    - name: sqlPackageArgs
-      value: "/p:DatabaseEdition=Standard /p:DatabaseServiceObjective=S0"
-  steps:
-  - task: AzureCLI@2
-    inputs:
-      azureSubscription: 'NHSAPP-BuyingCatalogue (Non-Prod)'
-      scriptType: 'bash'
-      scriptLocation: 'inlineScript'
-      inlineScript: 'az aks get-credentials -n gpitfutures-dev-aks -g gpitfutures-dev-rg-aks'
-    name: kubectlContext
-    displayName: Get Kubernetes Context
   - bash: |
       helm repo add gpitfuturesdevacr https://gpitfuturesdevacr.azurecr.io/helm/v1/repo --username gpitfuturesdevacr --password $(gpitfuturesdevacr-pass)
     name: addRepo
     displayName: Add gpitfuturesdevacr repo
   - bash: |
       ./launch-or-update-azure.sh -c remote \
-        -n $(namespace) \
+        -n $(DeployVars.Namespace) \
         -d gpitfutures-dev-sql-pri.database.windows.net \
         -u $(gpitdevsqladminusername) \
         -p $(gpitdevsqladminpassword) \

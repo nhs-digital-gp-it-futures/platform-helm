@@ -1,0 +1,50 @@
+# schedules:
+# - cron: "0 0 * * *"
+#   displayName: Daily midnight cleanup
+#   branches:
+#     include:
+#     - master
+
+# trigger: none
+# pr: none
+
+resources:
+  repositories:
+  - repository: 261810882
+    type: github
+    name: nhs-digital-gp-it-futures/platform-helm
+    endpoint: MyContosoServiceConnection
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+# jobs:
+# - job: cleanUpDynamicEnv
+#   dependsOn: packageAndPublish
+#   condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+#   variables:
+#     - group: dev-secrets
+#     - name: semVer
+#       value: $[ dependencies.packageAndPublish.outputs['setVersionStep.semVer'] ]
+#   steps:
+#   - task: AzureCLI@2
+#     inputs:
+#       azureSubscription: 'NHSAPP-BuyingCatalogue (Non-Prod)'
+#       scriptType: 'bash'
+#       scriptLocation: 'inlineScript'
+#       inlineScript: 'az aks get-credentials -n gpitfutures-dev-aks -g gpitfutures-dev-rg-aks'
+#     name: kubectlContext
+#     displayName: Get Kubernetes Context
+#   - bash: |
+#       helm repo add gpitfuturesdevacr https://gpitfuturesdevacr.azurecr.io/helm/v1/repo --username gpitfuturesdevacr --password $(gpitfuturesdevacr-pass)
+#     name: addRepo
+#     displayName: Add gpitfuturesdevacr repo
+#   - task: AzureCLI@2
+#     inputs:
+#       azureSubscription: 'NHSAPP-BuyingCatalogue (Non-Prod)'
+#       scriptType: 'bash'
+#       scriptLocation: 'scriptPath'
+#       scriptPath: 'tear-down-azure.sh'
+#       arguments: '-m "$(Build.SourceVersionMessage)" -d gpitfutures-dev-sql-pri -g gpitfutures-dev-rg-sql-pri -a "$(gpitdevstorageaccountconnectionstring)"'
+#     name: cleanUp
+#     displayName: Clean up dynamic environments
