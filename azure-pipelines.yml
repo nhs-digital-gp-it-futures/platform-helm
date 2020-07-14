@@ -107,8 +107,6 @@ jobs:
           --version $(GitVersion.SemVer) \
           --app-version $(GitVersion.SemVer) \
           src/buyingcatalogue
-    displayName: 'helm package'
-  - bash: |
       export HELM_EXPERIMENTAL_OCI=1
       chartPackage=$(ls buyingcatalogue-*.tgz)
       echo "Chart Package $chartPackage"
@@ -117,7 +115,7 @@ jobs:
       echo $(jq -n --arg version "$(GitVersion.SemVer)" '{helmChartVersion: $version}') > $(build.artifactStagingDirectory)/variables.json
     failOnStderr: true
     name: helmPush
-    displayName: 'helm push'
+    displayName: 'helm package and push'
   - script: echo "##vso[task.setvariable variable=semVer;isOutput=true]$(GitVersion.SemVer)"
     name: setVersionStep  
   - bash: |
