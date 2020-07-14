@@ -110,7 +110,8 @@ jobs:
       export HELM_EXPERIMENTAL_OCI=1
       chartPackage=$(ls buyingcatalogue-*.tgz)
       echo "Chart Package $chartPackage"
-      helm chart save $chartPackage gpitfuturesdevacr/buyingcatalogue:$(GitVersion.SemVer)
+      #helm chart save $chartPackage gpitfuturesdevacr/buyingcatalogue:$(GitVersion.SemVer)
+      helm chart save src/buyingcatalogue gpitfuturesdevacr/buyingcatalogue:$(GitVersion.SemVer)
       helm chart push gpitfuturesdevacr/buyingcatalogue:$(GitVersion.SemVer)
       echo $(jq -n --arg version "$(GitVersion.SemVer)" '{helmChartVersion: $version}') > $(build.artifactStagingDirectory)/variables.json
     failOnStderr: true
