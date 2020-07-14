@@ -114,11 +114,7 @@ jobs:
       sudo apt-get update -o Dir::Etc::sourcelist="sources.list.d/azure-cli.list" -o Dir::Etc::sourceparts="-" -o APT::Get::List-Cleanup="0"
       sudo apt-get install --only-upgrade -y azure-cli
       az --version
-      az acr helm push --force \
-          -n gpitfuturesdevacr \
-          -u gpitfuturesdevacr \
-          -p $(gpitfuturesdevacr-pass) \
-          $chartPackage
+      helm chart push gpitfuturesdevacr/nhsd/buying-catalogue/$chartPackage
       echo $(jq -n --arg version "$(GitVersion.SemVer)" '{helmChartVersion: $version}') > $(build.artifactStagingDirectory)/variables.json
     failOnStderr: true
     name: helmPush
