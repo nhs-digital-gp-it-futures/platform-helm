@@ -90,14 +90,14 @@ jobs:
         scriptType: 'pscore'
         scriptLocation: scriptPath
         scriptPath: ./platform-helm/housekeeping/housekeeping.ps1
-        workingDirectory: ./order-form
+#        workingDirectory: ./order-form
         arguments: > 
           -dbServer "dummyDBserver"
           -resourceGroup "dummyRG"
           -azureStorageConnectionString "dummyString"
           -directories "order-form","platform-helm","buying-catalogue-components"
-      name: hkorderform
-      displayName: housekeeping - Order-Form
+      name: housekeeping
+      displayName: housekeeping - clearUp
 
 #    - task: PowerShell@2      
 #      inputs:
