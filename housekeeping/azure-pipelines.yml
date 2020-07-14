@@ -64,13 +64,13 @@ jobs:
     - checkout: OrderFormAcceptanceTests
     - checkout: BuyingCatalogueService
 
-    - powershell: get-childitem -r  # inline script
-      workingDirectory: ./
-      displayName:  folderStructure
+#    - powershell: get-childitem -r  # inline script
+#      workingDirectory: ./
+#      displayName:  folderStructure
 
-#    - powershell: git branch -r  # inline script
-#      workingDirectory: ./order-form
-#      displayName:  listRepoBranches
+    - powershell: git branch -r  # inline script
+      workingDirectory: ./order-form
+      displayName:  listRepoBranches
 
 #      - job: Powershell
 #  steps:
