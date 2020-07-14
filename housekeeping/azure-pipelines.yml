@@ -41,7 +41,7 @@ pool:
 steps:
   - checkout: self
     persistCredentials: true
-  - checkout: platform-helm
+#  - checkout: platform-helm
   - checkout: order-form
   - checkout: buying-catalogue-components
   - checkout: OrderFormAcceptanceTests
