@@ -109,16 +109,11 @@ jobs:
           src/buyingcatalogue
     displayName: 'helm package'
   - bash: |
+      export HELM_EXPERIMENTAL_OCI=1
       chartPackage=$(ls buyingcatalogue-*.tgz)
       echo "Chart Package $chartPackage"
-      sudo apt-get update -o Dir::Etc::sourcelist="sources.list.d/azure-cli.list" -o Dir::Etc::sourceparts="-" -o APT::Get::List-Cleanup="0"
-      sudo apt-get install --only-upgrade -y azure-cli
-      az --version
-      az acr helm push --force \
-          -n gpitfuturesdevacr \
-          -u gpitfuturesdevacr \
-          -p $(gpitfuturesdevacr-pass) \
-          $chartPackage
+      helm chart save $(chartPackage) gpitfuturesdevacr/buyingcatalogue:$(GitVersion.SemVer)
+      helm chart push gpitfuturesdevacr/buyingcatalogue:$(GitVersion.SemVer)
       echo $(jq -n --arg version "$(GitVersion.SemVer)" '{helmChartVersion: $version}') > $(build.artifactStagingDirectory)/variables.json
     failOnStderr: true
     name: helmPush
