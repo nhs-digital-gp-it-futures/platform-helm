@@ -66,11 +66,11 @@ jobs:
 - job: Powershell
   steps:
     - powershell: get-childitem -r  # inline script
-      workingDirectory: (variables['Pipeline.Workspace'])
+      workingDirectory: ./
       displayName:  folderStructure
 
     - powershell: git branch -r  # inline script
-      workingDirectory: (variables['Pipeline.Workspace']/order-form)
+      workingDirectory: ./order-form
       displayName:  listRepoBranches
     #failOnStderr:  #
     #errorActionPreference:  #
