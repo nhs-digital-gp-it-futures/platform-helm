@@ -1,8 +1,8 @@
-###########################
-### Housekeeping        ###
-### usage:              ###
-###  ./housekeeping.ps1 ###
-###########################
+###
+### Housekeeping        
+### usage:              
+###  .\housekeeping.ps1 -dbServer <nameofdbserver> -resourceGroup <dbresourcegroup> -azureStorageConnectionString <connectionstring> -debugging $false- ###
+###
 
 param(
         [Parameter()] 

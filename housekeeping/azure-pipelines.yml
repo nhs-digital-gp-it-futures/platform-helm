@@ -5,18 +5,71 @@
 #     include:
 #     - master
 
-# trigger: none
-# pr: none
+trigger: none
+pr: none
 
 resources:
   repositories:
-  - repository: 261810882
+  - repository: platform-helm #261810882
     type: github
     name: nhs-digital-gp-it-futures/platform-helm
-    endpoint: MyContosoServiceConnection
+    endpoint: nhs-digital-gp-it-futures
+  - repository: order-form #254045573
+    type: github
+    name: nhs-digital-gp-it-futures/order-form
+    endpoint: nhs-digital-gp-it-futures
+  - repository: buying-catalogue-components #220214313
+    type: github
+    name: nhs-digital-gp-it-futures/buying-catalogue-components
+    endpoint: nhs-digital-gp-it-futures
+  - repository: BuyingCatalogueIdentity #240271150
+    type: github
+    name: nhs-digital-gp-it-futures/BuyingCatalogueIdentity
+    endpoint: nhs-digital-gp-it-futures
+  - repository: OrderFormAcceptanceTests #255625095
+    type: github
+    name: nhs-digital-gp-it-futures/OrderFormAcceptanceTests
+    endpoint: nhs-digital-gp-it-futures
+  - repository: BuyingCatalogueService #202726178
+    type: github
+    name: nhs-digital-gp-it-futures/BuyingCatalogueService
+    endpoint: nhs-digital-gp-it-futures
 
 pool:
   vmImage: 'ubuntu-latest'
+
+steps:
+  - checkout: self
+    persistCredentials: true
+  - checkout: platform-helm
+  - checkout: order-form
+  - checkout: buying-catalogue-components
+  - checkout: OrderFormAcceptanceTests
+  - checkout: BuyingCatalogueService
+
+ # - script: dir $(Build.SourcesDirectory)
+
+ - task: AzureCLI@2
+  displayName: Azure CLI
+ inputs:
+   azureSubscription: <Name of the Azure Resource Manager service connection>
+   scriptType: ps
+   scriptLocation: inlineScript
+   inlineScript: |
+     az --version
+     az account show
+
+#  jobs:
+#   - job: accessGitRepo
+#    condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+    #   variables:
+    #     - group: dev-secrets
+    #     - name: semVer
+    #       value: $[ dependencies.packageAndPublish.outputs['setVersionStep.semVer'] ]
+
+#  steps:
+ #   - checkout: self
+ #     persistCredentials: true#
 
 # jobs:
 # - job: cleanUpDynamicEnv
