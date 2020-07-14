@@ -10,10 +10,10 @@ pr: none
 
 resources:
   repositories:
-  - repository: platform-helm #261810882
-    type: github
-    name: nhs-digital-gp-it-futures/platform-helm
-    endpoint: nhs-digital-gp-it-futures
+#  - repository: platform-helm #261810882
+#    type: github
+#    name: nhs-digital-gp-it-futures/platform-helm
+#    endpoint: nhs-digital-gp-it-futures
   - repository: order-form #254045573
     type: github
     name: nhs-digital-gp-it-futures/order-form
@@ -46,6 +46,31 @@ steps:
   - checkout: buying-catalogue-components
   - checkout: OrderFormAcceptanceTests
   - checkout: BuyingCatalogueService
+
+#   - task: AzureCLI@2
+#     inputs:
+#       azureSubscription: 'NHSAPP-BuyingCatalogue (Non-Prod)'
+#       scriptType: 'bash'
+#       scriptLocation: 'inlineScript'
+#       inlineScript: 'az aks get-credentials -n gpitfutures-dev-aks -g gpitfutures-dev-rg-aks'
+#     name: kubectlContext
+#     displayName: Get Kubernetes Context
+#   - bash: |
+#       helm repo add gpitfuturesdevacr https://gpitfuturesdevacr.azurecr.io/helm/v1/repo --username gpitfuturesdevacr --password $(gpitfuturesdevacr-pass)
+#     name: addRepo
+#     displayName: Add gpitfuturesdevacr repo
+
+- powershell: get-childitem -r  # inline script
+  workingDirectory: (variables['Pipeline.Workspace'])
+  displayName:  folderStructure
+
+- powershell: git branch -r  # inline script
+  workingDirectory: (variables['Pipeline.Workspace']/order-form)
+  displayName:  listRepoBranches
+    #failOnStderr:  #
+    #errorActionPreference:  #
+    #ignoreLASTEXITCODE:  #
+    #env:  # mapping of environment variables to add
 
  # - script: dir $(Build.SourcesDirectory)
 
