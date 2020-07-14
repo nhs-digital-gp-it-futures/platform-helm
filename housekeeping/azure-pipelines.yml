@@ -38,14 +38,7 @@ resources:
 pool:
   vmImage: 'ubuntu-latest'
 
-steps:
-  - checkout: self
-    persistCredentials: true
-#  - checkout: platform-helm
-  - checkout: order-form
-  - checkout: buying-catalogue-components
-  - checkout: OrderFormAcceptanceTests
-  - checkout: BuyingCatalogueService
+
 
 #   - task: AzureCLI@2
 #     inputs:
@@ -60,13 +53,25 @@ steps:
 #     name: addRepo
 #     displayName: Add gpitfuturesdevacr repo
 
-- powershell: get-childitem -r  # inline script
-  workingDirectory: (variables['Pipeline.Workspace'])
-  displayName:  folderStructure
+jobs:
+- job: checkoutRepos
+  steps:
+    - checkout: self
+      persistCredentials: true
+  #  - checkout: platform-helm
+    - checkout: order-form
+    - checkout: buying-catalogue-components
+    - checkout: OrderFormAcceptanceTests
+    - checkout: BuyingCatalogueService
+- job: Powershell
+  steps:
+    - powershell: get-childitem -r  # inline script
+      workingDirectory: (variables['Pipeline.Workspace'])
+      displayName:  folderStructure
 
-- powershell: git branch -r  # inline script
-  workingDirectory: (variables['Pipeline.Workspace']/order-form)
-  displayName:  listRepoBranches
+    - powershell: git branch -r  # inline script
+      workingDirectory: (variables['Pipeline.Workspace']/order-form)
+      displayName:  listRepoBranches
     #failOnStderr:  #
     #errorActionPreference:  #
     #ignoreLASTEXITCODE:  #
