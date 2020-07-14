@@ -54,7 +54,7 @@ pool:
 #     displayName: Add gpitfuturesdevacr repo
 
 jobs:
-- job: checkoutRepos
+- job: queryRepos
   steps:
     - checkout: self
       persistCredentials: true
@@ -63,15 +63,18 @@ jobs:
     - checkout: buying-catalogue-components
     - checkout: OrderFormAcceptanceTests
     - checkout: BuyingCatalogueService
-- job: Powershell
-  steps:
+
     - powershell: get-childitem -r  # inline script
       workingDirectory: ./
       displayName:  folderStructure
 
-    - powershell: git branch -r  # inline script
-      workingDirectory: ./order-form
-      displayName:  listRepoBranches
+#    - powershell: git branch -r  # inline script
+#      workingDirectory: ./order-form
+#      displayName:  listRepoBranches
+
+#      - job: Powershell
+#  steps:
+
     #failOnStderr:  #
     #errorActionPreference:  #
     #ignoreLASTEXITCODE:  #
