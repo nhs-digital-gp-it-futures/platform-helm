@@ -84,17 +84,31 @@ jobs:
       name: kubectlContext
       displayName: Get Kubernetes Context
 
-    - task: PowerShell@2      
+    - task: AzureCLI@2
       inputs:
-        failOnStderr: false
-        targetType: filepath
-        filePath: ./platform-helm/housekeeping/housekeeping.ps1
+        azureSubscription: 'NHSAPP-BuyingCatalogue (Non-Prod)'
+        scriptType: 'pscore'
+        scriptLocation: scriptPath
+        scriptPath: ./platform-helm/housekeeping/housekeeping.ps1
         workingDirectory: ./order-form
         arguments: > 
           -dbServer "dummyDBserver"
           -resourceGroup "dummyRG"
           -azureStorageConnectionString "dummyString"
-      displayName:  housekeepingOrderForm
+      name: hkorderform
+      displayName: housekeeping - Order-Form
+
+#    - task: PowerShell@2      
+#      inputs:
+#        failOnStderr: false
+#        targetType: filepath
+#        filePath: ./platform-helm/housekeeping/housekeeping.ps1
+#        workingDirectory: ./order-form
+#        arguments: > 
+#          -dbServer "dummyDBserver"
+#          -resourceGroup "dummyRG"
+#          -azureStorageConnectionString "dummyString"
+#      displayName:  housekeepingOrderForm
        
 
 #      - job: Powershell
