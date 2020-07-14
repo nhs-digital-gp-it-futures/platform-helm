@@ -95,6 +95,7 @@ jobs:
           -dbServer "dummyDBserver"
           -resourceGroup "dummyRG"
           -azureStorageConnectionString "dummyString"
+          -directories "order-form","platform-helm","buying-catalogue-components"
       name: hkorderform
       displayName: housekeeping - Order-Form
 

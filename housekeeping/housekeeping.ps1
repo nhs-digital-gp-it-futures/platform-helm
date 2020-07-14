@@ -5,12 +5,14 @@
 ###
 
 param(
-    [Parameter()] 
-    [string]$dbServer="gpitfutures-dev-sql-pri",
-    [Parameter()]  
-    [string]$resourceGroup="gpitfutures-dev-rg-sql-pri",
     [Parameter(Mandatory)]  
     [string]$azureStorageConnectionString,
+    [Parameter()] 
+    [string]$dbServer="gpitfutures-dev-sql-pri",
+    [Parameter()] 
+    [string]$resourceGroup="gpitfutures-dev-rg-sql-pri",
+    [Parameter()]  
+    [array]$directories,
     [Parameter()] 
     [string]$debugging=$true
 )
@@ -96,12 +98,31 @@ else {
     $namespaces=kubectl get namespaces
 }
 
-if (!(git branch -r)){
-    Write-host "Not connected to git repo"
-    Exit 1
+if (!($directories))
+{
+    if (!(git branch -r))
+    {
+        Write-host "Not connected to git repo"
+        Exit 1
+    }
+    else
+    {
+        $gitBranches=git branch -r
+    }
 }
-else{
-    $gitBranches=git branch -r
+
+if ($directories)
+{
+   foreach ($gitDir in $directories)
+   {
+        set-location -path .\$gitDir
+        $gitBranches+=git branch -r
+        set-location -path ..\
+   } 
+}
+
+if ($codeDebug -ne $false){
+    write-host "$gitBranches"
 }
 
 ### Global Variables
