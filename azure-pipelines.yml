@@ -115,6 +115,7 @@ jobs:
       sudo apt-get install --only-upgrade -y azure-cli
       az --version
       export HELM_EXPERIMENTAL_OCI=1
+      helm registry login gpitfuturesdevacr.azurecr.io --username gpitfuturesdevacr --password $(gpitfuturesdevacr-pass)      
       helm chart push gpitfuturesdevacr/nhsd/buying-catalogue/$chartPackage
       echo $(jq -n --arg version "$(GitVersion.SemVer)" '{helmChartVersion: $version}') > $(build.artifactStagingDirectory)/variables.json
     failOnStderr: true
