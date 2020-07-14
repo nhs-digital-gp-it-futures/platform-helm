@@ -55,6 +55,9 @@ pool:
 
 jobs:
 - job: queryRepos
+  displayName: Get branches from each repo and clear down
+  variables:
+  - group: dev-secrets
   steps:
     - checkout: self
       persistCredentials: true
@@ -68,9 +71,31 @@ jobs:
 #      workingDirectory: ./
 #      displayName:  folderStructure
 
-    - powershell: git branch -r  # inline script
-      workingDirectory: ./order-form
-      displayName:  listRepoBranches
+#    - powershell: git branch -r  # inline script
+#      workingDirectory: ./order-form
+#      displayName:  listRepoBranches
+
+    - task: AzureCLI@2
+      inputs:
+        azureSubscription: 'NHSAPP-BuyingCatalogue (Non-Prod)'
+        scriptType: 'bash'
+        scriptLocation: 'inlineScript'
+        inlineScript: 'az aks get-credentials -n gpitfutures-dev-aks -g gpitfutures-dev-rg-aks'
+      name: kubectlContext
+      displayName: Get Kubernetes Context
+
+    - task: PowerShell@2      
+      inputs:
+        failOnStderr: false
+        targetType: filepath
+        filePath: ./platform-helm/housekeeping/housekeeping.ps1
+        workingDirectory: ./order-form
+        arguments: > 
+          -dbServer "dummyDBserver"
+          -resourceGroup "dummyRG"
+          -azureStorageConnectionString "dummyString"
+      displayName:  housekeepingOrderForm
+       
 
 #      - job: Powershell
 #  steps:

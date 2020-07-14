@@ -5,14 +5,14 @@
 ###
 
 param(
-        [Parameter()] 
-        [string]$dbServer="gpitfutures-dev-sql-pri",
-        [Parameter()]  
-        [string]$resourceGroup="gpitfutures-dev-rg-sql-pri",
-        [Parameter(Mandatory)]  
-        [string]$azureStorageConnectionString,
-        [Parameter()] 
-        [string]$debugging=$true
+    [Parameter()] 
+    [string]$dbServer="gpitfutures-dev-sql-pri",
+    [Parameter()]  
+    [string]$resourceGroup="gpitfutures-dev-rg-sql-pri",
+    [Parameter(Mandatory)]  
+    [string]$azureStorageConnectionString,
+    [Parameter()] 
+    [string]$debugging=$true
 )
 
 ### Functions
@@ -80,16 +80,17 @@ function remove-Databases {
     }    
 }
 
+
 ### Error checking
 
 if (!(az account show)){
     Write-host "Not logged in to Azure"
-    #Exit 1
+    Exit 1
 }
 
 if (!(kubectl get namespaces)){
     Write-host "Not logged in to Kubernetes Cluster"
-    #Exit 1
+    Exit 1
 }
 else {
     $namespaces=kubectl get namespaces
@@ -97,7 +98,7 @@ else {
 
 if (!(git branch -r)){
     Write-host "Not connected to git repo"
-    #Exit 1
+    Exit 1
 }
 else{
     $gitBranches=git branch -r
@@ -120,8 +121,6 @@ foreach ($line in $namespaces){
         }
     }
 }
-
-
 
 foreach ($inactiveNs in $inactiveNamespaces){
     if ($codeDebug -ne $false){
