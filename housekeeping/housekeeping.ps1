@@ -121,8 +121,8 @@ if ($directories)
         write-host "`nDEBUG: $gitDir"
         foreach ($gitbranch in (git branch -r))
         {  
-            $gitBranches += $gitbranch
-            write-host "DEBUG: - $gitbranch"
+            $gitBranches += $gitbranch.trim()
+            write-host "DEBUG: -"$gitbranch.trim()
         }
         set-location -path ..\
    } 
