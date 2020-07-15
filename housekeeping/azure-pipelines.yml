@@ -19,10 +19,6 @@ pr: none
 
 resources:
   repositories:
-#  - repository: platform-helm #261810882
-#    type: github
-#    name: nhs-digital-gp-it-futures/platform-helm
-#    endpoint: nhs-digital-gp-it-futures
   - repository: order-form #254045573
     type: github
     name: nhs-digital-gp-it-futures/order-form
@@ -47,21 +43,6 @@ resources:
 pool:
   vmImage: 'ubuntu-latest'
 
-
-
-#   - task: AzureCLI@2
-#     inputs:
-#       azureSubscription: 'NHSAPP-BuyingCatalogue (Non-Prod)'
-#       scriptType: 'bash'
-#       scriptLocation: 'inlineScript'
-#       inlineScript: 'az aks get-credentials -n gpitfutures-dev-aks -g gpitfutures-dev-rg-aks'
-#     name: kubectlContext
-#     displayName: Get Kubernetes Context
-#   - bash: |
-#       helm repo add gpitfuturesdevacr https://gpitfuturesdevacr.azurecr.io/helm/v1/repo --username gpitfuturesdevacr --password $(gpitfuturesdevacr-pass)
-#     name: addRepo
-#     displayName: Add gpitfuturesdevacr repo
-
 jobs:
 - job: queryRepos
   displayName: Get branches from each repo and clear down
@@ -76,13 +57,9 @@ jobs:
     - checkout: OrderFormAcceptanceTests
     - checkout: BuyingCatalogueService
 
-#    - powershell: get-childitem -r  # inline script
-#      workingDirectory: ./
-#      displayName:  folderStructure
-
-#    - powershell: git branch -r  # inline script
-#      workingDirectory: ./order-form
-#      displayName:  listRepoBranches
+    - powershell: get-childitem -r  # inline script
+      workingDirectory: $(Agent.BuildDirectory)
+      displayName:  folderStructure
 
     - task: AzureCLI@2
       inputs:
@@ -98,8 +75,8 @@ jobs:
         azureSubscription: 'NHSAPP-BuyingCatalogue (Non-Prod)'
         scriptType: 'pscore'
         scriptLocation: scriptPath
+        workingDirectory: $(Agent.BuildDirectory)
         scriptPath: ./platform-helm/housekeeping/housekeeping.ps1
-#        workingDirectory: ./order-form
         arguments: > 
           -dbServer "dummyDBserver"
           -resourceGroup "dummyRG"
@@ -107,79 +84,3 @@ jobs:
           -directories "order-form","platform-helm","buying-catalogue-components"
       name: housekeeping
       displayName: housekeeping - clearUp
-
-#    - task: PowerShell@2      
-#      inputs:
-#        failOnStderr: false
-#        targetType: filepath
-#        filePath: ./platform-helm/housekeeping/housekeeping.ps1
-#        workingDirectory: ./order-form
-#        arguments: > 
-#          -dbServer "dummyDBserver"
-#          -resourceGroup "dummyRG"
-#          -azureStorageConnectionString "dummyString"
-#      displayName:  housekeepingOrderForm
-       
-
-#      - job: Powershell
-#  steps:
-
-    #failOnStderr:  #
-    #errorActionPreference:  #
-    #ignoreLASTEXITCODE:  #
-    #env:  # mapping of environment variables to add
-
- # - script: dir $(Build.SourcesDirectory)
-
-# - task: AzureCLI@2
-#  displayName: Azure CLI
-# inputs:
-#   azureSubscription: <Name of the Azure Resource Manager service connection>
-#   scriptType: ps
-#   scriptLocation: inlineScript
-#   inlineScript: |
-#     az --version
-#     az account show
-
-#  jobs:
-#   - job: accessGitRepo
-#    condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
-    #   variables:
-    #     - group: dev-secrets
-    #     - name: semVer
-    #       value: $[ dependencies.packageAndPublish.outputs['setVersionStep.semVer'] ]
-
-#  steps:
- #   - checkout: self
- #     persistCredentials: true#
-
-# jobs:
-# - job: cleanUpDynamicEnv
-#   dependsOn: packageAndPublish
-#   condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
-#   variables:
-#     - group: dev-secrets
-#     - name: semVer
-#       value: $[ dependencies.packageAndPublish.outputs['setVersionStep.semVer'] ]
-#   steps:
-#   - task: AzureCLI@2
-#     inputs:
-#       azureSubscription: 'NHSAPP-BuyingCatalogue (Non-Prod)'
-#       scriptType: 'bash'
-#       scriptLocation: 'inlineScript'
-#       inlineScript: 'az aks get-credentials -n gpitfutures-dev-aks -g gpitfutures-dev-rg-aks'
-#     name: kubectlContext
-#     displayName: Get Kubernetes Context
-#   - bash: |
-#       helm repo add gpitfuturesdevacr https://gpitfuturesdevacr.azurecr.io/helm/v1/repo --username gpitfuturesdevacr --password $(gpitfuturesdevacr-pass)
-#     name: addRepo
-#     displayName: Add gpitfuturesdevacr repo
-#   - task: AzureCLI@2
-#     inputs:
-#       azureSubscription: 'NHSAPP-BuyingCatalogue (Non-Prod)'
-#       scriptType: 'bash'
-#       scriptLocation: 'scriptPath'
-#       scriptPath: 'tear-down-azure.sh'
-#       arguments: '-m "$(Build.SourceVersionMessage)" -d gpitfutures-dev-sql-pri -g gpitfutures-dev-rg-sql-pri -a "$(gpitdevstorageaccountconnectionstring)"'
-#     name: cleanUp
-#     displayName: Clean up dynamic environments
