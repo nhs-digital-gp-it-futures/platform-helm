@@ -77,7 +77,7 @@ jobs:
         scriptLocation: 'inlineScript'
         inlineScript: get-childitem -r
       name: folderStructure
-      displayName: Get Folder Structure 
+      displayName: DEBUG Get Folder Structure 
 
     - task: AzureCLI@2
       inputs:

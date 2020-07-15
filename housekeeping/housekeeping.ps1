@@ -115,7 +115,10 @@ if ($directories)
 {
    foreach ($gitDir in $directories)
    {
-        set-location -path .\$gitDir
+        get-childitem | write-host 
+
+        set-location -path ..\..\$gitDir
+        
         $gitBranches+=git branch -r
         set-location -path ..\
    } 
@@ -128,7 +131,7 @@ $inactiveNamespaces = @()
 if ($codeDebug -ne $false){
     write-host "`nDEBUGGING...."
 
-    write-host get-childitem
+    get-childitem | write-host 
 
     foreach ($output in $gitBranches | select -unique | sort)
     {
