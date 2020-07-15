@@ -11,6 +11,10 @@ trigger:
   branches:
     include:
       - feature/7969-clear-old-environments
+  paths:
+    include:
+      - housekeeping/*
+
 pr: none
 
 resources:
