@@ -58,7 +58,7 @@ jobs:
     - checkout: BuyingCatalogueService
 
     - powershell: get-childitem -r  # inline script
-      workingDirectory: $(Agent.BuildDirectory)
+      #workingDirectory: $(Agent.BuildDirectory)
       displayName:  folderStructure
 
     - task: AzureCLI@2
@@ -75,7 +75,7 @@ jobs:
         azureSubscription: 'NHSAPP-BuyingCatalogue (Non-Prod)'
         scriptType: 'pscore'
         scriptLocation: scriptPath
-        workingDirectory: $(Agent.BuildDirectory)
+        #workingDirectory: $(Agent.BuildDirectory)
         scriptPath: ./platform-helm/housekeeping/housekeeping.ps1
         arguments: > 
           -dbServer "dummyDBserver"
