@@ -131,9 +131,9 @@ $inactiveNamespaces = @()
 if ($codeDebug -ne $false){
     write-host "`nDEBUGGING...."
 
-    get-childitem | write-host 
+    #get-childitem | write-host 
 
-    foreach ($output in $gitBranches | select -unique | sort)
+    foreach ($output in $gitBranches)
     {
         write-host "$output"
     }
@@ -142,17 +142,22 @@ if ($codeDebug -ne $false){
 
 ### Determine inactive namespaces
 
-foreach ($line in $namespaces){
-    if ($line -like "bc-*" -and $line -notlike "bc-merge*"){
-        if ($gitBranches -match $line.split(" ")[0].split("-")[1]){
-            write-host "active branch:"$line.split(" ")[0] "found" -ForegroundColor Green
-            if ($codeDebug -ne $false){
-                write-host "matched: "$line.split(" ")[0].split("-")[1]
-            }
+foreach ($line in $namespaces){ 
+    $ns = $line.split(" ")[0]
+    $job = $ns.split("-")[1]
+
+    if ($ns -like "bc-*" -and $ns -notlike "bc-merge*"){
+        if ($codeDebug -ne $false){
+            write-host "`nDEBUG-Namespace: $ns"
+            write-host "DEBUG-Job: $job"
+        }
+        
+        if ($gitBranches -match $job){
+            write-host "active branch:"$ns "found" -ForegroundColor Green
         }
         else {
-            write-host "inactive branch:"$line.split(" ")[0] -ForegroundColor Red
-            $inactiveNamespaces += $line.split(" ")[0]
+            write-host "inactive branch:"$ns -ForegroundColor Red
+            $inactiveNamespaces += $ns
         }
     }
 }
