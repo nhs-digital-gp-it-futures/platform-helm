@@ -117,7 +117,7 @@ if ($directories)
    {
         set-location -path .\$gitDir
         
-        if ($codeDebug -ne $false){        
+        if ($debugging -ne $false){        
             write-host "`nDEBUG: GIT REPO: $gitDir"
             foreach ($gitbranch in (git branch -r))
             {
@@ -134,7 +134,7 @@ if ($directories)
 
 $inactiveNamespaces = @()
 
-if ($codeDebug -ne $false){
+if ($debugging -ne $false){
     write-host "`nDEBUGGING...."
 
     #get-childitem | write-host 
@@ -153,7 +153,7 @@ foreach ($line in $namespaces){
     $job = $ns.split("-")[1]
 
     if ($ns -like "bc-*" -and $ns -notlike "bc-merge*"){
-        if ($codeDebug -ne $false){
+        if ($debugging -ne $false){
             write-host "`nDEBUG-Namespace: $ns"
             write-host "DEBUG-Job: $job"
         }
@@ -169,7 +169,7 @@ foreach ($line in $namespaces){
 }
 
 foreach ($inactiveNs in $inactiveNamespaces){
-    if ($codeDebug -ne $false){
+    if ($debugging -ne $false){
         write-host "`nDEBUGGING...."
     }
 
