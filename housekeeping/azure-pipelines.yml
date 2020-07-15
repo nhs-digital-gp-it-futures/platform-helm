@@ -5,7 +5,12 @@
 #     include:
 #     - master
 
-trigger: none
+#trigger: none
+trigger:
+  batch: true
+  branches:
+    include:
+      - feature/7969-clear-old-environments
 pr: none
 
 resources:
