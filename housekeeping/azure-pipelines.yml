@@ -70,14 +70,14 @@ jobs:
       name: kubectlContext
       displayName: Get Kubernetes Context
 
-    - task: AzureCLI@2
-      inputs:
-        azureSubscription: 'NHSAPP-BuyingCatalogue (Non-Prod)'
-        scriptType: 'pscore'
-        scriptLocation: 'inlineScript'
-        inlineScript: get-childitem -r
-      name: folderStructure
-      displayName: DEBUG Get Folder Structure 
+#    - task: AzureCLI@2
+#      inputs:
+#        azureSubscription: 'NHSAPP-BuyingCatalogue (Non-Prod)'
+#        scriptType: 'pscore'
+#        scriptLocation: 'inlineScript'
+#        inlineScript: get-childitem -r
+#      name: folderStructure
+#      displayName: DEBUG Get Folder Structure 
 
     - task: AzureCLI@2
       inputs:

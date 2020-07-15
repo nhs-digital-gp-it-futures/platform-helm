@@ -144,8 +144,11 @@ if ($codeDebug -ne $false){
 
 foreach ($line in $namespaces){
     if ($line -like "bc-*" -and $line -notlike "bc-merge*"){
-        if ($gitBranches -match $line.split("-")[1]){
+        if ($gitBranches -match $line.split(" ")[0].split("-")[1]){
             write-host "active branch:"$line.split(" ")[0] "found" -ForegroundColor Green
+            if ($codeDebug -ne $false){
+                write-host "matched: "$line.split(" ")[0].split("-")[1]
+            }
         }
         else {
             write-host "inactive branch:"$line.split(" ")[0] -ForegroundColor Red
