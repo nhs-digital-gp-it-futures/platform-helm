@@ -81,7 +81,7 @@ dependencies:
   repository: "@gpitfuturesdevacr"
 - name: of
   condition: of.enabled
-  version: 1.24.5       
+  version: 1.24.6
   repository: "@gpitfuturesdevacr"
 - name: redis
   condition: redis.enabled
