@@ -117,7 +117,13 @@ if ($directories)
    {
         set-location -path .\$gitDir
         
-        get-childitem | write-host        
+        if ($codeDebug -ne $false){        
+            write-host "`nDEBUG: GIT REPO: $gitDir"
+            foreach ($gitbranch in (git branch -r))
+            {
+                write-host "DEBUG - $gitbranch"
+            }
+        }
         
         $gitBranches+=git branch -r
         set-location -path ..\
