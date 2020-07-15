@@ -121,10 +121,6 @@ if ($directories)
    } 
 }
 
-if ($codeDebug -ne $false){
-    write-host "$gitBranches"
-}
-
 ### Global Variables
 
 $inactiveNamespaces = @()
@@ -146,6 +142,11 @@ foreach ($line in $namespaces){
 foreach ($inactiveNs in $inactiveNamespaces){
     if ($codeDebug -ne $false){
         write-host "`nDEBUGGING...."
+
+        foreach ($output in $gitBranches | select -unique | sort)
+        {
+            write-host "$output"
+        }
     }
 
     remove-KubernetesResources -branchNamespace $inactiveNs -debug $debugging
