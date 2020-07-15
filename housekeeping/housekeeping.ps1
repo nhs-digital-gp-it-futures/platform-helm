@@ -98,6 +98,8 @@ else {
     $namespaces=kubectl get namespaces
 }
 
+$gitBranches = @()
+
 if (!($directories))
 {
     if (!(git branch -r))
@@ -116,16 +118,12 @@ if ($directories)
    foreach ($gitDir in $directories)
    {
         set-location -path .\$gitDir
-        
-        if ($debugging -ne $false){        
-            write-host "`nDEBUG: GIT REPO: $gitDir"
-            foreach ($gitbranch in (git branch -r))
-            {
-                write-host "DEBUG - $gitbranch"
-            }
+        write-host "`nDEBUG: $gitDir"
+        foreach ($gitbranch in (git branch -r))
+        {  
+            $gitBranches += $gitbranch
+            write-host "DEBUG: - $gitbranch"
         }
-        
-        $gitBranches+=git branch -r
         set-location -path ..\
    } 
 }
