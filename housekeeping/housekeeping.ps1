@@ -125,6 +125,18 @@ if ($directories)
 
 $inactiveNamespaces = @()
 
+if ($codeDebug -ne $false){
+    write-host "`nDEBUGGING...."
+
+    write-host get-childitem
+
+    foreach ($output in $gitBranches | select -unique | sort)
+    {
+        write-host "$output"
+    }
+}
+
+
 ### Determine inactive namespaces
 
 foreach ($line in $namespaces){
@@ -142,11 +154,6 @@ foreach ($line in $namespaces){
 foreach ($inactiveNs in $inactiveNamespaces){
     if ($codeDebug -ne $false){
         write-host "`nDEBUGGING...."
-
-        foreach ($output in $gitBranches | select -unique | sort)
-        {
-            write-host "$output"
-        }
     }
 
     remove-KubernetesResources -branchNamespace $inactiveNs -debug $debugging

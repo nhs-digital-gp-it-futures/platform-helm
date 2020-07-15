@@ -57,9 +57,9 @@ jobs:
     - checkout: OrderFormAcceptanceTests
     - checkout: BuyingCatalogueService
 
-    - powershell: get-childitem -r  # inline script
-      #workingDirectory: $(Agent.BuildDirectory)
-      displayName:  folderStructure
+#    - powershell: get-childitem -r  # inline script
+#      #workingDirectory: $(Agent.BuildDirectory)
+#      displayName:  folderStructure
 
     - task: AzureCLI@2
       inputs:
@@ -74,7 +74,16 @@ jobs:
       inputs:
         azureSubscription: 'NHSAPP-BuyingCatalogue (Non-Prod)'
         scriptType: 'pscore'
-        scriptLocation: scriptPath
+        scriptLocation: 'inlineScript'
+        inlineScript: get-childitem -r
+      name: folderStructure
+      displayName: Get Folder Structure 
+
+    - task: AzureCLI@2
+      inputs:
+        azureSubscription: 'NHSAPP-BuyingCatalogue (Non-Prod)'
+        scriptType: 'pscore'
+        scriptLocation: 'scriptPath'
         #workingDirectory: $(Agent.BuildDirectory)
         scriptPath: ./platform-helm/housekeeping/housekeeping.ps1
         arguments: > 
