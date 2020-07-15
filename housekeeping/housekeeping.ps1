@@ -99,6 +99,7 @@ else {
 }
 
 $gitBranches = @()
+git fetch
 
 if (!($directories))
 {
@@ -119,6 +120,7 @@ if ($directories)
    {
         set-location -path .\$gitDir
         write-host "`nDEBUG: $gitDir"
+        git fetch
         foreach ($gitbranch in (git branch -r))
         {  
             $gitBranches += $gitbranch.trim()
