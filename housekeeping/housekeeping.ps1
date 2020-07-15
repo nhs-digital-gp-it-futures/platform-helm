@@ -115,9 +115,9 @@ if ($directories)
 {
    foreach ($gitDir in $directories)
    {
-        get-childitem | write-host 
-
-        set-location -path ..\..\$gitDir
+        set-location -path .\$gitDir
+        
+        get-childitem | write-host        
         
         $gitBranches+=git branch -r
         set-location -path ..\
