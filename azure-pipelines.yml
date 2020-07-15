@@ -112,10 +112,10 @@ jobs:
       chartPackage=$(ls buyingcatalogue-*.tgz)
       echo "Chart Package $chartPackage"
       az acr helm push --force \
-         -n gpitfuturesdevacr \
-         -u gpitfuturesdevacr \
-         -p $(gpitfuturesdevacr-pass) \
-         $chartPackage
+          -n gpitfuturesdevacr \
+          -u gpitfuturesdevacr \
+          -p $(gpitfuturesdevacr-pass) \
+          $chartPackage
       echo $(jq -n --arg version "$(GitVersion.SemVer)" '{helmChartVersion: $version}') > $(build.artifactStagingDirectory)/variables.json
     failOnStderr: true
     name: helmPush
