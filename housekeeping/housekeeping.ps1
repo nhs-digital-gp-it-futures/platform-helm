@@ -86,12 +86,12 @@ function remove-Databases {
 ### Error checking
 
 if (!(az account show)){
-    Write-host "Not logged in to Azure"
+    Write-host "ERROR: Not logged in to Azure"
     Exit 1
 }
 
 if (!(kubectl get namespaces)){
-    Write-host "Not logged in to Kubernetes Cluster"
+    Write-host "ERROR: Not logged in to Kubernetes Cluster"
     Exit 1
 }
 else {
@@ -99,10 +99,10 @@ else {
 }
 
 $gitBranches = @()
-git fetch
 
 if (!($directories))
 {
+    git fetch
     if (!(git branch -r))
     {
         Write-host "Not connected to git repo"
