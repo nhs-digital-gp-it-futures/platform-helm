@@ -119,12 +119,12 @@ if ($directories)
    foreach ($gitDir in $directories)
    {
         set-location -path .\$gitDir
-        write-host "`nDEBUG: $gitDir"
+        #write-host "`nDEBUG: $gitDir"
         git fetch
         foreach ($gitbranch in (git branch -r))
         {  
             $gitBranches += $gitbranch.trim()
-            write-host "DEBUG: -"$gitbranch.trim()
+            #write-host "DEBUG: -"$gitbranch.trim()
         }
         set-location -path ..\
    } 
@@ -134,17 +134,16 @@ if ($directories)
 
 $inactiveNamespaces = @()
 
-if ($debugging -ne $false){
-    write-host "`nDEBUGGING...."
-
-    #get-childitem | write-host 
-
-    foreach ($output in $gitBranches)
-    {
-        write-host "$output"
-    }
-}
-
+#if ($debugging -ne $false){
+#    write-host "`nDEBUGGING...."
+#
+#    get-childitem | write-host 
+#
+#    foreach ($output in $gitBranches)
+#    {
+#        #write-host "$output"
+#    }
+#}
 
 ### Determine inactive namespaces
 
@@ -153,10 +152,10 @@ foreach ($line in $namespaces){
     $job = $ns.split("-")[1]
 
     if ($ns -like "bc-*" -and $ns -notlike "bc-merge*"){
-        if ($debugging -ne $false){
-            write-host "`nDEBUG-Namespace: $ns"
-            write-host "DEBUG-Job: $job"
-        }
+        #if ($debugging -ne $false){
+        #    write-host "`nDEBUG-Namespace: $ns"
+        #    write-host "DEBUG-Job: $job"
+        #}
         
         if ($gitBranches -match $job){
             write-host "active branch:"$ns "found" -ForegroundColor Green
