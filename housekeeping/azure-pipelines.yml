@@ -26,3 +26,4 @@ jobs:
         queryId: '00f85790-b1dd-4e36-b4ee-3e8873b1478b'
         maxThreshold: '1000'
         minThreshold: '0'
+    pool: server
