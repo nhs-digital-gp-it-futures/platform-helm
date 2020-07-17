@@ -84,7 +84,6 @@ jobs:
         azureSubscription: 'NHSAPP-BuyingCatalogue (Non-Prod)'
         scriptType: 'pscore'
         scriptLocation: 'scriptPath'
-        #workingDirectory: $(Agent.BuildDirectory)
         scriptPath: ./platform-helm/housekeeping/housekeepingAKS.ps1
         arguments: > 
           -dbServer "gpitfutures-dev-sql-pri"
@@ -93,3 +92,17 @@ jobs:
           -directories "order-form","platform-helm","buying-catalogue-components"
       name: housekeepingAKS
       displayName: housekeeping - clear AKS
+
+    - task: AzureCLI@2
+      inputs:
+        azureSubscription: 'NHSAPP-BuyingCatalogue (Non-Prod)'
+        scriptType: 'pscore'
+        scriptLocation: 'scriptPath'
+        scriptPath: ./platform-helm/housekeeping/housekeepingSQL.ps1
+        arguments: > 
+          -dbServer "gpitfutures-dev-sql-pri"
+          -resourceGroup "gpitfutures-dev-rg-sql-pri"
+          -azureStorageConnectionString "dummyString"
+          -directories "order-form","platform-helm","buying-catalogue-components"
+      name: housekeepingSQL
+      displayName: housekeeping - clear SQL

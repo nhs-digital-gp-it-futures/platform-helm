@@ -11,8 +11,8 @@ param(
     [string]$debugging=$true
 )
 
-Import-Module -Name "$PSScriptRoot/sharedFunctions/sharedFunctions.psm1" -Function remove-KubernetesResources
-Import-Module -Name "$PSScriptRoot/sharedFunctions/sharedFunctions.psm1" -Function remove-BlobStoreContainers
+#Import-Module -Name "$PSScriptRoot/sharedFunctions/sharedFunctions.psm1" -Function remove-KubernetesResources
+#Import-Module -Name "$PSScriptRoot/sharedFunctions/sharedFunctions.psm1" -Function remove-BlobStoreContainers
 Import-Module -Name "$PSScriptRoot/sharedFunctions/sharedFunctions.psm1" -Function get-Databases
 Import-Module -Name "$PSScriptRoot/sharedFunctions/sharedFunctions.psm1" -Function remove-Databases
 
@@ -35,7 +35,7 @@ else {
 ### Global Variables
 
 $gitBranches = @()
-$inactiveNamespaces = @()
+#$inactiveNamespaces = @()
 $inactiveDatabases = @()
 
 # Code Start
@@ -80,42 +80,6 @@ if ($directories)
 #        #write-host "$output"
 #    }
 #}
-
-#########################################
-### Cleardown Kubernetes environments ###
-#########################################
-
-write-host "`nKubernetes branch cleardown status`n"
-
-foreach ($line in $namespaces){ 
-    $ns = $line.split(" ")[0]
-    $job = $ns.split("-")[1]
-
-    if ($ns -like "bc-*" -and $ns -notlike "bc-merge*"){
-        #if ($debugging -ne $false){
-        #    write-host "`nDEBUG-Namespace: $ns"
-        #    write-host "DEBUG-Job: $job"
-        #}
-        
-        if ($gitBranches -match $job){
-            write-host "active branch:"$ns "found" -ForegroundColor Green
-        }
-        else {
-            write-host "inactive branch:"$ns -ForegroundColor Red
-            $inactiveNamespaces += $ns
-        }
-    }
-}
-
-foreach ($inactiveNs in $inactiveNamespaces){
-    if ($debugging -ne $false){
-        write-host "`nDEBUGGING k8s Cleardown...."
-    }
-
-    remove-KubernetesResources -branchNamespace $inactiveNs -debug $debugging
-    remove-BlobStoreContainers -branchNamespace $inactiveNs -storageConnectionString $azureStorageConnectionString -debug $debugging
-    remove-Databases -branchNamespace "bc-$inactiveNs" -databaseServer $dbServer -rg $resourceGroup -debug $debugging
-}
 
 ########################################
 ### Cleardown Leftover SQL Databases ###
