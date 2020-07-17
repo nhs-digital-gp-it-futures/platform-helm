@@ -13,7 +13,7 @@ param(
 
 #Import-Module -Name "$PSScriptRoot/sharedFunctions/sharedFunctions.psm1" -Function remove-KubernetesResources
 #Import-Module -Name "$PSScriptRoot/sharedFunctions/sharedFunctions.psm1" -Function remove-BlobStoreContainers
-Import-Module -Name "$PSScriptRoot/sharedFunctions/sharedFunctions.psm1" -Function get-KubernetesResources
+Import-Module -Name "$PSScriptRoot/sharedFunctions/sharedFunctions.psm1" -Function get-ActiveGitBranches
 Import-Module -Name "$PSScriptRoot/sharedFunctions/sharedFunctions.psm1" -Function get-Databases
 Import-Module -Name "$PSScriptRoot/sharedFunctions/sharedFunctions.psm1" -Function remove-Databases
 
@@ -68,8 +68,8 @@ $inactiveDatabases = @()
 #        set-location -path ..\
 #   } 
 #}
-
-$gitBranches = get-KubernetesResources -directories $directories
+$directories="platform-helm","platform"
+$gitBranches = get-ActiveGitBranches -directories $directories
 
 #if ($debugging -ne $false){
 #    write-host "`nDEBUGGING...."

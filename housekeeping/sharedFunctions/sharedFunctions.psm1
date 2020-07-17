@@ -1,6 +1,6 @@
 ### Housekeeping Functions
 
-function get-KubernetesResources {
+function get-ActiveGitBranches {
     param(
         [Parameter(Mandatory)]   
         [array]$directories
@@ -74,13 +74,11 @@ function get-Databases {
         [Parameter(Mandatory)]  
         [string]$databaseServer,
         [Parameter(Mandatory)]  
-        [string]$rg,
-        [Parameter()] 
-        [string]$codeDebug=$true
+        [string]$rg
     ) 
 
     $databaseNames=@()
-    $databaseNames = az sql db list --resource-group "$rg" --server "$dbServer"--output json | convertfrom-json 
+    $databaseNames = az sql db list --resource-group "$rg" --server "$databaseServer"--output json | convertfrom-json 
 
     return $databaseNames | Select-Object -ExpandProperty name | Where-Object {$_ -like "bc-*"} | sort-object
 }

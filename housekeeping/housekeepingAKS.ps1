@@ -11,7 +11,7 @@ param(
     [string]$debugging=$true
 )
 
-Import-Module -Name "$PSScriptRoot/sharedFunctions/sharedFunctions.psm1" -Function get-KubernetesResources
+Import-Module -Name "$PSScriptRoot/sharedFunctions/sharedFunctions.psm1" -Function get-ActiveGitBranches
 Import-Module -Name "$PSScriptRoot/sharedFunctions/sharedFunctions.psm1" -Function remove-KubernetesResources
 Import-Module -Name "$PSScriptRoot/sharedFunctions/sharedFunctions.psm1" -Function remove-BlobStoreContainers
 Import-Module -Name "$PSScriptRoot/sharedFunctions/sharedFunctions.psm1" -Function remove-Databases
@@ -69,7 +69,7 @@ $inactiveNamespaces = @()
 #   } 
 #}
 
-$gitBranches = get-KubernetesResources -directories $directories
+$gitBranches = get-ActiveGitBranches -directories $directories
 
 #if ($debugging -ne $false){
 #    write-host "`nDEBUGGING...."
