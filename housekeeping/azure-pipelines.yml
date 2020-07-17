@@ -92,7 +92,7 @@ jobs:
           -dbServer "gpitfutures-dev-sql-pri"
           -resourceGroup "gpitfutures-dev-rg-sql-pri"
           -azureStorageConnectionString "dummyString"
-          -directories $env:gitrepos
+          -directories $gitrepos
       name: housekeepingAKS
       displayName: Housekeeping - Clear down AKS
 
@@ -106,6 +106,6 @@ jobs:
           -dbServer "gpitfutures-dev-sql-pri"
           -resourceGroup "gpitfutures-dev-rg-sql-pri"
           -azureStorageConnectionString "dummyString"
-          -directories $env:gitrepos
+          -directories $gitrepos
       name: housekeepingSQL
       displayName: Housekeeping - Clear down SQL
