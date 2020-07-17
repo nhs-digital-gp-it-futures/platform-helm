@@ -77,7 +77,7 @@ jobs:
         azureSubscription: 'NHSAPP-BuyingCatalogue (Non-Prod)'
         scriptType: 'pscore'
         scriptLocation: 'inlineScript'
-        inlineScript: 'write-host "$gitrepos"'
+        inlineScript: 'write-host "value=$(gitrepos)"'
       name: environmentVariables
       displayName: DEBUG Output Environment Vars
     #directories "order-form,platform-helm,buying-catalogue-components"
