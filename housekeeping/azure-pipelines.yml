@@ -53,59 +53,59 @@ jobs:
   steps:
     - checkout: self
       persistCredentials: true
-#    - checkout: platform-helm
-#    - checkout: order-form
-#    - checkout: buying-catalogue-components
-#    - checkout: OrderFormAcceptanceTests
-#    - checkout: BuyingCatalogueService
+    - checkout: platform-helm
+    - checkout: order-form
+    - checkout: buying-catalogue-components
+    - checkout: OrderFormAcceptanceTests
+    - checkout: BuyingCatalogueService
 
 #    - powershell: get-childitem -r  # inline script
 #      #workingDirectory: $(Agent.BuildDirectory)
 #      displayName:  folderStructure
 
+    - task: AzureCLI@2
+      inputs:
+        azureSubscription: 'NHSAPP-BuyingCatalogue (Non-Prod)'
+        scriptType: 'bash'
+        scriptLocation: 'inlineScript'
+        inlineScript: 'az aks get-credentials -n gpitfutures-dev-aks -g gpitfutures-dev-rg-aks'
+      name: kubectlContext
+      displayName: Get Kubernetes Context
+
 #    - task: AzureCLI@2
 #      inputs:
 #        azureSubscription: 'NHSAPP-BuyingCatalogue (Non-Prod)'
-#        scriptType: 'bash'
+#        scriptType: 'pscore'
 #        scriptLocation: 'inlineScript'
-#        inlineScript: 'az aks get-credentials -n gpitfutures-dev-aks -g gpitfutures-dev-rg-aks'
-#      name: kubectlContext
-#      displayName: Get Kubernetes Context
+#        inlineScript: 'write-host "value=$(gitrepos)"'
+#      name: environmentVariables
+#      displayName: DEBUG Output Environment Vars
+#    #directories "order-form,platform-helm,buying-catalogue-components"
 
     - task: AzureCLI@2
       inputs:
         azureSubscription: 'NHSAPP-BuyingCatalogue (Non-Prod)'
         scriptType: 'pscore'
-        scriptLocation: 'inlineScript'
-        inlineScript: 'write-host "value=$(gitrepos)"'
-      name: environmentVariables
-      displayName: DEBUG Output Environment Vars
-    #directories "order-form,platform-helm,buying-catalogue-components"
+        scriptLocation: 'scriptPath'
+        scriptPath: ./platform-helm/housekeeping/housekeepingAKS.ps1
+        arguments: > 
+          -dbServer "gpitfutures-dev-sql-pri"
+          -resourceGroup "gpitfutures-dev-rg-sql-pri"
+          -azureStorageConnectionString "dummyString"
+          -directories "$(gitrepos)"
+      name: housekeepingAKS
+      displayName: Housekeeping - Clear down AKS
 
-#    - task: AzureCLI@2
-#      inputs:
-#        azureSubscription: 'NHSAPP-BuyingCatalogue (Non-Prod)'
-#        scriptType: 'pscore'
-#        scriptLocation: 'scriptPath'
-#        scriptPath: ./platform-helm/housekeeping/housekeepingAKS.ps1
-#        arguments: > 
-#          -dbServer "gpitfutures-dev-sql-pri"
-#          -resourceGroup "gpitfutures-dev-rg-sql-pri"
-#          -azureStorageConnectionString "dummyString"
-#          -directories $gitrepos
-#      name: housekeepingAKS
-#      displayName: Housekeeping - Clear down AKS
-
-#    - task: AzureCLI@2
-#      inputs:
-#        azureSubscription: 'NHSAPP-BuyingCatalogue (Non-Prod)'
-#        scriptType: 'pscore'
-#        scriptLocation: 'scriptPath'
-#        scriptPath: ./platform-helm/housekeeping/housekeepingSQL.ps1
-#        arguments: > 
-#          -dbServer "gpitfutures-dev-sql-pri"
-#          -resourceGroup "gpitfutures-dev-rg-sql-pri"
-#          -azureStorageConnectionString "dummyString"
-#          -directories $gitrepos
-#      name: housekeepingSQL
-#      displayName: Housekeeping - Clear down SQL
+    - task: AzureCLI@2
+      inputs:
+        azureSubscription: 'NHSAPP-BuyingCatalogue (Non-Prod)'
+        scriptType: 'pscore'
+        scriptLocation: 'scriptPath'
+        scriptPath: ./platform-helm/housekeeping/housekeepingSQL.ps1
+        arguments: > 
+          -dbServer "gpitfutures-dev-sql-pri"
+          -resourceGroup "gpitfutures-dev-rg-sql-pri"
+          -azureStorageConnectionString "dummyString"
+          -directories "$(gitrepos)"
+      name: housekeepingSQL
+      displayName: Housekeeping - Clear down SQL
