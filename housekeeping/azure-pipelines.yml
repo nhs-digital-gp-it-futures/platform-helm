@@ -87,8 +87,8 @@ jobs:
         #workingDirectory: $(Agent.BuildDirectory)
         scriptPath: ./platform-helm/housekeeping/housekeeping.ps1
         arguments: > 
-          -dbServer "dummyDBserver"
-          -resourceGroup "dummyRG"
+          -dbServer "gpitfutures-dev-sql-pri"
+          -resourceGroup "gpitfutures-dev-rg-sql-pri"
           -azureStorageConnectionString "dummyString"
           -directories "order-form","platform-helm","buying-catalogue-components"
       name: housekeeping
