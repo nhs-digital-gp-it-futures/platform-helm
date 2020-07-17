@@ -26,8 +26,9 @@ if (!(az account show)){
 
 $gitBranches = @()
 $inactiveDatabases = @()
+$jobLength = 4
 
-#$directories="platform-helm","platform"
+$directories="platform-helm","platform"
 $gitBranches = get-ActiveGitBranches -directories $directories
 
 ########################################
@@ -39,14 +40,17 @@ write-host "`nSQL Database cleardown status`n"
 $sqlDatabases = get-Databases -databaseServer $dbServer -rg $resourceGroup
 
 foreach ($line in $sqlDatabases){ 
-    $job = ($line -replace '\D+').Substring(0,4)
+    if (($line -replace '\D+').length -gt 3){
+        $job = ($line -replace '\D+').Substring(0,$jobLength)
 
-    if ($gitBranches -match $job){
-        write-host "active database: $line found" -ForegroundColor Green
-    }
-    else {
-        write-host "inactive database: $line" -ForegroundColor Red
-        $inactiveDatabases += $line.Substring(0, $line.lastIndexOf('-'))
+        if ($gitBranches -match $job){
+            write-host "active database: $line found" -ForegroundColor Green
+        }
+        else {
+            write-host "inactive database: $line" -ForegroundColor Red
+            $inactiveDatabases += $line.Substring(0, $line.lastIndexOf('-'))
+        }
+        $job=""
     }
 }
 
