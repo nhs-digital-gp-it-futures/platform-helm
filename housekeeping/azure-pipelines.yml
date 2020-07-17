@@ -51,9 +51,9 @@ jobs:
   - name: gitrepos
     value: "platform-helm,order-form,buying-catalogue-components,OrderFormAcceptanceTests,BuyingCatalogueService"
   steps:
-  #  - checkout: self
-  #    persistCredentials: true
-    - checkout: platform-helm
+    - checkout: self
+      persistCredentials: true
+#    - checkout: platform-helm
     - checkout: order-form
     - checkout: buying-catalogue-components
     - checkout: OrderFormAcceptanceTests
