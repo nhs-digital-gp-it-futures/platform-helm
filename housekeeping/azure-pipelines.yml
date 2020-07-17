@@ -85,11 +85,11 @@ jobs:
         scriptType: 'pscore'
         scriptLocation: 'scriptPath'
         #workingDirectory: $(Agent.BuildDirectory)
-        scriptPath: ./platform-helm/housekeeping/housekeeping.ps1
+        scriptPath: ./platform-helm/housekeeping/housekeepingAKS.ps1
         arguments: > 
           -dbServer "gpitfutures-dev-sql-pri"
           -resourceGroup "gpitfutures-dev-rg-sql-pri"
           -azureStorageConnectionString "dummyString"
           -directories "order-form","platform-helm","buying-catalogue-components"
-      name: housekeeping
-      displayName: housekeeping - clearUp
+      name: housekeepingAKS
+      displayName: housekeeping - clear AKS
