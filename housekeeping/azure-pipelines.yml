@@ -48,10 +48,12 @@ jobs:
   displayName: Get branches from each repo and clear down
   variables:
   - group: dev-secrets
+  - name: gitrepos
+    value: "platform-helm,order-form,buying-catalogue-components,OrderFormAcceptanceTests,BuyingCatalogueService"
   steps:
-    - checkout: self
-      persistCredentials: true
-  #  - checkout: platform-helm
+  #  - checkout: self
+  #    persistCredentials: true
+    - checkout: platform-helm
     - checkout: order-form
     - checkout: buying-catalogue-components
     - checkout: OrderFormAcceptanceTests
@@ -89,9 +91,9 @@ jobs:
           -dbServer "gpitfutures-dev-sql-pri"
           -resourceGroup "gpitfutures-dev-rg-sql-pri"
           -azureStorageConnectionString "dummyString"
-          -directories "order-form","platform-helm","buying-catalogue-components"
+          -directories "order-form,platform-helm,buying-catalogue-components"
       name: housekeepingAKS
-      displayName: housekeeping - clear AKS
+      displayName: Housekeeping - Clear down AKS
 
     - task: AzureCLI@2
       inputs:
@@ -103,6 +105,6 @@ jobs:
           -dbServer "gpitfutures-dev-sql-pri"
           -resourceGroup "gpitfutures-dev-rg-sql-pri"
           -azureStorageConnectionString "dummyString"
-          -directories "order-form","platform-helm","buying-catalogue-components"
+          -directories "order-form,platform-helm,buying-catalogue-components"
       name: housekeepingSQL
-      displayName: housekeeping - clear SQL
+      displayName: Housekeeping - Clear down SQL

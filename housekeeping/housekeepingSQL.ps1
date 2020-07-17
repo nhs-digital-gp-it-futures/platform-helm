@@ -2,7 +2,7 @@ param(
     [Parameter(Mandatory)]  
     [string]$azureStorageConnectionString,
     [Parameter()]  
-    [array]$directories,
+    [string]$directories,
     [Parameter()] 
     [string]$dbServer="gpitfutures-dev-sql-pri",
     [Parameter()] 

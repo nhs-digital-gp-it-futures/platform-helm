@@ -3,7 +3,7 @@
 function get-ActiveGitBranches {
     param(
         [Parameter(Mandatory)]   
-        [array]$directories
+        [string]$directories
     )    
     
     $gitBranches = @()
@@ -20,7 +20,7 @@ function get-ActiveGitBranches {
     }
 
     if ($directories){
-        foreach ($gitDir in $directories){
+        foreach ($gitDir in $directories -split(",")){
             set-location -path .\$gitDir
             #write-host "`nDEBUG: $gitDir"
             git fetch
