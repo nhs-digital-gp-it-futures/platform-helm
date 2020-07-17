@@ -28,7 +28,7 @@ $gitBranches = @()
 $inactiveDatabases = @()
 $jobLength = 4
 
-$directories="platform-helm","platform"
+#$directories="platform-helm","platform"
 $gitBranches = get-ActiveGitBranches -directories $directories
 
 ########################################
