@@ -39,7 +39,7 @@ write-host "`nSQL Database cleardown status`n"
 $sqlDatabases = get-Databases -databaseServer $dbServer -rg $resourceGroup
 
 foreach ($line in $sqlDatabases){ 
-    $job = $line -replace '\D+' ###########################################"bc-feature-8071-replace-k8s-nodes-ordapi" returns 80718
+    $job = ($line -replace '\D+').Substring(0,4)
 
     if ($gitBranches -match $job){
         write-host "active database: $line found" -ForegroundColor Green
