@@ -11,6 +11,7 @@ param(
     [string]$debugging=$true
 )
 
+Import-Module -Name "$PSScriptRoot/sharedFunctions/sharedFunctions.psm1" -Function get-KubernetesResources
 Import-Module -Name "$PSScriptRoot/sharedFunctions/sharedFunctions.psm1" -Function remove-KubernetesResources
 Import-Module -Name "$PSScriptRoot/sharedFunctions/sharedFunctions.psm1" -Function remove-BlobStoreContainers
 Import-Module -Name "$PSScriptRoot/sharedFunctions/sharedFunctions.psm1" -Function remove-Databases
@@ -38,35 +39,37 @@ $inactiveNamespaces = @()
 
 # Code Start
 
-if (!($directories))
-{
-    git fetch
-    if (!(git branch -r))
-    {
-        Write-host "Not connected to git repo"
-        Exit 1
-    }
-    else
-    {
-        $gitBranches=git branch -r
-    }
-}
+#if (!($directories))
+#{
+#    git fetch
+#    if (!(git branch -r))
+#    {
+#        Write-host "Not connected to git repo"
+#        Exit 1
+#    }
+#    else
+#    {
+#        $gitBranches=git branch -r
+#    }
+#}
+#
+#if ($directories)
+#{
+#   foreach ($gitDir in $directories)
+#   {
+#        set-location -path .\$gitDir
+#        #write-host "`nDEBUG: $gitDir"
+#        git fetch
+#        foreach ($gitbranch in (git branch -r))
+#        {  
+#            $gitBranches += $gitbranch.trim()
+#            #write-host "DEBUG: -"$gitbranch.trim()
+#        }
+#        set-location -path ..\
+#   } 
+#}
 
-if ($directories)
-{
-   foreach ($gitDir in $directories)
-   {
-        set-location -path .\$gitDir
-        #write-host "`nDEBUG: $gitDir"
-        git fetch
-        foreach ($gitbranch in (git branch -r))
-        {  
-            $gitBranches += $gitbranch.trim()
-            #write-host "DEBUG: -"$gitbranch.trim()
-        }
-        set-location -path ..\
-   } 
-}
+$gitBranches = get-KubernetesResources -directories $directories
 
 #if ($debugging -ne $false){
 #    write-host "`nDEBUGGING...."

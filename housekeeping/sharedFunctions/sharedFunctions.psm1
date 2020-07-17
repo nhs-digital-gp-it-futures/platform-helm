@@ -1,20 +1,55 @@
 ### Housekeeping Functions
 
-function remove-KubernetesResources {
+function get-KubernetesResources {
     param(
         [Parameter(Mandatory)]   
-        [string]$branchNamespace,
-        [Parameter()] 
-        [string]$codeDebug=$true
+        [array]$directories
     )    
+    
+    $gitBranches = @()
+    
+    if (!($directories)){
+        git fetch
+        if (!(git branch -r)){
+            Write-host "Not connected to git repo"
+            Exit 1
+        }
+        else{
+            $gitBranches=git branch -r
+        }
+    }
 
-    if ($codeDebug -eq $false){
-        kubectl delete ns $branchNamespace
+    if ($directories){
+        foreach ($gitDir in $directories){
+            set-location -path .\$gitDir
+            #write-host "`nDEBUG: $gitDir"
+            git fetch
+            foreach ($gitbranch in (git branch -r))
+            {  
+                $gitBranches += $gitbranch.trim()
+                #write-host "DEBUG: -"$gitbranch.trim()
+            }
+            set-location -path ..\
+        } 
     }
-    else {
-        write-host "DEBUG: kubectl delete ns $branchNamespace"
-    }
+    Return $gitBranches
 }
+
+    function remove-KubernetesResources {
+        param(
+            [Parameter(Mandatory)]   
+            [string]$branchNamespace,
+            [Parameter()] 
+            [string]$codeDebug=$true
+        )    
+
+        if ($codeDebug -eq $false){
+            kubectl delete ns $branchNamespace
+        }
+        else {
+            write-host "DEBUG: kubectl delete ns $branchNamespace"
+        }
+    }
 
 function remove-BlobStoreContainers {
     param(
