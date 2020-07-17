@@ -72,41 +72,40 @@ jobs:
       name: kubectlContext
       displayName: Get Kubernetes Context
 
+#    - task: AzureCLI@2
+#      inputs:
+#        azureSubscription: 'NHSAPP-BuyingCatalogue (Non-Prod)'
+#        scriptType: 'pscore'
+#        scriptLocation: 'inlineScript'
+#        inlineScript: 'dir env:'
+#      name: environmentVariables
+#      displayName: DEBUG Output Environment Vars
     #directories "order-form,platform-helm,buying-catalogue-components"
 
     - task: AzureCLI@2
       inputs:
         azureSubscription: 'NHSAPP-BuyingCatalogue (Non-Prod)'
         scriptType: 'pscore'
-        scriptLocation: 'inlineScript'
-        inlineScript: 'dir env:'
-      name: environmentVariables
-      displayName: DEBUG Output Environment Vars
+        scriptLocation: 'scriptPath'
+        scriptPath: ./platform-helm/housekeeping/housekeepingAKS.ps1
+        arguments: > 
+          -dbServer "gpitfutures-dev-sql-pri"
+          -resourceGroup "gpitfutures-dev-rg-sql-pri"
+          -azureStorageConnectionString "dummyString"
+          -directories $env:gitrepos
+      name: housekeepingAKS
+      displayName: Housekeeping - Clear down AKS
 
-#    - task: AzureCLI@2
-#      inputs:
-#        azureSubscription: 'NHSAPP-BuyingCatalogue (Non-Prod)'
-#        scriptType: 'pscore'
-#        scriptLocation: 'scriptPath'
-#        scriptPath: ./platform-helm/housekeeping/housekeepingAKS.ps1
-#        arguments: > 
-#          -dbServer "gpitfutures-dev-sql-pri"
-#          -resourceGroup "gpitfutures-dev-rg-sql-pri"
-#          -azureStorageConnectionString "dummyString"
-#          -directories $env:gitrepos
-#      name: housekeepingAKS
-#      displayName: Housekeeping - Clear down AKS
-#
-#    - task: AzureCLI@2
-#      inputs:
-#        azureSubscription: 'NHSAPP-BuyingCatalogue (Non-Prod)'
-#        scriptType: 'pscore'
-#        scriptLocation: 'scriptPath'
-#        scriptPath: ./platform-helm/housekeeping/housekeepingSQL.ps1
-#        arguments: > 
-#          -dbServer "gpitfutures-dev-sql-pri"
-#          -resourceGroup "gpitfutures-dev-rg-sql-pri"
-#          -azureStorageConnectionString "dummyString"
-#          -directories $env:gitrepos
-#      name: housekeepingSQL
-#      displayName: Housekeeping - Clear down SQL
+    - task: AzureCLI@2
+      inputs:
+        azureSubscription: 'NHSAPP-BuyingCatalogue (Non-Prod)'
+        scriptType: 'pscore'
+        scriptLocation: 'scriptPath'
+        scriptPath: ./platform-helm/housekeeping/housekeepingSQL.ps1
+        arguments: > 
+          -dbServer "gpitfutures-dev-sql-pri"
+          -resourceGroup "gpitfutures-dev-rg-sql-pri"
+          -azureStorageConnectionString "dummyString"
+          -directories $env:gitrepos
+      name: housekeepingSQL
+      displayName: Housekeeping - Clear down SQL
