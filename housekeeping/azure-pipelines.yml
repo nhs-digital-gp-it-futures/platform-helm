@@ -17,13 +17,106 @@ trigger:
 
 pr: none
 
+resources:
+  repositories:
+  - repository: order-form #254045573
+    type: github
+    name: nhs-digital-gp-it-futures/order-form
+    endpoint: nhs-digital-gp-it-futures
+  - repository: buying-catalogue-components #220214313
+    type: github
+    name: nhs-digital-gp-it-futures/buying-catalogue-components
+    endpoint: nhs-digital-gp-it-futures
+  - repository: BuyingCatalogueIdentity #240271150
+    type: github
+    name: nhs-digital-gp-it-futures/BuyingCatalogueIdentity
+    endpoint: nhs-digital-gp-it-futures
+  - repository: OrderFormAcceptanceTests #255625095
+    type: github
+    name: nhs-digital-gp-it-futures/OrderFormAcceptanceTests
+    endpoint: nhs-digital-gp-it-futures
+  - repository: BuyingCatalogueService #202726178
+    type: github
+    name: nhs-digital-gp-it-futures/BuyingCatalogueService
+    endpoint: nhs-digital-gp-it-futures
+
 jobs:
+
   - job: getWorkitems
+    pool: server
     displayName: Get all work items
     steps:
     - task: queryWorkItems@0
       inputs:
-        queryId: '00f85790-b1dd-4e36-b4ee-3e8873b1478b'
+        queryId: 'c2529b1c-442a-438b-9f2a-1ca69c9c269a'
         maxThreshold: '1000'
         minThreshold: '0'
-    pool: server
+
+  - job: queryRepos
+    displayName: Get branches from each repo and clear down
+    pool:
+      vmImage: 'ubuntu-latest'
+
+    variables:
+    - group: dev-secrets
+    - name: gitrepos
+      value: "platform-helm,order-form,buying-catalogue-components,OrderFormAcceptanceTests,BuyingCatalogueService"
+
+    steps:
+    - checkout: self
+      persistCredentials: true
+    - checkout: order-form
+    - checkout: buying-catalogue-components
+    - checkout: OrderFormAcceptanceTests
+    - checkout: BuyingCatalogueService
+
+#    - powershell: get-childitem -r  # inline script
+#      #workingDirectory: $(Agent.BuildDirectory)
+#      displayName:  folderStructure
+
+    - task: AzureCLI@2
+      inputs:
+        azureSubscription: 'NHSAPP-BuyingCatalogue (Non-Prod)'
+        scriptType: 'bash'
+        scriptLocation: 'inlineScript'
+        inlineScript: 'az aks get-credentials -n gpitfutures-dev-aks -g gpitfutures-dev-rg-aks'
+      name: kubectlContext
+      displayName: Get Kubernetes Context
+
+#    - task: AzureCLI@2
+#      inputs:
+#        azureSubscription: 'NHSAPP-BuyingCatalogue (Non-Prod)'
+#        scriptType: 'pscore'
+#        scriptLocation: 'inlineScript'
+#        inlineScript: 'write-host "value=$(gitrepos)"'
+#      name: environmentVariables
+#      displayName: DEBUG Output Environment Vars
+#    #directories "order-form,platform-helm,buying-catalogue-components"
+
+    - task: AzureCLI@2
+      inputs:
+        azureSubscription: 'NHSAPP-BuyingCatalogue (Non-Prod)'
+        scriptType: 'pscore'
+        scriptLocation: 'scriptPath'
+        scriptPath: ./platform-helm/housekeeping/housekeepingAKS.ps1
+        arguments: > 
+          -dbServer "gpitfutures-dev-sql-pri"
+          -resourceGroup "gpitfutures-dev-rg-sql-pri"
+          -azureStorageConnectionString "dummyString"
+          -directories "$(gitrepos)"
+      name: housekeepingAKS
+      displayName: Housekeeping - Clear down AKS
+
+    - task: AzureCLI@2
+      inputs:
+        azureSubscription: 'NHSAPP-BuyingCatalogue (Non-Prod)'
+        scriptType: 'pscore'
+        scriptLocation: 'scriptPath'
+        scriptPath: ./platform-helm/housekeeping/housekeepingSQL.ps1
+        arguments: > 
+          -dbServer "gpitfutures-dev-sql-pri"
+          -resourceGroup "gpitfutures-dev-rg-sql-pri"
+          -azureStorageConnectionString "dummyString"
+          -directories "$(gitrepos)"
+      name: housekeepingSQL
+      displayName: Housekeeping - Clear down SQL
