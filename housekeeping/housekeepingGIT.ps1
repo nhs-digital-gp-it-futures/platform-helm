@@ -33,6 +33,5 @@ $gitBranches = get-ActiveGitBranches -directories $directories
 write-host "`nActive Git Repos`n"
 
 foreach ($line in $gitBranches | select-object -Unique | sort){ 
-    $repo=$line.substring(7) 
-    write-host "git branch:"$repo -ForegroundColor Blue
+    write-host "git branch:"$line -ForegroundColor Blue
 }
