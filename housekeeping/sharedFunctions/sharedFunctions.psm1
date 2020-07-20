@@ -62,10 +62,10 @@ function remove-BlobStoreContainers {
     ) 
 
     if ($codeDebug -eq $false){
-        az storage container delete --name '$branchNamespace-documents' --connection-string "$storageConnectionStrings"
+        az storage container delete --name "$branchNamespace-documents" --connection-string "$storageConnectionString"
     }
     else {
-        write-host "DEBUG: az storage container delete --name '$branchNamespace-documents' --connection-string $storageConnectionString"
+        write-host "DEBUG: az storage container delete --name '$branchNamespace-documents' --connection-string '$storageConnectionString"'
     }
 }
 
