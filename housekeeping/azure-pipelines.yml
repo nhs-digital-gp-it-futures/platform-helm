@@ -7,7 +7,7 @@ schedules:
       - feature/7969-clear-old-environments
     always: true
 
-#trigger: none
+trigger: none
 #trigger:
 #  batch: true
 #  branches:
