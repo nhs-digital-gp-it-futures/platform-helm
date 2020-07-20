@@ -93,7 +93,9 @@ jobs:
 
     variables:
     - group: dev-secrets
-    - name: gitrepos
+    - name: outDebug
+      value: "$false"
+    - name: gitRepos
       value: "PublicBrowseAcceptanceTests,buying-catalogue-admin,BuyingCatalogueDocumentService,BuyingCatalogueIdentity,BuyingCatalogueOrdering,BuyingCatalogueService,MarketingPageAcceptanceTests,marketing-pages,order-form,OrderFormAcceptanceTests,platform-helm,public-browse,PublicBrowseAcceptanceTests"
 
     steps:
@@ -133,7 +135,7 @@ jobs:
         scriptLocation: 'scriptPath'
         scriptPath: ./platform-helm/housekeeping/housekeepingGIT.ps1
         arguments: > 
-          -directories "$(gitrepos)"
+          -directories "$(gitRepos)"
       name: housekeepingGIT
       displayName: Housekeeping - Report on Git Repos
 
@@ -147,8 +149,8 @@ jobs:
           -dbServer "gpitfutures-dev-sql-pri"
           -resourceGroup "gpitfutures-dev-rg-sql-pri"
           -azureStorageConnectionString "$(gpitdevstorageaccountconnectionstring)"
-          -directories "$(gitrepos)"
-          -debugging "$true"
+          -directories "$(gitRepos)"
+          -debugging "$(outDebug)"
       name: housekeepingAKS
       displayName: Housekeeping - Clear down AKS
 
@@ -162,7 +164,7 @@ jobs:
           -dbServer "gpitfutures-dev-sql-pri"
           -resourceGroup "gpitfutures-dev-rg-sql-pri"
           -directories "$(gitrepos)"
-          -debugging "$true"
+          -debugging "$(outDebug)"
       name: housekeepingSQL
       displayName: Housekeeping - Clear down SQL
 
@@ -174,8 +176,8 @@ jobs:
         scriptPath: ./platform-helm/housekeeping/housekeepingSA.ps1
         arguments: > 
           -azureStorageConnectionString "$(gpitdevstorageaccountconnectionstring)"
-          -directories "$(gitrepos)"
-          -debugging "$true"
+          -directories "$(gitRepos)"
+          -debugging "$(outDebug)"
       name: housekeepingSA
       displayName: Housekeeping - Clear down Storage Account Containers
 
