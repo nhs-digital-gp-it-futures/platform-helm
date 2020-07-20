@@ -10,7 +10,6 @@ trigger:
     exclude:
     - housekeeping/*
     - docs/*
-    - azure-pipelines.yml
 
 pr:
   branches:
@@ -22,7 +21,6 @@ pr:
     exclude:
     - housekeeping/*
     - docs/*
-    - azure-pipelines.yml
 
 # resources:
 #   pipelines:
