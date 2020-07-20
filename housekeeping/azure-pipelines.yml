@@ -19,25 +19,33 @@ pr: none
 
 resources:
   repositories:
-  - repository: order-form #254045573
+  - repository: order-form
     type: github
     name: nhs-digital-gp-it-futures/order-form
     endpoint: nhs-digital-gp-it-futures
-  - repository: buying-catalogue-components #220214313
+  - repository: buying-catalogue-components
     type: github
     name: nhs-digital-gp-it-futures/buying-catalogue-components
     endpoint: nhs-digital-gp-it-futures
-  - repository: BuyingCatalogueIdentity #240271150
+  - repository: BuyingCatalogueIdentity
     type: github
     name: nhs-digital-gp-it-futures/BuyingCatalogueIdentity
     endpoint: nhs-digital-gp-it-futures
-  - repository: OrderFormAcceptanceTests #255625095
+  - repository: OrderFormAcceptanceTests
     type: github
     name: nhs-digital-gp-it-futures/OrderFormAcceptanceTests
     endpoint: nhs-digital-gp-it-futures
-  - repository: BuyingCatalogueService #202726178
+  - repository: PublicBrowseAcceptanceTests
+    type: github
+    name: nhs-digital-gp-it-futures/PublicBrowseAcceptanceTests
+    endpoint: nhs-digital-gp-it-futures
+  - repository: BuyingCatalogueService
     type: github
     name: nhs-digital-gp-it-futures/BuyingCatalogueService
+    endpoint: nhs-digital-gp-it-futures
+  - repository: BuyingCatalogueIdentity 
+    type: github
+    name: nhs-digital-gp-it-futures/BuyingCatalogueIdentity
     endpoint: nhs-digital-gp-it-futures
 
 jobs:
@@ -60,7 +68,7 @@ jobs:
     variables:
     - group: dev-secrets
     - name: gitrepos
-      value: "platform-helm,order-form,buying-catalogue-components,OrderFormAcceptanceTests,BuyingCatalogueService"
+      value: "platform-helm,order-form,buying-catalogue-components,OrderFormAcceptanceTests,PublicBrowseAcceptanceTests,BuyingCatalogueService,BuyingCatalogueIdentity"
 
     steps:
     - checkout: self
