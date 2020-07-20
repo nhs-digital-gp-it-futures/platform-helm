@@ -47,6 +47,10 @@ resources:
     type: github
     name: nhs-digital-gp-it-futures/BuyingCatalogueIdentity
     endpoint: nhs-digital-gp-it-futures
+  - repository: public-browse
+    type: github
+    name: nhs-digital-gp-it-futures/public-browse
+    endpoint: nhs-digital-gp-it-futures
 
 jobs:
 
@@ -68,7 +72,7 @@ jobs:
     variables:
     - group: dev-secrets
     - name: gitrepos
-      value: "platform-helm,order-form,buying-catalogue-components,OrderFormAcceptanceTests,PublicBrowseAcceptanceTests,BuyingCatalogueService,BuyingCatalogueIdentity"
+      value: "platform-helm,order-form,buying-catalogue-components,OrderFormAcceptanceTests,PublicBrowseAcceptanceTests,BuyingCatalogueService,BuyingCatalogueIdentity,public-browse"
 
     steps:
     - checkout: self
@@ -76,7 +80,10 @@ jobs:
     - checkout: order-form
     - checkout: buying-catalogue-components
     - checkout: OrderFormAcceptanceTests
+    - checkout: PublicBrowseAcceptanceTests
     - checkout: BuyingCatalogueService
+    - checkout: BuyingCatalogueIdentity
+    - checkout: public-browse
 
 #    - powershell: get-childitem -r  # inline script
 #      #workingDirectory: $(Agent.BuildDirectory)
