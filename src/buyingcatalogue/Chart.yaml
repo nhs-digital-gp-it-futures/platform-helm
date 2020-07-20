@@ -29,11 +29,11 @@ dependencies:
   version: ~0.1.0
 - name: bapi-db-deploy
   condition: bapi-db-deploy.enabled
-  version: 1.24.4       
+  version: 1.24.5       
   repository: "@gpitfuturesdevacr"
 - name: bapi
   condition: bapi.enabled
-  version: 1.24.4       
+  version: 1.24.5       
   repository: "@gpitfuturesdevacr"
 - name: dapi
   condition: dapi.enabled
@@ -53,11 +53,11 @@ dependencies:
   repository: "@gpitfuturesdevacr"
 - name: ordapi
   condition: ordapi.enabled
-  version: 1.24.3       
+  version: 1.24.5       
   repository: "@gpitfuturesdevacr"
 - name: ordapi-db-deploy
   condition: ordapi-db-deploy.enabled
-  version: 1.24.3       
+  version: 1.24.5       
   repository: "@gpitfuturesdevacr"
 - name: email
   condition: email.enabled
@@ -73,7 +73,7 @@ dependencies:
   repository: "@gpitfuturesdevacr"
 - name: pb
   condition: pb.enabled
-  version: 1.24.3       
+  version: 1.24.4       
   repository: "@gpitfuturesdevacr"
 - name: admin
   condition: admin.enabled
@@ -81,7 +81,7 @@ dependencies:
   repository: "@gpitfuturesdevacr"
 - name: of
   condition: of.enabled
-  version: 1.24.4       
+  version: 1.24.6       
   repository: "@gpitfuturesdevacr"
 - name: redis
   condition: redis.enabled
