@@ -71,3 +71,4 @@ foreach ($inactiveNs in $inactiveNamespaces){
     remove-Databases -branchNamespace "bc-$inactiveNs" -databaseServer $dbServer -rg $resourceGroup -debug $debugging
 }
 
+start-sleep 10

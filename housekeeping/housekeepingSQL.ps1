@@ -1,6 +1,4 @@
 param(
-    [Parameter(Mandatory)]  
-    [string]$azureStorageConnectionString,
     [Parameter()]  
     [string]$directories,
     [Parameter()] 

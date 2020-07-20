@@ -35,21 +35,21 @@ function get-ActiveGitBranches {
     Return $gitBranches
 }
 
-    function remove-KubernetesResources {
-        param(
-            [Parameter(Mandatory)]   
-            [string]$branchNamespace,
-            [Parameter()] 
-            [string]$codeDebug=$true
-        )    
+function remove-KubernetesResources {
+    param(
+        [Parameter(Mandatory)]   
+        [string]$branchNamespace,
+        [Parameter()] 
+        [string]$codeDebug=$true
+    )    
 
-        if ($codeDebug -eq $false){
-            kubectl delete ns $branchNamespace
-        }
-        else {
-            write-host "DEBUG: kubectl delete ns $branchNamespace"
-        }
+    if ($codeDebug -eq $false){
+        kubectl delete ns $branchNamespace
     }
+    else {
+        write-host "DEBUG: kubectl delete ns $branchNamespace"
+    }
+}
 
 function remove-BlobStoreContainers {
     param(

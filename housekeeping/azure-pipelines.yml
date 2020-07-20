@@ -117,8 +117,9 @@ jobs:
         arguments: > 
           -dbServer "gpitfutures-dev-sql-pri"
           -resourceGroup "gpitfutures-dev-rg-sql-pri"
-          -azureStorageConnectionString "dummyString"
+          -azureStorageConnectionString "$(gpitdevstorageaccountconnectionstring)"
           -directories "$(gitrepos)"
+          -debugging "$false"
       name: housekeepingAKS
       displayName: Housekeeping - Clear down AKS
 
@@ -131,7 +132,7 @@ jobs:
         arguments: > 
           -dbServer "gpitfutures-dev-sql-pri"
           -resourceGroup "gpitfutures-dev-rg-sql-pri"
-          -azureStorageConnectionString "dummyString"
           -directories "$(gitrepos)"
+          -debugging "$false"
       name: housekeepingSQL
       displayName: Housekeeping - Clear down SQL
