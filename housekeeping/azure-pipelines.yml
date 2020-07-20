@@ -126,16 +126,16 @@ jobs:
       name: kubectlContext
       displayName: Get Kubernetes Context
 
-### 
-#    - task: AzureCLI@2
-#      inputs:
-#        azureSubscription: 'NHSAPP-BuyingCatalogue (Non-Prod)'
-#        scriptType: 'pscore'
-#        scriptLocation: 'inlineScript'
-#        inlineScript: 'write-host "value=$(gitrepos)"'
-#      name: environmentVariables
-#      displayName: DEBUG Output Environment Vars
-#    #directories "order-form,platform-helm,buying-catalogue-components"
+    - task: AzureCLI@2
+      inputs:
+        azureSubscription: 'NHSAPP-BuyingCatalogue (Non-Prod)'
+        scriptType: 'pscore'
+        scriptLocation: 'scriptPath'
+        scriptPath: ./platform-helm/housekeeping/housekeepingGIT.ps1
+        arguments: > 
+          -directories "$(gitrepos)"
+      name: housekeepingGIT
+      displayName: Housekeeping - Report on Git Repos
 
     - task: AzureCLI@2
       inputs:
