@@ -166,6 +166,19 @@ jobs:
       name: housekeepingSQL
       displayName: Housekeeping - Clear down SQL
 
+    - task: AzureCLI@2
+      inputs:
+        azureSubscription: 'NHSAPP-BuyingCatalogue (Non-Prod)'
+        scriptType: 'pscore'
+        scriptLocation: 'scriptPath'
+        scriptPath: ./platform-helm/housekeeping/housekeepingSA.ps1
+        arguments: > 
+          -azureStorageConnectionString "$(gpitdevstorageaccountconnectionstring)"
+          -directories "$(gitrepos)"
+          -debugging "$true"
+      name: housekeepingSA
+      displayName: Housekeeping - Clear down Storage Account Containers
+
 ### Disabled task - reports on tickets open. Not required at this time.
 #  - job: getWorkitems
 #    pool: server

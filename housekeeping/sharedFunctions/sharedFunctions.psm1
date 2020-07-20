@@ -51,24 +51,6 @@ function remove-KubernetesResources {
     }
 }
 
-function remove-BlobStoreContainers {
-    param(
-        [Parameter(Mandatory)]   
-        [string]$branchNamespace,
-        [Parameter(Mandatory)]  
-        [string]$storageConnectionString,
-        [Parameter()] 
-        [string]$codeDebug=$true
-    ) 
-
-    if ($codeDebug -eq $false){
-        az storage container delete --name "$branchNamespace-documents" --connection-string "$storageConnectionString"
-    }
-    else {
-        write-host "DEBUG: az storage container delete --name '$branchNamespace-documents' --connection-string '$storageConnectionString'"
-    }
-}
-
 function get-Databases {
     param(
         [Parameter(Mandatory)]  
@@ -110,4 +92,33 @@ function remove-Databases {
             write-host "DEBUG: az sql db delete --name '$dbName' --resource-group '$rg' --server '$databaseServer' --yes"
         }
     }    
+}
+
+function get-BlobStoreContainers {
+    param(
+        [Parameter(Mandatory)]  
+        [string]$storageConnectionString
+    ) 
+
+    $containerNames = az storage container list --connection-string "$storageConnectionString" --connection-string "$storageConnectionString"  --output JSON | convertfrom-json #--name "$branchNamespace-documents" 
+
+    return $containerNames | Select-Object -ExpandProperty name | Where-Object {$_ -like "bc-*" -or $_ -like "feature-*"} | sort-object    
+}
+
+function remove-BlobStoreContainers {
+    param(
+        [Parameter(Mandatory)]   
+        [string]$branchNamespace,
+        [Parameter(Mandatory)]  
+        [string]$storageConnectionString,
+        [Parameter()] 
+        [string]$codeDebug=$true
+    ) 
+
+    if ($codeDebug -eq $false){
+        az storage container delete --name "$branchNamespace-documents" --connection-string "$storageConnectionString"
+    }
+    else {
+        write-host "DEBUG: az storage container delete --name '$branchNamespace-documents' --connection-string '<storageConnectionString>'"
+    }
 }
