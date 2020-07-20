@@ -19,52 +19,73 @@ pr: none
 
 resources:
   repositories:
-  - repository: order-form
+  - repository: AdminAcceptanceTests
     type: github
-    name: nhs-digital-gp-it-futures/order-form
+    name: nhs-digital-gp-it-futures/AdminAcceptanceTests
     endpoint: nhs-digital-gp-it-futures
-  - repository: buying-catalogue-components
+
+  - repository: buying-catalogue-admin
     type: github
-    name: nhs-digital-gp-it-futures/buying-catalogue-components
+    name: nhs-digital-gp-it-futures/buying-catalogue-admin
     endpoint: nhs-digital-gp-it-futures
+
+  - repository: BuyingCatalogueDocumentService
+    type: github
+    name: nhs-digital-gp-it-futures/BuyingCatalogueDocumentService
+    endpoint: nhs-digital-gp-it-futures
+
   - repository: BuyingCatalogueIdentity
     type: github
     name: nhs-digital-gp-it-futures/BuyingCatalogueIdentity
     endpoint: nhs-digital-gp-it-futures
-  - repository: OrderFormAcceptanceTests
+
+  - repository: BuyingCatalogueOrdering
     type: github
-    name: nhs-digital-gp-it-futures/OrderFormAcceptanceTests
+    name: nhs-digital-gp-it-futures/BuyingCatalogueOrdering
     endpoint: nhs-digital-gp-it-futures
-  - repository: PublicBrowseAcceptanceTests
-    type: github
-    name: nhs-digital-gp-it-futures/PublicBrowseAcceptanceTests
-    endpoint: nhs-digital-gp-it-futures
+
   - repository: BuyingCatalogueService
     type: github
     name: nhs-digital-gp-it-futures/BuyingCatalogueService
     endpoint: nhs-digital-gp-it-futures
-  - repository: BuyingCatalogueIdentity 
+
+  - repository: MarketingPageAcceptanceTests
     type: github
-    name: nhs-digital-gp-it-futures/BuyingCatalogueIdentity
+    name: nhs-digital-gp-it-futures/MarketingPageAcceptanceTests
     endpoint: nhs-digital-gp-it-futures
+
+  - repository: marketing-pages
+    type: github
+    name: nhs-digital-gp-it-futures/marketing-pages
+    endpoint: nhs-digital-gp-it-futures
+
+  - repository: order-form
+    type: github
+    name: nhs-digital-gp-it-futures/order-form
+    endpoint: nhs-digital-gp-it-futures
+
+  - repository: OrderFormAcceptanceTests
+    type: github
+    name: nhs-digital-gp-it-futures/OrderFormAcceptanceTests
+    endpoint: nhs-digital-gp-it-futures
+
+### Auto-included - noted here for completeness
+#  - repository: platform-helm
+#    type: github
+#    name: nhs-digital-gp-it-futures/platform-helm
+#    endpoint: nhs-digital-gp-it-futures
+
   - repository: public-browse
     type: github
     name: nhs-digital-gp-it-futures/public-browse
     endpoint: nhs-digital-gp-it-futures
 
+  - repository: PublicBrowseAcceptanceTests
+    type: github
+    name: nhs-digital-gp-it-futures/PublicBrowseAcceptanceTests
+    endpoint: nhs-digital-gp-it-futures
+
 jobs:
-
-  ### Disabled task - reports on tickets open. Not required at this time.
-#  - job: getWorkitems
-#    pool: server
-#    displayName: Get all work items
-#    steps:
-#      - task: queryWorkItems@0
-#        inputs:
-#          queryId: 'c2529b1c-442a-438b-9f2a-1ca69c9c269a'
-#          maxThreshold: '1000'
-#          minThreshold: '0'
-
   - job: queryRepos
     displayName: Get branches from each repo and clear down resources
     pool:
@@ -73,18 +94,23 @@ jobs:
     variables:
     - group: dev-secrets
     - name: gitrepos
-      value: "platform-helm,order-form,buying-catalogue-components,OrderFormAcceptanceTests,PublicBrowseAcceptanceTests,BuyingCatalogueService,BuyingCatalogueIdentity,public-browse"
+      value: "PublicBrowseAcceptanceTests,buying-catalogue-admin,BuyingCatalogueDocumentService,BuyingCatalogueIdentity,BuyingCatalogueOrdering,BuyingCatalogueService,MarketingPageAcceptanceTests,marketing-pages,order-form,OrderFormAcceptanceTests,platform-helm,public-browse,PublicBrowseAcceptanceTests"
 
     steps:
+    - checkout: AdminAcceptanceTests
+    - checkout: buying-catalogue-admin
+    - checkout: BuyingCatalogueDocumentService
+    - checkout: BuyingCatalogueIdentity
+    - checkout: BuyingCatalogueOrdering
+    - checkout: BuyingCatalogueService
+    - checkout: MarketingPageAcceptanceTests
+    - checkout: marketing-pages
+    - checkout: order-form
+    - checkout: OrderFormAcceptanceTests
     - checkout: self
       persistCredentials: true
-    - checkout: order-form
-    - checkout: buying-catalogue-components
-    - checkout: OrderFormAcceptanceTests
-    - checkout: PublicBrowseAcceptanceTests
-    - checkout: BuyingCatalogueService
-    - checkout: BuyingCatalogueIdentity
     - checkout: public-browse
+    - checkout: PublicBrowseAcceptanceTests
 
 #### Checks folder structure    
 #    - powershell: get-childitem -r  # inline script
@@ -122,7 +148,7 @@ jobs:
           -resourceGroup "gpitfutures-dev-rg-sql-pri"
           -azureStorageConnectionString "$(gpitdevstorageaccountconnectionstring)"
           -directories "$(gitrepos)"
-          -debugging "$false"
+          -debugging "$true"
       name: housekeepingAKS
       displayName: Housekeeping - Clear down AKS
 
@@ -136,6 +162,17 @@ jobs:
           -dbServer "gpitfutures-dev-sql-pri"
           -resourceGroup "gpitfutures-dev-rg-sql-pri"
           -directories "$(gitrepos)"
-          -debugging "$false"
+          -debugging "$true"
       name: housekeepingSQL
       displayName: Housekeeping - Clear down SQL
+
+### Disabled task - reports on tickets open. Not required at this time.
+#  - job: getWorkitems
+#    pool: server
+#    displayName: Get all work items
+#    steps:
+#      - task: queryWorkItems@0
+#        inputs:
+#          queryId: 'c2529b1c-442a-438b-9f2a-1ca69c9c269a'
+#          maxThreshold: '1000'
+#          minThreshold: '0'
