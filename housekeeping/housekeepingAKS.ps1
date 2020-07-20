@@ -49,7 +49,7 @@ foreach ($line in $namespaces){
     $ns = $line.split(" ")[0]
     $job = $ns.split("-")[1]
 
-    if ($ns -like "bc-*" -and $ns -notlike "bc-merge*"){
+    if (($ns -like "bc-*" -or $ns -like "feature-*") -and $ns -notlike "bc-merge*"){
         
         if ($gitBranches -match $job){
             write-host "active branch:"$ns "found" -ForegroundColor Green

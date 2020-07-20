@@ -54,18 +54,20 @@ resources:
 
 jobs:
 
+  ### Disabled task - reports on tickets open. Not required at this time.
   - job: getWorkitems
     pool: server
     displayName: Get all work items
     steps:
-    - task: queryWorkItems@0
-      inputs:
-        queryId: 'c2529b1c-442a-438b-9f2a-1ca69c9c269a'
-        maxThreshold: '1000'
-        minThreshold: '0'
+      - task: queryWorkItems@0
+        enabled: false
+        inputs:
+          queryId: 'c2529b1c-442a-438b-9f2a-1ca69c9c269a'
+          maxThreshold: '1000'
+          minThreshold: '0'
 
   - job: queryRepos
-    displayName: Get branches from each repo and clear down
+    displayName: Get branches from each repo and clear down resources
     pool:
       vmImage: 'ubuntu-latest'
 
@@ -85,6 +87,7 @@ jobs:
     - checkout: BuyingCatalogueIdentity
     - checkout: public-browse
 
+#### Checks folder structure    
 #    - powershell: get-childitem -r  # inline script
 #      #workingDirectory: $(Agent.BuildDirectory)
 #      displayName:  folderStructure
@@ -98,6 +101,7 @@ jobs:
       name: kubectlContext
       displayName: Get Kubernetes Context
 
+### 
 #    - task: AzureCLI@2
 #      inputs:
 #        azureSubscription: 'NHSAPP-BuyingCatalogue (Non-Prod)'
@@ -119,7 +123,7 @@ jobs:
           -resourceGroup "gpitfutures-dev-rg-sql-pri"
           -azureStorageConnectionString "$(gpitdevstorageaccountconnectionstring)"
           -directories "$(gitrepos)"
-          -debugging "$true"
+          -debugging "$false"
       name: housekeepingAKS
       displayName: Housekeeping - Clear down AKS
 
@@ -133,6 +137,6 @@ jobs:
           -dbServer "gpitfutures-dev-sql-pri"
           -resourceGroup "gpitfutures-dev-rg-sql-pri"
           -directories "$(gitrepos)"
-          -debugging "$true"
+          -debugging "$false"
       name: housekeepingSQL
       displayName: Housekeeping - Clear down SQL
