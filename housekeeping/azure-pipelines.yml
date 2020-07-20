@@ -55,16 +55,15 @@ resources:
 jobs:
 
   ### Disabled task - reports on tickets open. Not required at this time.
-  - job: getWorkitems
-    pool: server
-    displayName: Get all work items
-    steps:
-      - task: queryWorkItems@0
-        enabled: false
-        inputs:
-          queryId: 'c2529b1c-442a-438b-9f2a-1ca69c9c269a'
-          maxThreshold: '1000'
-          minThreshold: '0'
+#  - job: getWorkitems
+#    pool: server
+#    displayName: Get all work items
+#    steps:
+#      - task: queryWorkItems@0
+#        inputs:
+#          queryId: 'c2529b1c-442a-438b-9f2a-1ca69c9c269a'
+#          maxThreshold: '1000'
+#          minThreshold: '0'
 
   - job: queryRepos
     displayName: Get branches from each repo and clear down resources
