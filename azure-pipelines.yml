@@ -4,9 +4,23 @@ trigger:
     include:
       - master
       - feature/*
+  paths:
+    include:
+    - /*
+    exclude:
+    - housekeeping/*
+    - docs/*
 
 pr:
-- master
+  branches:
+    include:
+    - master
+  paths:
+    include:
+    - /*
+    exclude:
+    - housekeeping/*
+    - docs/*
 
 # resources:
 #   pipelines:
@@ -270,6 +284,6 @@ jobs:
 #     marketing pages
 #     admin
 #     order
-#     identity
+#     identity  
 
-  
+
