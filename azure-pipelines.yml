@@ -144,6 +144,7 @@ jobs:
       fi
       env | sort
     name: echovar
+
   - task: CopyFiles@2
     inputs:
       SourceFolder: 'environments'
@@ -188,6 +189,7 @@ jobs:
     name: addRepo
     displayName: Add gpitfuturesdevacr repo
     condition: eq(variables['Build.Reason'], 'ResourceTrigger')
+
   - bash: |
       buildNameVariableName=$(compgen -A variable | grep 'RESOURCES_PIPELINE_.*RUNNAME')
       component=$(echo $buildNameVariableName | cut -d_ -f3)
@@ -197,6 +199,7 @@ jobs:
     name: UpdateVersions
     displayName: Grab and update component versions
     condition: eq(variables['Build.Reason'], 'ResourceTrigger')
+
 - job: deployToDev
   dependsOn:
     - packageAndPublish 
@@ -239,6 +242,7 @@ jobs:
         --db-user-pass $(gpitfuturesdevdbpassword)
     name: deploySystem
     displayName: Deploy System
+
 - job: cleanUpDynamicEnv
   dependsOn: packageAndPublish
   condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
@@ -280,6 +284,4 @@ jobs:
 #     marketing pages
 #     admin
 #     order
-#     identity
-
-  
+#     identity  

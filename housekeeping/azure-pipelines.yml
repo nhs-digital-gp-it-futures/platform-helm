@@ -4,7 +4,6 @@ schedules:
     branches:
       include:
       - master
-      - feature/7969-clear-old-environments
     always: true
 
 trigger: none
@@ -115,11 +114,6 @@ jobs:
       persistCredentials: true
     - checkout: public-browse
     - checkout: PublicBrowseAcceptanceTests
-
-#### Checks folder structure    
-#    - powershell: get-childitem -r  # inline script
-#      #workingDirectory: $(Agent.BuildDirectory)
-#      displayName:  folderStructure
 
     - task: AzureCLI@2
       inputs:
