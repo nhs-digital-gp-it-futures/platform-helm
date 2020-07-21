@@ -1,0 +1,189 @@
+schedules:
+  - cron: "0 0 * * *"
+    displayName: Daily midnight Housekeeping Tasks
+    branches:
+      include:
+      - master
+    always: true
+
+trigger: none
+#trigger:
+#  batch: true
+#  branches:
+#    include:
+#      - feature/7969-clear-old-environments
+#  paths:
+#    include:
+#      - housekeeping/*
+
+pr: none
+
+resources:
+  repositories:
+  - repository: AdminAcceptanceTests
+    type: github
+    name: nhs-digital-gp-it-futures/AdminAcceptanceTests
+    endpoint: nhs-digital-gp-it-futures
+
+  - repository: buying-catalogue-admin
+    type: github
+    name: nhs-digital-gp-it-futures/buying-catalogue-admin
+    endpoint: nhs-digital-gp-it-futures
+
+  - repository: BuyingCatalogueDocumentService
+    type: github
+    name: nhs-digital-gp-it-futures/BuyingCatalogueDocumentService
+    endpoint: nhs-digital-gp-it-futures
+
+  - repository: BuyingCatalogueIdentity
+    type: github
+    name: nhs-digital-gp-it-futures/BuyingCatalogueIdentity
+    endpoint: nhs-digital-gp-it-futures
+
+  - repository: BuyingCatalogueOrdering
+    type: github
+    name: nhs-digital-gp-it-futures/BuyingCatalogueOrdering
+    endpoint: nhs-digital-gp-it-futures
+
+  - repository: BuyingCatalogueService
+    type: github
+    name: nhs-digital-gp-it-futures/BuyingCatalogueService
+    endpoint: nhs-digital-gp-it-futures
+
+  - repository: MarketingPageAcceptanceTests
+    type: github
+    name: nhs-digital-gp-it-futures/MarketingPageAcceptanceTests
+    endpoint: nhs-digital-gp-it-futures
+
+  - repository: marketing-pages
+    type: github
+    name: nhs-digital-gp-it-futures/marketing-pages
+    endpoint: nhs-digital-gp-it-futures
+
+  - repository: order-form
+    type: github
+    name: nhs-digital-gp-it-futures/order-form
+    endpoint: nhs-digital-gp-it-futures
+
+  - repository: OrderFormAcceptanceTests
+    type: github
+    name: nhs-digital-gp-it-futures/OrderFormAcceptanceTests
+    endpoint: nhs-digital-gp-it-futures
+
+### Auto-included - noted here for completeness
+#  - repository: platform-helm
+#    type: github
+#    name: nhs-digital-gp-it-futures/platform-helm
+#    endpoint: nhs-digital-gp-it-futures
+
+  - repository: public-browse
+    type: github
+    name: nhs-digital-gp-it-futures/public-browse
+    endpoint: nhs-digital-gp-it-futures
+
+  - repository: PublicBrowseAcceptanceTests
+    type: github
+    name: nhs-digital-gp-it-futures/PublicBrowseAcceptanceTests
+    endpoint: nhs-digital-gp-it-futures
+
+jobs:
+  - job: queryRepos
+    displayName: Get branches from each repo and clear down resources
+    pool:
+      vmImage: 'ubuntu-latest'
+
+    variables:
+    - group: dev-secrets
+    - name: outDebug
+      value: "$false"
+    - name: gitRepos
+      value: "PublicBrowseAcceptanceTests,buying-catalogue-admin,BuyingCatalogueDocumentService,BuyingCatalogueIdentity,BuyingCatalogueOrdering,BuyingCatalogueService,MarketingPageAcceptanceTests,marketing-pages,order-form,OrderFormAcceptanceTests,platform-helm,public-browse,PublicBrowseAcceptanceTests"
+
+    steps:
+    - checkout: AdminAcceptanceTests
+    - checkout: buying-catalogue-admin
+    - checkout: BuyingCatalogueDocumentService
+    - checkout: BuyingCatalogueIdentity
+    - checkout: BuyingCatalogueOrdering
+    - checkout: BuyingCatalogueService
+    - checkout: MarketingPageAcceptanceTests
+    - checkout: marketing-pages
+    - checkout: order-form
+    - checkout: OrderFormAcceptanceTests
+    - checkout: self
+      persistCredentials: true
+    - checkout: public-browse
+    - checkout: PublicBrowseAcceptanceTests
+
+    - task: AzureCLI@2
+      inputs:
+        azureSubscription: 'NHSAPP-BuyingCatalogue (Non-Prod)'
+        scriptType: 'bash'
+        scriptLocation: 'inlineScript'
+        inlineScript: 'az aks get-credentials -n gpitfutures-dev-aks -g gpitfutures-dev-rg-aks'
+      name: kubectlContext
+      displayName: Get Kubernetes Context
+
+    - task: AzureCLI@2
+      inputs:
+        azureSubscription: 'NHSAPP-BuyingCatalogue (Non-Prod)'
+        scriptType: 'pscore'
+        scriptLocation: 'scriptPath'
+        scriptPath: ./platform-helm/housekeeping/housekeepingGIT.ps1
+        arguments: > 
+          -directories "$(gitRepos)"
+      name: housekeepingGIT
+      displayName: Housekeeping - Report on Git Repos
+
+    - task: AzureCLI@2
+      inputs:
+        azureSubscription: 'NHSAPP-BuyingCatalogue (Non-Prod)'
+        scriptType: 'pscore'
+        scriptLocation: 'scriptPath'
+        scriptPath: ./platform-helm/housekeeping/housekeepingAKS.ps1
+        arguments: > 
+          -dbServer "gpitfutures-dev-sql-pri"
+          -resourceGroup "gpitfutures-dev-rg-sql-pri"
+          -azureStorageConnectionString "$(gpitdevstorageaccountconnectionstring)"
+          -directories "$(gitRepos)"
+          -debugging "$(outDebug)"
+      name: housekeepingAKS
+      displayName: Housekeeping - Clear down AKS
+
+    - task: AzureCLI@2
+      inputs:
+        azureSubscription: 'NHSAPP-BuyingCatalogue (Non-Prod)'
+        scriptType: 'pscore'
+        scriptLocation: 'scriptPath'
+        scriptPath: ./platform-helm/housekeeping/housekeepingSQL.ps1
+        arguments: > 
+          -dbServer "gpitfutures-dev-sql-pri"
+          -resourceGroup "gpitfutures-dev-rg-sql-pri"
+          -directories "$(gitrepos)"
+          -debugging "$(outDebug)"
+      name: housekeepingSQL
+      displayName: Housekeeping - Clear down SQL
+
+    - task: AzureCLI@2
+      inputs:
+        azureSubscription: 'NHSAPP-BuyingCatalogue (Non-Prod)'
+        scriptType: 'pscore'
+        scriptLocation: 'scriptPath'
+        scriptPath: ./platform-helm/housekeeping/housekeepingSA.ps1
+        arguments: > 
+          -azureStorageConnectionString "$(gpitdevstorageaccountconnectionstring)"
+          -directories "$(gitRepos)"
+          -debugging "$(outDebug)"
+      name: housekeepingSA
+      displayName: Housekeeping - Clear down Storage Account Containers
+
+### Disabled task - reports on tickets open. Not required at this time.
+#  - job: getWorkitems
+#    pool: server
+#    displayName: Get all work items
+#    steps:
+#      - task: queryWorkItems@0
+#        inputs:
+#          queryId: 'c2529b1c-442a-438b-9f2a-1ca69c9c269a'
+#          maxThreshold: '1000'
+#          minThreshold: '0'
