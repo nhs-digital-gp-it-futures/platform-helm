@@ -19,10 +19,6 @@
 param(
         [Parameter()]
         [ValidateSet('true','false')]
-        [string]$update,
-        [Parameter()]
-        [switch]$u=$false,
-        [ValidateSet('true','false')]
         [string]$latest,
         [Parameter()]
         [switch]$l=$false,
@@ -47,13 +43,9 @@ if (($useRemote -ne "false") -and ($r -eq $false))
         invoke-expression -Command "./update-chart-versions.ps1 -chart $chart -v master"
     }
 
-
-    if (($update -ne "false") -and ($u -eq $false))
-    {  
-        write-host "`nUpdating Dependencies..."
-        Remove-Item $chart/charts/*.tgz
-        helm dependency update $chart
-    }
+    write-host "`nUpdating Dependencies..."
+    Remove-Item $chart/charts/*.tgz
+    helm dependency update $chart
 }
 
 write-host "`nDeploying helm charts"

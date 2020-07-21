@@ -6,8 +6,6 @@ function displayHelp {
             Display help
           -l, --latest [true|false]
             Set repo to latest dev versions (defaults to true)
-          -u, --update [true|false]
-            Update Helm Charts (defaults to true)
           -r, --useRemote [true|false]
             Use remote repo (defaults to true)
           "
@@ -15,8 +13,8 @@ function displayHelp {
 }
 
 # Option strings
-SHORT="hl:u:r:"
-LONG="help,latest:,update:,useRemote:"
+SHORT="hl:r:"
+LONG="help,latest:,useRemote:"
 
 # read the options
 OPTS=$(getopt --options $SHORT --long $LONG --name "$0" -- "$@")
@@ -38,12 +36,6 @@ while true ; do
     -l | --latest )
       if [ "$2" = "false" ]; then 
           latest="false"
-      fi
-      shift 2
-      ;;
-    -u | --update )
-      if [ "$2" = "false" ]; then 
-          update="false"
       fi
       shift 2
       ;;
@@ -78,11 +70,10 @@ if [[ "$useRemote" != "false" ]]; then
     ./update-chart-versions.sh -v master
   fi 
 
-  if [[ "$update" != "false" ]]; then
-      echo -e "\n Updating Dependencies... \n"
-      rm $chart/charts/*.tgz
-      helm dependency update $chart
-  fi
+  echo -e "\n Updating Dependencies... \n"
+  rm $chart/charts/*.tgz
+  helm dependency update $chart
+
 fi
 
 if [[ "$OSTYPE" == "darwin"* ]]; then 

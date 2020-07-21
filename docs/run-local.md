@@ -61,9 +61,7 @@ In order to launch or update the system to the latest built images or chosen con
 ./launch-or-update-local.sh
 # or to run without getting the latest development chart versions (i.e. run with versions that are coming from builds on master branches)
 ./launch-or-update-local.sh -l false #(or --latest false)
-# or to run without downloading updates to charts from the repo (i.e. do not download newer versions if available)
-./launch-or-update-local.sh -u false #(or --update false)
-# or to run using configuration and local files only
+# or to run using configuration and local files only - no updates will be performed
 ./launch-or-update-local.sh -r false #(or --useRemote false)
 ```
 
@@ -71,11 +69,9 @@ In order to launch or update the system to the latest built images or chosen con
 
 ```Powershell
 ./launch-or-update-local.ps1
-# or to run without getting the latest development chart versions (i.e. run with versions that are currently set)
+# or to run without getting the latest development chart versions (i.e. run with versions coming from builds or master branches)
 ./launch-or-update-local.ps1 -l #(or -latest false)
-# or to run without downloading updates to charts from the repo (i.e. do not download newer versions if available)
-./launch-or-update-local.ps1 -u #(or -update false)
-# or to run using configuration and local files only
+# or to run using configuration and local files only - no updates will be performed
 ./launch-or-update-local.ps1 -r #(or -useRemote false)
 ```
 
