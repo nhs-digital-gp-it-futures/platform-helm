@@ -6,15 +6,15 @@ function displayHelp {
             Display help
           -l, --latest [true|false]
             Set repo to latest dev versions (defaults to true)
-          -u, --update [true|false]
-            Update Helm Charts (defaults to true)
+          -r, --useRemote [true|false]
+            Use remote repo (defaults to true)
           "
   exit
 }
 
 # Option strings
-SHORT="hl:u:"
-LONG="help,latest:,update:"
+SHORT="hl:r:"
+LONG="help,latest:,useRemote:"
 
 # read the options
 OPTS=$(getopt --options $SHORT --long $LONG --name "$0" -- "$@")
@@ -39,9 +39,9 @@ while true ; do
       fi
       shift 2
       ;;
-      -u | --update )
+    -r | --useRemote )
       if [ "$2" = "false" ]; then 
-          update="false"
+          useRemote="false"
       fi
       shift 2
       ;;
@@ -61,18 +61,19 @@ if [[ "$context" != "docker-desktop" ]]; then
   exit 1
 fi
 
-if [[ "$latest" != "false" ]]; then
-  echo -e "Getting Latest Chart Versions... \n"
-  ./update-chart-versions.sh -v development
-else
-  echo -e "Getting Master Chart Versions... \n"
-  ./update-chart-versions.sh -v master
-fi 
+if [[ "$useRemote" != "false" ]]; then
+  if [[ "$latest" != "false" ]]; then
+    echo -e "Getting Latest Chart Versions... \n"
+    ./update-chart-versions.sh -v development
+  else
+    echo -e "Getting Master Chart Versions... \n"
+    ./update-chart-versions.sh -v master
+  fi 
 
-if [[ "$update" != "false" ]]; then
-    echo -e "\n Updating Dependencies... \n"
-    rm $chart/charts/*.tgz
-    helm dependency update $chart
+  echo -e "\n Updating Dependencies... \n"
+  rm $chart/charts/*.tgz
+  helm dependency update $chart
+
 fi
 
 if [[ "$OSTYPE" == "darwin"* ]]; then 
