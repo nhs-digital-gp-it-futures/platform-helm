@@ -12,7 +12,8 @@
 ###  ./launch-or-update-local.ps1 -u                ###
 ###                                                 ###
 ### without refreshing at all...                    ###
-###  ./launch-or-update-local.ps1 -l -u             ###
+###  ./launch-or-update-local.ps1 -r                ###
+###  ./launch-or-update-local.ps1 -useRemote false  ###
 #######################################################
 
 param(
@@ -24,28 +25,35 @@ param(
         [ValidateSet('true','false')]
         [string]$latest,
         [Parameter()]
-        [switch]$l=$false
+        [switch]$l=$false,
+        [ValidateSet('true','false')]
+        [string]$useRemote,
+        [Parameter()]
+        [switch]$r=$false
     )
 
 $chart="src/buyingcatalogue"
 
-if (($latest -ne "false") -and ($l -eq $false))
+if (($useRemote -ne "false") -and ($r -eq $false))
 {
-    write-host "Getting Latest Chart Versions..."
-    invoke-expression -Command "./update-chart-versions.ps1 -chart $chart -v development"
-}
-else
-{
-    write-host "Getting Master Chart Versions..."
-    invoke-expression -Command "./update-chart-versions.ps1 -chart $chart -v master"
-}
+    if (($latest -ne "false") -and ($l -eq $false))
+    {
+        write-host "Getting Latest Chart Versions..."
+        invoke-expression -Command "./update-chart-versions.ps1 -chart $chart -v development"
+    }
+    else
+    {
+        write-host "Getting Master Chart Versions..."
+        invoke-expression -Command "./update-chart-versions.ps1 -chart $chart -v master"
+    }
 
 
-if (($update -ne "false") -and ($u -eq $false))
-{  
-    write-host "`nUpdating Dependencies..."
-    Remove-Item $chart/charts/*.tgz
-    helm dependency update $chart
+    if (($update -ne "false") -and ($u -eq $false))
+    {  
+        write-host "`nUpdating Dependencies..."
+        Remove-Item $chart/charts/*.tgz
+        helm dependency update $chart
+    }
 }
 
 write-host "`nDeploying helm charts"
