@@ -21,6 +21,10 @@ metadata:
 data:
   db-url: {{ $dbUrl | quote }}
   db-port: {{ .Values.db.service.port | quote }}
+  db-server: {{ printf "%s,%d" $dbUrl (.Values.db.service.port | int ) }}
+  db-bapi-name: {{ .Values.db.dbs.bapi.name | quote }}
+  db-isapi-name: {{ .Values.db.dbs.isapi.name | quote }}
+  db-ordapi-name: {{ .Values.db.dbs.ordapi.name | quote }}
   dapi-url: {{ printf "http://%s:%d" $dapiUrl (.Values.dapi.service.port | int ) }}
   bapi-url: {{ printf "http://%s:%d" $bapiUrl (.Values.bapi.service.port | int ) }}
   oapi-url: {{ printf "http://%s:%d" $oapiUrl (.Values.oapi.service.port | int ) }}

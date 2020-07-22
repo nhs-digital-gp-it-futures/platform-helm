@@ -90,4 +90,8 @@ dependencies:
 - name: redis-commander
   condition: redis-commander.enabled
   version: ~0.1.0
+- name: pb-ac-tests
+  condition: pb-ac-tests.enabled
+  version: 0.5.0-alpha
+  repository: "@gpitfuturesdevacr"
 

@@ -258,3 +258,8 @@ redis-commander:
   enabled: true
   service:
     port: 8181    
+
+pb-ac-tests:
+  enabled: false
+  imagePullSecrets: 
+  - name: regcredlocal
