@@ -52,7 +52,7 @@ isapi:
         name: "bc-buyingcatalogue"
         key: oidc-client-secret 
       requirePkce : true
-      requireConsent: true
+      requireConsent: false
       redirectUrls:         
         - https://<namespace>.dev.buyingcatalogue.digital.nhs.uk/oauth/callback          #To override from build
         - https://<namespace>.dev.buyingcatalogue.digital.nhs.uk/admin/oauth/callback    #To override from build
