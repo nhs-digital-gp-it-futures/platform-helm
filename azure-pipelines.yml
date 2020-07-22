@@ -122,16 +122,6 @@ jobs:
           --app-version $(GitVersion.SemVer) \
           src/buyingcatalogue
     displayName: 'helm package'
-
-
-  - bash: |
-      az --version
-    failOnStderr: true
-    name: versionCheck
-    displayName: 'az version'
-
-
-
   - bash: |
       chartPackage=$(ls buyingcatalogue-*.tgz)
       echo "Chart Package $chartPackage"
