@@ -66,7 +66,7 @@ isapi:
         name: "bc-buyingcatalogue"
         key: oidc-client-secret 
       requirePkce : true
-      requireConsent: true
+      requireConsent: false
       redirectUrls:         
         - https://host.docker.internal/oauth/callback
         - https://docker.for.win.localhost/oauth/callback

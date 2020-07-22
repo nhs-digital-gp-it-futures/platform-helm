@@ -242,7 +242,7 @@ isapi:
         name: "bc-buyingcatalogue"
         key: oidc-client-secret 
       requirePkce : true
-      requireConsent: true
+      requireConsent: false
       redirectUrls: 
       postLogoutRedirectUrls: 
       allowedScopes: 
