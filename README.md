@@ -1,7 +1,7 @@
 # Buying Catalogue Helm Charts
 
 This directory contains helm charts for the buying catalogue.
-
+.
 The buying catalogue umbrella chart represents a version of the entire system. It can easily be run locally to aid development, and is also used to deploy to the cloud. It aggregates the different charts used for each component, providing the ability to configure for the different environments.
 
 To work with the cluster in development, follow the instructions [here](docs/run-local.md). Once all of the tasks have been completed the URL to access the local cluster is [host.docker.internal](https://host.docker.internal/).
