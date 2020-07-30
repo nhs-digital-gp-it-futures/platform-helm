@@ -78,7 +78,10 @@ done
 if [ ! -s "hosts" ]; then >&2 echo "Could not find living pods to compare host aliases with"; fi
 
 while IFS= read line; do
-  if [[ $line = "$ip"* ]]; then addresses="$line $hostToBeAdded" && break; fi
+  if [[ $line = "$ip"* ]]; then
+    addresses="$line $hostToBeAdded"
+    addresses=$(printf '%s\n' "$addresses" | awk -v RS='[[:space:]]+' '!a[$0]++{printf "%s%s", $0, RT}') # remove duplicates
+  fi
 done < hosts
 
 rm hosts
