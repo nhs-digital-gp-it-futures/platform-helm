@@ -308,7 +308,7 @@ kubectl apply -f namespace.yaml
 
 if [ -n "$deploySeleniumGrid" ]; then
   cd selenium-grid 
-  ./launch-selenium-grid.sh --ip $ipOverride -add $basePath
+  ./launch-selenium-grid.sh --ip "$ipOverride" -add "$basePath"
   cd ..
 fi
 
