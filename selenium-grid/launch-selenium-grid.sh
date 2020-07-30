@@ -27,6 +27,7 @@ eval set -- "$OPTS"
 # set initial values
 namespace="selenium-grid"
 ip="51.11.46.27"
+timeout=30
 
 # extract options and their arguments into variables.
 while true ; do
@@ -66,9 +67,15 @@ function makeSureNamespaceExists {
 }
 
 function constructHostAliasArgs {
-chromePodName=$(kubectl get pods -l app=sel-grid-selenium-chrome -n $namespace | awk 'FNR == 2 { print $1 }')
+n=0
+while [ ! -s "hosts" ] && [ "$n" -lt "$timeout" ]; do
+  chromePodName=$(kubectl get pods -l app=sel-grid-selenium-chrome -n $namespace | awk 'FNR == 2 { print $1 }')
+  kubectl exec $chromePodName -n $namespace -- cat /etc/hosts > hosts
+  n=$((n+1)) 
+  sleep 1
+done
 
-kubectl exec $chromePodName -n $namespace -- cat /etc/hosts > hosts
+if [ ! -s "hosts" ]; then >&2 echo "Could not find living pods to compare host aliases with"; fi
 
 while IFS= read line; do
   if [[ $line = "$ip"* ]]; then addresses="$line $hostToBeAdded" && break; fi
