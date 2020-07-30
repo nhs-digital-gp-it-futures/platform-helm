@@ -275,6 +275,7 @@ jobs:
   - bash: |
       helm repo add gpitfuturesdevacr https://gpitfuturesdevacr.azurecr.io/helm/v1/repo --username gpitfuturesdevacr --password $(gpitfuturesdevacr-pass)
       helm repo add stable https://kubernetes-charts.storage.googleapis.com/
+      helm repo update
     name: addRepo
     displayName: Add gpitfuturesdevacr & stable repo
   - task: AzureCLI@2
