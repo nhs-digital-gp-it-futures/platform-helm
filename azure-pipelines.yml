@@ -152,6 +152,16 @@ jobs:
       TargetFolder: '$(build.artifactStagingDirectory)/environments'
       CleanTargetFolder: false
       OverWrite: true
+    displayName: Copy environments folder
+
+  - task: CopyFiles@2
+    inputs:
+      SourceFolder: 'selenium-grid'
+      Contents: '**'
+      TargetFolder: '$(build.artifactStagingDirectory)/selenium-grid'
+      CleanTargetFolder: false
+      OverWrite: true
+    displayName: Copy selenium-grid folder
 
   - task: CopyFiles@2
     inputs:
@@ -160,6 +170,8 @@ jobs:
       TargetFolder: '$(build.artifactStagingDirectory)'
       CleanTargetFolder: false
       OverWrite: true
+    displayName: Copy environments folder
+    
   - publish: $(build.artifactStagingDirectory)
     artifact: build-artifact 
 
@@ -239,7 +251,8 @@ jobs:
         -i "51.11.46.27" \
         -r $(srt-redishost) \
         -q $(srt-redispass) \
-        --db-user-pass $(gpitfuturesdevdbpassword)
+        --db-user-pass $(gpitfuturesdevdbpassword) \
+        --deploy-selenium-grid
     name: deploySystem
     displayName: Deploy System
 

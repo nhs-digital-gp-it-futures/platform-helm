@@ -48,12 +48,15 @@ function displayHelp {
             Email password if email-server is set
           --helm-upgrade-args <arguments>
             Pass additional arguments to helm upgrade
+          --deploy-selenium-grid
+            Creates 'selenium-grid' namespace and installs selenium grid chart there
           "
+
   exit
 }
 # Option strings
 SHORT="hc:n:d:u:p:v:wb:s:a:i:r:q:f:"
-LONG="help,chart:,namespace:,db-server:,db-admin-user:,db-admin-pass:,version:,wait,base-path:,sql-package-args:,azure-storage-connection-string:,ip,redis-server:,redis-password:,file-overrides:,client-secret:,cookie-secret:,db-user-pass:,email-server:,email-user:,email-pass:,helm-upgrade-args:"
+LONG="help,chart:,namespace:,db-server:,db-admin-user:,db-admin-pass:,version:,wait,base-path:,sql-package-args:,azure-storage-connection-string:,ip,redis-server:,redis-password:,file-overrides:,client-secret:,cookie-secret:,db-user-pass:,email-server:,email-user:,email-pass:,helm-upgrade-args:deploy-selenium-grid"
 
 # read the options
 OPTS=$(getopt --options $SHORT --long $LONG --name "$0" -- "$@")
@@ -166,6 +169,10 @@ while true ; do
     --helm-upgrade-args )
       helmUpgradeArgs="$2"
       shift 2
+      ;;
+    --deploy-selenium-grid )
+      deploySeleniumGrid="true"
+      shift 1
       ;;
     -- )
       shift
@@ -292,11 +299,18 @@ printf "launch-or-update-azure.sh
         email-server = $emailServer 
         email-user = $emailUser 
         email-pass = $emailPassStart*
+        deploy-selenium-grid = $deploySeleniumGrid
         "
 
 sed "s/REPLACENAMESPACE/$namespace/g" environments/azure-namespace-template.yml > namespace.yaml
 cat namespace.yaml
 kubectl apply -f namespace.yaml
+
+if [ -n "$deploySeleniumGrid" ]; then
+  cd selenium-grid 
+  ./launch-selenium-grid.sh --ip $ipOverride -add $basePath
+  cd ..
+fi
 
 helm upgrade bc $chart -n $namespace -i -f environments/azure.yaml \
   $fileOverrideArgs \
