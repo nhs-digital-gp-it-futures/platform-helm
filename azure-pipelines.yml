@@ -171,7 +171,7 @@ jobs:
       CleanTargetFolder: false
       OverWrite: true
     displayName: Copy environments folder
-    
+
   - publish: $(build.artifactStagingDirectory)
     artifact: build-artifact 
 
@@ -274,8 +274,9 @@ jobs:
     displayName: Get Kubernetes Context
   - bash: |
       helm repo add gpitfuturesdevacr https://gpitfuturesdevacr.azurecr.io/helm/v1/repo --username gpitfuturesdevacr --password $(gpitfuturesdevacr-pass)
+      helm repo add stable https://kubernetes-charts.storage.googleapis.com/
     name: addRepo
-    displayName: Add gpitfuturesdevacr repo
+    displayName: Add gpitfuturesdevacr & stable repo
   - task: AzureCLI@2
     inputs:
       azureSubscription: 'NHSAPP-BuyingCatalogue (Non-Prod)'
