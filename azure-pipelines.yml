@@ -1,5 +1,5 @@
 trigger:
-  batch: false
+  batch: true
   branches:
     include:
       - master
@@ -198,8 +198,10 @@ jobs:
   
   - bash: |
       helm repo add gpitfuturesdevacr https://gpitfuturesdevacr.azurecr.io/helm/v1/repo --username gpitfuturesdevacr --password $(gpitfuturesdevacr-pass)
+      helm repo add stable https://kubernetes-charts.storage.googleapis.com/
+      helm repo update
     name: addRepo
-    displayName: Add gpitfuturesdevacr repo
+    displayName: Add gpitfuturesdevacr & stable repo
     condition: eq(variables['Build.Reason'], 'ResourceTrigger')
 
   - bash: |
@@ -274,10 +276,8 @@ jobs:
     displayName: Get Kubernetes Context
   - bash: |
       helm repo add gpitfuturesdevacr https://gpitfuturesdevacr.azurecr.io/helm/v1/repo --username gpitfuturesdevacr --password $(gpitfuturesdevacr-pass)
-      helm repo add stable https://kubernetes-charts.storage.googleapis.com/
-      helm repo update
     name: addRepo
-    displayName: Add gpitfuturesdevacr & stable repo
+    displayName: Add gpitfuturesdevacr
   - task: AzureCLI@2
     inputs:
       azureSubscription: 'NHSAPP-BuyingCatalogue (Non-Prod)'
