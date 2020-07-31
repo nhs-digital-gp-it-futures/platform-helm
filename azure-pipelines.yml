@@ -170,7 +170,7 @@ jobs:
       TargetFolder: '$(build.artifactStagingDirectory)'
       CleanTargetFolder: false
       OverWrite: true
-    displayName: Copy environments folder
+    displayName: Copy scripts
 
   - publish: $(build.artifactStagingDirectory)
     artifact: build-artifact 
@@ -236,6 +236,7 @@ jobs:
       inlineScript: 'az aks get-credentials -n gpitfutures-dev-aks -g gpitfutures-dev-rg-aks'
     name: kubectlContext
     displayName: Get Kubernetes Context
+    
   - bash: |
       helm repo add gpitfuturesdevacr https://gpitfuturesdevacr.azurecr.io/helm/v1/repo --username gpitfuturesdevacr --password $(gpitfuturesdevacr-pass)
       helm repo add stable https://kubernetes-charts.storage.googleapis.com/
