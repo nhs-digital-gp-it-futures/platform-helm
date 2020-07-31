@@ -11,13 +11,17 @@ function displayHelp {
             Sets the ip address to which any host names will resolve. Defaults to '$ip'
           -n, --namespace <ns>
             Sets the namespace where selenium grid is installed. Defaults to '$namespace'
+          -t, --timeout <number of seconds>
+            Sets the timeout for waiting on living pods, defaults to $timeout
+          -p, --pod-count <number of desired chrome pods>
+            Sets the replica count for chrome pods, defaults to $pods
           "
   exit
 }
 
 # Option strings
-SHORT="ha:i:n:"
-LONG="help,add:,ip:,namespace:"
+SHORT="ha:i:n:t:p:"
+LONG="help,add:,ip:,namespace:,timeout:,pod-count:"
 
 # read the options
 OPTS=$(getopt --options $SHORT --long $LONG --name "$0" -- "$@")
@@ -28,6 +32,7 @@ eval set -- "$OPTS"
 namespace="selenium-grid"
 ip="51.11.46.27"
 timeout=30
+pods=4
 
 # extract options and their arguments into variables.
 while true ; do
@@ -46,6 +51,14 @@ while true ; do
       ;;
     -n | --namespace )
       namespace="$2"
+      shift 2
+      ;;
+    -t | --timeout )
+      timeout="$2"
+      shift 2
+      ;;
+    -p | --pod-count )
+      pods="$2"
       shift 2
       ;;
     -- )
@@ -102,4 +115,4 @@ echo ""
 
 makeSureNamespaceExists
 
-helm upgrade sel-grid stable/selenium -i -f values.yaml -n $namespace $(constructHostAliasArgs)
+helm upgrade sel-grid stable/selenium -i -f values.yaml -n $namespace $(constructHostAliasArgs) --set chrome.replicas=$pods
