@@ -80,15 +80,16 @@ function makeSureNamespaceExists {
 }
 
 function constructHostAliasArgs {
-n=0
-while [ ! -s "hosts" ] && [ "$n" -lt "$timeout" ]; do
-  chromePodName=$(kubectl get pods -l app=sel-grid-selenium-chrome -n $namespace | awk 'FNR == 2 { print $1 }')
-  kubectl exec $chromePodName -n $namespace -- cat /etc/hosts > hosts
-  n=$((n+1)) 
-  sleep 1
+  >&2 echo "Trying to find living pods to compare host aliases with..."
+  n=0
+  while [ ! -s "hosts" ] && [ "$n" -lt "$timeout" ]; do
+    chromePodName=$(kubectl get pods -l app=sel-grid-selenium-chrome -n $namespace 2>/dev/null | awk 'FNR == 2 { print $1 }')
+    kubectl exec $chromePodName -n $namespace -- cat /etc/hosts 2>/dev/null > hosts
+    n=$((n+1)) 
+    sleep 1
 done
 
-if [ ! -s "hosts" ]; then >&2 echo "Could not find living pods to compare host aliases with"; fi
+if [ ! -s "hosts" ]; then >&2 echo "Could not find living pods to compare host aliases with."; fi
 
 while IFS= read line; do
   if [[ $line = "$ip"* ]]; then
