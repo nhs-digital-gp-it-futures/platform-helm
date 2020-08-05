@@ -565,6 +565,9 @@ of:
     name: "bc-buyingcatalogue"
     key: "cookie-secret"
   serviceDependencies:
+    isapi: 
+      name: "bc-buyingcatalogue"
+      key: isapi-url
     oidc:
       baseUriConfig:
         name: "bc-buyingcatalogue"
