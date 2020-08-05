@@ -13,7 +13,7 @@ The build pipeline creates a dynamic environment for each branch with the prefix
 
 The APIs in dev environment expose Swagger interface, to access it, please follow these [instructions](docs/port-forwarding-to-cloud-env.md).
 
-On deployment in the cloud environemnts, the AC tests are automatically run agaisnt the system. Find more information [here](docs/selenium-grid.md)
+On deployment in the cloud environemnts, the AC tests are automatically run against the system. Find more information [here](docs/selenium-grid.md)
 
 ## Configuration overview
 
