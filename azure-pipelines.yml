@@ -152,6 +152,16 @@ jobs:
       TargetFolder: '$(build.artifactStagingDirectory)/environments'
       CleanTargetFolder: false
       OverWrite: true
+    displayName: Copy environments folder
+
+  - task: CopyFiles@2
+    inputs:
+      SourceFolder: 'selenium-grid'
+      Contents: '**'
+      TargetFolder: '$(build.artifactStagingDirectory)/selenium-grid'
+      CleanTargetFolder: false
+      OverWrite: true
+    displayName: Copy selenium-grid folder
 
   - task: CopyFiles@2
     inputs:
@@ -160,6 +170,8 @@ jobs:
       TargetFolder: '$(build.artifactStagingDirectory)'
       CleanTargetFolder: false
       OverWrite: true
+    displayName: Copy scripts
+
   - publish: $(build.artifactStagingDirectory)
     artifact: build-artifact 
 
@@ -213,6 +225,8 @@ jobs:
       value: $[ dependencies.prepareEnvironment.outputs['DeployVars.Namespace'] ]
     - name: sqlPackageArgs
       value: "/p:DatabaseEdition=Standard /p:DatabaseServiceObjective=S0"
+    - name: devClusterIp
+      value: "51.11.46.27"
   steps:
   - task: AzureCLI@2
     inputs:
@@ -222,10 +236,20 @@ jobs:
       inlineScript: 'az aks get-credentials -n gpitfutures-dev-aks -g gpitfutures-dev-rg-aks'
     name: kubectlContext
     displayName: Get Kubernetes Context
+    
   - bash: |
       helm repo add gpitfuturesdevacr https://gpitfuturesdevacr.azurecr.io/helm/v1/repo --username gpitfuturesdevacr --password $(gpitfuturesdevacr-pass)
-    name: addRepo
-    displayName: Add gpitfuturesdevacr repo
+      helm repo add stable https://kubernetes-charts.storage.googleapis.com/
+      helm repo update
+    name: addRepos
+    displayName: Add gpitfuturesdevacr & stable repo
+
+  - bash: |
+        cd selenium-grid 
+        ./launch-selenium-grid.sh --ip "$(devClusterIp)" --add "$(namespace)-dev.buyingcatalogue.digital.nhs.uk"
+    name: setupSeleniumGrid
+    displayName: Setup Selenium Grid
+
   - bash: |
       ./launch-or-update-azure.sh -c remote \
         -n $(namespace) \
@@ -236,7 +260,7 @@ jobs:
         -v $(semVer) \
         -s "/p:DatabaseEdition=Standard /p:DatabaseServiceObjective=S0" \
         -a "$(gpitdevstorageaccountconnectionstring)" \
-        -i "51.11.46.27" \
+        -i "$(devClusterIp)" \
         -r $(srt-redishost) \
         -q $(srt-redispass) \
         --db-user-pass $(gpitfuturesdevdbpassword)
@@ -262,7 +286,7 @@ jobs:
   - bash: |
       helm repo add gpitfuturesdevacr https://gpitfuturesdevacr.azurecr.io/helm/v1/repo --username gpitfuturesdevacr --password $(gpitfuturesdevacr-pass)
     name: addRepo
-    displayName: Add gpitfuturesdevacr repo
+    displayName: Add gpitfuturesdevacr
   - task: AzureCLI@2
     inputs:
       azureSubscription: 'NHSAPP-BuyingCatalogue (Non-Prod)'

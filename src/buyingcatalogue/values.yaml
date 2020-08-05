@@ -612,3 +612,36 @@ redis-commander:
   redisHost:
     name: "bc-buyingcatalogue"
     key: redis-url
+
+pb-ac-tests:
+  enabled: true
+  replicaCount: 1
+  image:
+    repository: gpitfuturesdevacr.azurecr.io/nhsd/buying-catalogue/pb-ac-tests
+  useLocalImage: false
+  imagePullSecrets: 
+  nameOverride: "pb-ac-tests"
+  fullnameOverride: "gpitfutures-bc-pb-ac-tests"
+  hubUrl: "http://sel-grid-selenium-hub.selenium-grid:4444/wd/hub"
+  pbUrlConfig:
+    name: "bc-buyingcatalogue"
+    key: pb-url
+  db: 
+    nameConfig:
+      name: "bc-buyingcatalogue"
+      key: db-bapi-name
+    serverConfig:
+      name: "bc-buyingcatalogue"
+      key: db-server
+    passwordSecret:
+      name: "bc-buyingcatalogue"
+      key: db-password
+  azureBlobStore:
+    connectionStringSecret:
+      name: "bc-buyingcatalogue"
+      key: azure-blob-connection-string
+    containerNameConfig:
+      name: "bc-buyingcatalogue"
+      key: document-container
+  testFilter:
+  testResultDirectory:

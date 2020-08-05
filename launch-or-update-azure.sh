@@ -49,6 +49,7 @@ function displayHelp {
           --helm-upgrade-args <arguments>
             Pass additional arguments to helm upgrade
           "
+
   exit
 }
 # Option strings
@@ -253,7 +254,9 @@ then
   --set admin.hostAliases[0].ip=$ipOverride 
   --set admin.hostAliases[0].hostnames[0]=$basePath 
   --set of.hostAliases[0].ip=$ipOverride 
-  --set of.hostAliases[0].hostnames[0]=$basePath"  
+  --set of.hostAliases[0].hostnames[0]=$basePath
+  --set pb-ac-tests.hostAliases[0].ip=$ipOverride 
+  --set pb-ac-tests.hostAliases[0].hostnames[0]=$basePath"
 fi
 
 baseUrl="https://$basePath"

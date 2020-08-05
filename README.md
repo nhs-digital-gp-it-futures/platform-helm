@@ -9,10 +9,11 @@ To work with the cluster in development, follow the instructions [here](docs/run
 Branches of this repository are automatically deployed to the dev environment in azure.
 Each change of this repository is considered a new release, which can then be released via the release pipeline to test and then production. Instructions on how to work with the cluster in cloud can be found [here](docs/run-azure.md).
 
-The build pipeline creates a dynamic environment for each branch with the prefix 'feature/', this can then be elevated to test any changes madein PRs, but also to allow for [BA horns on dynamic environments](docs/dynamic-env-ba-horn.md) in the cloud. 
-
+The build pipeline creates a dynamic environment for each branch with the prefix 'feature/', this can then be elevated to test any changes made in PRs, but also to allow for [BA horns on dynamic environments](docs/dynamic-env-ba-horn.md) in the cloud. 
 
 The APIs in dev environment expose Swagger interface, to access it, please follow these [instructions](docs/port-forwarding-to-cloud-env.md).
+
+On deployment in the cloud environemnts, the AC tests are automatically run against the system. Find more information [here](docs/selenium-grid.md)
 
 ## Configuration overview
 
