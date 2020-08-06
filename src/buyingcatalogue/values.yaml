@@ -15,6 +15,9 @@ keyVault:
   name:
   isapiCertificateSecretName:
 
+localTestResultStorage:
+  enabled: false
+
 azurite:
   enabled: true
   disabledUrl: 
@@ -650,4 +653,5 @@ pb-ac-tests:
       name: "bc-buyingcatalogue"
       key: document-container
   testFilter:
-  testResultDirectory:
+  testResultDirectory: "/data/buyingcatalogue/test"
+  useLocalTestResultStorage: false

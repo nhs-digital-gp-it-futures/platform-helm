@@ -3,6 +3,9 @@ clientSecret:
 appBaseUrl: "https://host.docker.internal"
 baseIsapiEnabledUrl: "https://host.docker.internal/identity"
 
+localTestResultStorage:
+  enabled: true
+
 azurite:
   enabled: true
   disabledUrl: "host.docker.internal"
@@ -263,3 +266,4 @@ pb-ac-tests:
   enabled: false
   imagePullSecrets: 
   - name: regcredlocal
+  useLocalTestResultStorage: true
