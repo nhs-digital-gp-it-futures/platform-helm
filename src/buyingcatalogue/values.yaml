@@ -465,6 +465,9 @@ pb:
     dapiUrlConfig:
       name: "bc-buyingcatalogue"
       key: dapi-url   
+    isapi: 
+      name: "bc-buyingcatalogue"
+      key: isapi-url
     oidc:
       baseUriConfig:
         name: "bc-buyingcatalogue"
