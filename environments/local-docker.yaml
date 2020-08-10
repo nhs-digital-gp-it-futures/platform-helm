@@ -265,4 +265,3 @@ pb-ac-tests:
   enabled: false
   imagePullSecrets: 
   - name: regcredlocal
-  useLocalTestResultStorage: true
