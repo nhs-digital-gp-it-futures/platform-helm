@@ -72,7 +72,7 @@ isapi:
     enabled: true
     annotations: 
       kubernetes.io/ingress.class: azure/application-gateway
-      appgw.ingress.kubernetes.io/appgw-ssl-certificate: buying-catalogue-digital-nhs-uk 
+      appgw.ingress.kubernetes.io/appgw-ssl-certificate: buying-catalogue-digital-nhs-uk-star 
       appgw.ingress.kubernetes.io/ssl-redirect: "true"    
     hosts:
       - host: https://<namespace>.dev.buyingcatalogue.digital.nhs.uk" #To override from build
@@ -103,7 +103,7 @@ email:
     enabled: true
     annotations: 
       kubernetes.io/ingress.class: azure/application-gateway
-      appgw.ingress.kubernetes.io/appgw-ssl-certificate: buying-catalogue-digital-nhs-uk 
+      appgw.ingress.kubernetes.io/appgw-ssl-certificate: buying-catalogue-digital-nhs-uk-star 
       appgw.ingress.kubernetes.io/ssl-redirect: "true"
     hosts:
       - host: <namespace>.dev.buyingcatalogue.digital.nhs.uk #To override from build
@@ -125,7 +125,7 @@ mp:
     enabled: true
     annotations: 
       kubernetes.io/ingress.class: azure/application-gateway
-      appgw.ingress.kubernetes.io/appgw-ssl-certificate: buying-catalogue-digital-nhs-uk 
+      appgw.ingress.kubernetes.io/appgw-ssl-certificate: buying-catalogue-digital-nhs-uk-star 
       appgw.ingress.kubernetes.io/ssl-redirect: "true"
     hosts:
       - host: <namespace>.dev.buyingcatalogue.digital.nhs.uk #To override from build
@@ -143,7 +143,7 @@ pb:
     enabled: true
     annotations: 
       kubernetes.io/ingress.class: azure/application-gateway
-      appgw.ingress.kubernetes.io/appgw-ssl-certificate: buying-catalogue-digital-nhs-uk 
+      appgw.ingress.kubernetes.io/appgw-ssl-certificate: buying-catalogue-digital-nhs-uk-star 
       appgw.ingress.kubernetes.io/ssl-redirect: "true"
     hosts:
       - host: <namespace>.dev.buyingcatalogue.digital.nhs.uk #To override from build
@@ -167,7 +167,7 @@ admin:
     enabled: true
     annotations: 
       kubernetes.io/ingress.class: azure/application-gateway
-      appgw.ingress.kubernetes.io/appgw-ssl-certificate: buying-catalogue-digital-nhs-uk 
+      appgw.ingress.kubernetes.io/appgw-ssl-certificate: buying-catalogue-digital-nhs-uk-star 
       appgw.ingress.kubernetes.io/ssl-redirect: "true"
     hosts:
       - host: <namespace>.dev.buyingcatalogue.digital.nhs.uk #To override from build
@@ -186,7 +186,7 @@ of:
     enabled: true
     annotations: 
       kubernetes.io/ingress.class: azure/application-gateway
-      appgw.ingress.kubernetes.io/appgw-ssl-certificate: buying-catalogue-digital-nhs-uk 
+      appgw.ingress.kubernetes.io/appgw-ssl-certificate: buying-catalogue-digital-nhs-uk-star 
       appgw.ingress.kubernetes.io/ssl-redirect: "true"
     hosts:
       - host: <namespace>.dev.buyingcatalogue.digital.nhs.uk #To override from build
@@ -209,7 +209,7 @@ redis-commander:
     enabled: true
     annotations: 
       kubernetes.io/ingress.class: azure/application-gateway
-      appgw.ingress.kubernetes.io/appgw-ssl-certificate: buying-catalogue-digital-nhs-uk 
+      appgw.ingress.kubernetes.io/appgw-ssl-certificate: buying-catalogue-digital-nhs-uk-star 
       appgw.ingress.kubernetes.io/ssl-redirect: "true"
     hosts:
       - host: <namespace>.dev.buyingcatalogue.digital.nhs.uk #To override from build

@@ -223,7 +223,7 @@ if [ -n "$overrideFiles" ]; then
   done
 fi
 
-basePath=${basePath:-"$namespace-dev.buyingcatalogue.digital.nhs.uk"}
+basePath=${basePath:-"$namespace.dev.buyingcatalogue.digital.nhs.uk"}
 
 if [ -z ${emailServer+x} ] || [ -z ${emailUser+x} ] || [ -z ${emailPassword+x} ]
 then
