@@ -3,8 +3,7 @@ clientSecret:
 appBaseUrl: "https://host.docker.internal"
 baseIsapiEnabledUrl: "https://host.docker.internal/identity"
 
-localTestResultStorage:
-  enabled: true
+useLocalTestResultStorage: true
 
 azurite:
   enabled: true

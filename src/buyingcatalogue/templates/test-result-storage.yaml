@@ -1,4 +1,7 @@
-{{- if .Values.localTestResultStorage.enabled -}}
+{{- $className:= ternary "hostpath" "azurefile" .Values.useLocalTestResultStorage | quote -}}
+{{- $accessMode:= ternary "ReadWriteOnce" "ReadWriteMany" .Values.useLocalTestResultStorage | quote -}}
+
+{{- if .Values.useLocalTestResultStorage -}}
 apiVersion: v1
 kind: PersistentVolume
 metadata:
@@ -14,15 +17,15 @@ spec:
   hostPath:
     path: "/data/buyingcatalogue/test"
 ---
+{{- end }}
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: bc-test-result-local-pvc
+  name: bc-test-result-pvc
 spec:
-  storageClassName: hostpath
+  storageClassName: {{ $className }}
   accessModes:
-    - ReadWriteOnce
+    - {{ $accessMode }}
   resources:
     requests:
       storage: 1Gi
-{{- end }}
