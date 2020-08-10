@@ -80,5 +80,4 @@ redis-commander:
   enabled: true
 
 pb-ac-tests:
-  enabled: true
-  useLocalImage: true  
+  enabled: false
