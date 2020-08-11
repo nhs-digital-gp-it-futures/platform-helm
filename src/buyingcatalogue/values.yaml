@@ -15,7 +15,9 @@ keyVault:
   name:
   isapiCertificateSecretName:
 
-useLocalTestResultStorage: false
+testStorage:
+  storageClassName: 
+  accessMode: 
 
 azurite:
   enabled: true
