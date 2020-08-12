@@ -3,6 +3,10 @@ clientSecret:
 appBaseUrl: "https://host.docker.internal"
 baseIsapiEnabledUrl: "https://host.docker.internal/identity"
 
+testStorage:
+  storageClassName: "hostpath"
+  accessMode: "ReadWriteOnce"
+
 azurite:
   enabled: true
   disabledUrl: "host.docker.internal"
