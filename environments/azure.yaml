@@ -3,6 +3,10 @@ clientSecret:
 appBaseUrl: "https://<namespace>.dev.buyingcatalogue.digital.nhs.uk"
 baseIsapiEnabledUrl: "https://<namespace>.dev.buyingcatalogue.digital.nhs.uk/identity"
 
+testStorage:
+  storageClassName: "azurefile"
+  accessMode: "ReadWriteMany"
+
 keyVault:
   enabled: false  
   name: gpitfutures-dev-kv #should override per environment
