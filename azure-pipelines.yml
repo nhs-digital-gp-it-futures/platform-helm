@@ -263,7 +263,8 @@ jobs:
         -i "$(devClusterIp)" \
         -r $(srt-redishost) \
         -q $(srt-redispass) \
-        --db-user-pass $(gpitfuturesdevdbpassword)
+        --db-user-pass $(gpitfuturesdevdbpassword) \
+        -f "azure-dev.yaml"
     name: deploySystem
     displayName: Deploy System
 
