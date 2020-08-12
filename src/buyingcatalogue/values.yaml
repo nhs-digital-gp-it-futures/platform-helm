@@ -655,3 +655,28 @@ pb-ac-tests:
       key: document-container
   testFilter:
   testResultDirectory: "/data/buyingcatalogue/test"
+
+allure:  
+  enabled: true
+  disabledUrl: 
+  replicaCount: 1
+  image:
+    repository: frankescobar/allure-docker-service
+  useLocalImage: false
+  imagePullSecrets: 
+  nameOverride: "allure"
+  fullnameOverride: "gpitfutures-bc-allure"
+  service:
+    type: ClusterIP
+    port: 5050
+  env:
+    values:
+      - name: CHECK_RESULTS_EVERY_SECONDS
+        value: "10"
+      - name: KEEP_HISTORY
+        value: "1"
+  ingress:
+    enabled: true
+    hosts:
+      - paths: 
+          - /allure-docker-service

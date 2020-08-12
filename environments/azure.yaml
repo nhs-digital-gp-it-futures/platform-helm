@@ -219,3 +219,11 @@ redis-commander:
       - host: <namespace>.dev.buyingcatalogue.digital.nhs.uk #To override from build
         paths: 
           - /redis-commander/*
+
+allure:  
+  enabled: false
+  ingress:
+    enabled: true
+    hosts:
+      - paths: 
+          - /allure-docker-service*

@@ -1,0 +1,70 @@
+replicaCount: 1
+
+useLocalImage: false
+
+image:
+  repository: gpitfuturesdevacr.azurecr.io/nhsd/buying-catalogue/allure
+  pullPolicy: IfNotPresent
+
+imagePullSecrets: []
+
+nameOverride: "allure"
+fullnameOverride: "gpitfutures-bc-allure"
+
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: true
+  # Annotations to add to the service account
+  annotations: {}
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name:
+
+podSecurityContext: {}
+  # fsGroup: 2000
+
+securityContext: {}
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+  # runAsUser: 1000
+
+service:
+  type: ClusterIP
+  port: 5050
+
+resources: 
+  requests:
+    cpu: 25m
+    memory: 64Mi
+  limits:
+    cpu: 1000m
+    memory: 500Mi
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+ingress:
+  enabled: true
+  annotations: {}
+  hosts:
+    - paths: 
+        - /
+env:
+  configmap:
+  secrets:
+  values:    
+
+probes:
+  port: 5050
+  liveness:
+    initialDelaySeconds: 15
+    periodSeconds: 20
+  readiness:
+    initialDelaySeconds: 5
+    periodSeconds: 10

@@ -81,3 +81,7 @@ redis-commander:
 
 pb-ac-tests:
   enabled: false
+
+allure:
+  enabled: false  
+  
