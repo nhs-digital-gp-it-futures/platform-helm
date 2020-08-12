@@ -81,4 +81,3 @@ redis-commander:
 
 pb-ac-tests:
   enabled: false
-  
