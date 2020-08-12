@@ -1,0 +1,33 @@
+
+isapi:
+  ingress:
+    annotations: 
+      appgw.ingress.kubernetes.io/appgw-ssl-certificate: dev-buying-catalogue-digital-nhs-uk
+
+email:
+  ingress:
+      appgw.ingress.kubernetes.io/appgw-ssl-certificate: dev-buying-catalogue-digital-nhs-uk
+
+mp:
+  ingress:
+    annotations: 
+      appgw.ingress.kubernetes.io/appgw-ssl-certificate: dev-buying-catalogue-digital-nhs-uk
+pb: 
+  ingress:
+    annotations: 
+      appgw.ingress.kubernetes.io/appgw-ssl-certificate: dev-buying-catalogue-digital-nhs-uk
+
+admin: 
+  ingress:
+    annotations: 
+      appgw.ingress.kubernetes.io/appgw-ssl-certificate: dev-buying-catalogue-digital-nhs-uk
+
+of: 
+  ingress:
+    annotations: 
+      appgw.ingress.kubernetes.io/appgw-ssl-certificate: dev-buying-catalogue-digital-nhs-uk
+
+redis-commander:
+  ingress:
+    annotations: 
+      appgw.ingress.kubernetes.io/appgw-ssl-certificate: dev-buying-catalogue-digital-nhs-uk
