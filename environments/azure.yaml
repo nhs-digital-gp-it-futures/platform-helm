@@ -220,6 +220,10 @@ redis-commander:
         paths: 
           - /redis-commander/*
 
+pb-ac-tests:
+  enabled: true
+  testFilter: SmokeTest
+
 allure:  
   enabled: false
   ingress:
