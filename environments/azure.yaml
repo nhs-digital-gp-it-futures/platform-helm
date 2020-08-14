@@ -225,7 +225,7 @@ pb-ac-tests:
   testFilter: SmokeTest
 
 allure:  
-  enabled: false
+  enabled: true
   ingress:
     enabled: true
     hosts:
