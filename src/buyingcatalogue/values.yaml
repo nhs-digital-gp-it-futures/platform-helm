@@ -571,6 +571,7 @@ of:
   cookieSecret:
     name: "bc-buyingcatalogue"
     key: "cookie-secret"
+  feedbackLinkUrl: "https://forms.office.com/Pages/ResponsePage.aspx?id=Hwf2UP67GkCIA2c3SOYp4nDHKEWnXcFHiqdJhf0fCJtUNDNFRUFZVFU5RkRQTEpWU0RQVlVXMUpRQi4u"
   serviceDependencies:
     isapi: 
       name: "bc-buyingcatalogue"
