@@ -225,8 +225,7 @@ jobs:
       value: $[ dependencies.prepareEnvironment.outputs['DeployVars.Namespace'] ]
     - name: sqlPackageArgs
       value: "/p:DatabaseEdition=Standard /p:DatabaseServiceObjective=S0"
-    - name: devClusterIp
-      value: "51.11.46.27"
+
   steps:
   - task: AzureCLI@2
     inputs:
@@ -260,7 +259,6 @@ jobs:
         -v $(semVer) \
         -s "/p:DatabaseEdition=Standard /p:DatabaseServiceObjective=S0" \
         -a "$(gpitdevstorageaccountconnectionstring)" \
-        -i "$(devClusterIp)" \
         -r $(srt-redishost) \
         -q $(srt-redispass) \
         --db-user-pass $(gpitfuturesdevdbpassword) \

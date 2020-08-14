@@ -1,10 +1,11 @@
 # How to: BA horn using dynamic environments
 
 ## Prerequisites
+
 - have az cli installed - [install it](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli?view=azure-cli-latest#install)
 
+## Steps
 
-## Steps:
 **Note** The steps below demonstrate one way of creating a dynamic env. for a BA horn, it is also possible to create a dynamic environment using the [launch script](docs/run-azure.md#launch-from-script).
 1) Checkout latest master branch the  [plaform-helm repository](https://github.com/nhs-digital-gp-it-futures/platform-helm)
 
@@ -19,22 +20,12 @@
 
 4) Push this branch
 
-5) Amend your hosts file so that you can find and access the newly created environment by a 'human friendly' name
-   
-   In Windows, it is in `C:\Windows\System32\drivers\etc\hosts`
+5) Finish the BA horn
 
-   In *Nix systems it is in `/etc/hosts`
-
-   You'll need to add this line anywhere in the file
-   ```txt
-   51.11.46.27 bc-<your branch name>-dev.buyingcatalogue.digital.nhs.uk
-   ```
-6) Finish the BA horn
-   
    you can now do the BA horn by going to `https://bc-<your branch name>-dev.buyingcatalogue.digital.nhs.uk`
 
-7) Tear down the environment
-   
+6) Tear down the environment
+
    In root of the repository, run `./tear-down-azure.sh -a "<storage account connection string>" -n "bc-<your branch name>`
-   
+
    Click [here](https://portal.azure.com/#@HSCIC365.onmicrosoft.com/resource/subscriptions/7b12a8a2-f06f-456f-b6f9-aa2d92e0b2ec/resourceGroups/gpitfutures-dev-rg-sa/providers/Microsoft.Storage/storageAccounts/gpitfuturesdevsa/keys) to find the storage account connection string
