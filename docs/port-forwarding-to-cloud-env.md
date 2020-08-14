@@ -1,4 +1,4 @@
-# How to: port-forward APIs in cloud environment locally
+# How to: port-forward services in cloud environment locally
 
 ## Prerequisites
 - have kubernetes cli installed - [install it](local-k8s-setup.md)
@@ -12,12 +12,12 @@
 2) From the root of the repository 
    bash
    ```sh
-   bash port-forward-cloud-apis-locally.sh -n <name of the namespace from step 1>
+   bash port-forward-cloud-services-locally.sh -n <name of the namespace from step 1>
    ```
 
    powershell
    ```powershell
-   .\port-forward-cloud-apis-locally.ps1 <name of the namespace from step 1>
+   .\port-forward-cloud-services-locally.ps1 <name of the namespace from step 1>
    ```
 
-You should now be able to access all your apis on http://localhost:{port} - see [this table](../README.md#configuration-overview) for a map of services and their ports
+You should now be able to access all your services on http://localhost:{port} - see [this table](../README.md#configuration-overview) for a map of services and their ports

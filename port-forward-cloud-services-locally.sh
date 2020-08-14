@@ -1,10 +1,10 @@
 #!/bin/bash
 
 function displayHelp {
-  printf "usage: ./port-forward-cloud-apis-locally.sh [OPTIONS]
+  printf "usage: ./port-forward-cloud-services-locally.sh [OPTIONS]
           -h, --help
             Display help
-          -n, --namespace <namespace> to which port forward to
+          -n, --namespace <namespace>
             Namespace to which port forward to
           "
   exit
@@ -41,7 +41,7 @@ while true ; do
   esac
 done
 
-apiServices=("bapi" "dapi" "isapi" "oapi" "ordapi")
+services=("bapi" "dapi" "isapi" "oapi" "ordapi", "allure")
 declare -A servicesToPorts
 
 function constructServicesToPortsMap() {
@@ -50,11 +50,15 @@ function constructServicesToPortsMap() {
     servicesToPorts[isapi]=5102
     servicesToPorts[oapi]=5103
     servicesToPorts[ordapi]=5104
+    servicesToPorts[allure]=5050
 }
 
 constructServicesToPortsMap
 
-for service in ${apiServices[*]}; do
+printf "Starting to port-forward services in $namespace...
+To stop port-forwarding, kill this process (Ctrl + C)"
+
+for service in ${services[*]}; do
     kubectl port-forward service/gpitfutures-bc-$service ${servicesToPorts[$service]}:${servicesToPorts[$service]} -n $namespace &
 done
 

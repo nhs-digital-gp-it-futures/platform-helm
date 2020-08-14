@@ -1,0 +1,94 @@
+{{- $name := include "allure.fullname" . -}}
+{{- $cfgname := printf "%s-%s" "cfg" $name -}}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ $name }}
+  labels:
+    {{- include "allure.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  {{- if .Values.updateStrategy }}
+  strategy: {{ toYaml .Values.updateStrategy | nindent 4 }}
+  {{- end }}
+  minReadySeconds: {{ .Values.minReadySeconds }}
+  selector:
+    matchLabels:
+      {{- include "allure.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "allure.selectorLabels" . | nindent 8 }}
+    spec:
+    {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+      serviceAccountName: {{ include "allure.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      volumes:
+        - name: test-result-storage
+          persistentVolumeClaim:
+            claimName: "bc-test-result-pvc"
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          {{- include "allure.image.properties" . | nindent 10 }}
+          ports:
+            - name: http
+              containerPort: 80
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /allure-docker-service/swagger
+              port: 5050
+          readinessProbe:
+            httpGet:
+              path: /allure-docker-service/projects/default/reports/latest/index.html
+              port: 5050
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          volumeMounts:
+            - mountPath: {{ "/app/allure-results" | quote }}
+              name: test-result-storage
+            - mountPath: {{ "/app/allure-reports" | quote }}
+              name: test-result-storage
+          env:
+            {{- if .Values.env.values -}}
+            {{- range .Values.env.values }}
+              - name: {{ .name }}
+                value: {{ .value | quote }}
+            {{- end -}}
+            {{- end -}}
+            {{- if .Values.env.configmap -}}
+            {{- range .Values.env.configmap }}
+              - name: {{ .name }}
+                valueFrom:
+                  configMapKeyRef:
+                    name: {{ $cfgname }}
+                    key: {{ .key }}
+            {{- end -}}
+            {{- end }}
+            {{- if .Values.env.secrets -}}
+            {{- range .Values.env.secrets }}
+              - name: {{ .name }}
+                valueFrom:
+                  secretKeyRef:            
+                    name: {{ .valueFrom.secretKeyRef.name }}
+                    key: {{ .valueFrom.secretKeyRef.key }}            
+            {{- end -}}
+            {{- end }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}

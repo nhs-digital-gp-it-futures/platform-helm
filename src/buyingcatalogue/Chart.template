@@ -94,4 +94,6 @@ dependencies:
   condition: pb-ac-tests.enabled
   version: %%pb-ac-tests%%
   repository: "@gpitfuturesdevacr"
-
+- name: allure
+  condition: allure.enabled
+  version: %%allure%%
