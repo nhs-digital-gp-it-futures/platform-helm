@@ -9,7 +9,6 @@ redisPassword:
 appBaseUrl: 
 baseIsapiEnabledUrl: 
 containerName: 
-systemVersion:
 
 keyVault:
   enabled: false
@@ -638,9 +637,9 @@ pb-ac-tests:
   pbUrlConfig:
     name: "bc-buyingcatalogue"
     key: pb-url
-  systemVersionConfig:
+  runIdConfig:
     name: "bc-buyingcatalogue"
-    key: system-version
+    key: run-id
   db: 
     nameConfig:
       name: "bc-buyingcatalogue"
