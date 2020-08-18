@@ -11,6 +11,7 @@
 {{- $emailUrl:= ternary (printf "%s.%s" (include "call-nested" (list . "email" "email.fullname")) .Release.Namespace) (default "NotSet" .Values.email.disabledUrl) .Values.email.enabled -}}
 {{- $redisUrl:= ternary (printf "%s-master" (include "call-nested" (list . "redis" "redis.fullname"))) (default "NotSet" .Values.redis.disabledUrl) .Values.redis.enabled -}}
 {{- $container:= default (printf "%s-documents" .Release.Namespace) .Values.containerName -}}
+{{- $runId:= default "0.1.0" .Chart.Version -}}
 
 apiVersion: v1
 kind: ConfigMap
@@ -38,3 +39,4 @@ data:
   redis-url: {{ $redisUrl | quote }}
   pb-url: {{  $pbUrl | quote }}
   document-container: {{ $container | quote }}
+  run-id: {{ $runId | quote }}

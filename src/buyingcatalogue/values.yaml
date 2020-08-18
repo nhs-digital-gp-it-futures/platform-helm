@@ -637,6 +637,9 @@ pb-ac-tests:
   pbUrlConfig:
     name: "bc-buyingcatalogue"
     key: pb-url
+  runIdConfig:
+    name: "bc-buyingcatalogue"
+    key: run-id
   db: 
     nameConfig:
       name: "bc-buyingcatalogue"

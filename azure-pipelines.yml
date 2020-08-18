@@ -266,6 +266,18 @@ jobs:
     name: deploySystem
     displayName: Deploy System
 
+  - bash: './get-test-results.sh -v $(semVer) -n $(namespace)'
+    displayName: Grab test results
+
+  - task: PublishTestResults@2
+    inputs:
+      testResultsFormat: 'VSTest'
+      testResultsFiles: '**/*.trx' 
+      mergeTestResults: true
+      failTaskOnFailedTests: true
+      testRunTitle: 'Acceptance test results'
+      publishRunAttachments: true
+
 - job: cleanUpDynamicEnv
   dependsOn: packageAndPublish
   condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
