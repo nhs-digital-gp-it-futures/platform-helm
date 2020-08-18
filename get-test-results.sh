@@ -83,7 +83,7 @@ n=0
 until [ -n "$recentTestResult" ] || [ "$n" -ge "$timeout" ]; do
   sleep 5
   n=$((n+5)) 
-  recentTestResult=$(kubectl exec $allurePodName -n $namespace -- sh -c "cd $resultsDir && ls -t *$version-*.trx | awk 'NR>1'" 2> /dev/null)
+  recentTestResult=$(kubectl exec $allurePodName -n $namespace -- sh -c "cd $resultsDir && ls -t *$version-*.trx | awk 'NR==1'" 2> /dev/null)
 done
 
 if [ "$n" -eq "$timeout" ]; then echo "Couldn't find most recent test result for build $version in $timeout seconds, exiting..." && exit 1; fi
