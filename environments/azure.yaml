@@ -230,4 +230,4 @@ allure:
     enabled: true
     hosts:
       - paths: 
-          - /allure-docker-service*
+          - /allure-docker-service/*
