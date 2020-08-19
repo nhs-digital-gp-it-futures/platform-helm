@@ -31,3 +31,8 @@ redis-commander:
   ingress:
     annotations: 
       appgw.ingress.kubernetes.io/appgw-ssl-certificate: dev-buying-catalogue-digital-nhs-uk
+
+allure:
+  ingress:
+    annotations: 
+      appgw.ingress.kubernetes.io/appgw-ssl-certificate: dev-buying-catalogue-digital-nhs-uk
