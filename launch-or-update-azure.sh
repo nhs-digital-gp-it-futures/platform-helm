@@ -335,6 +335,7 @@ helm upgrade bc $chart -n $namespace -i -f environments/azure.yaml \
   --set azurite.connectionString="$azureStorageConnectionString" \
   --set redis.disabledUrl=$redisServer \
   --set redisPassword="$redisPassword" \
+  --set allure.ingress.hosts[0].host=$basePath \
   $versionArg \
   $waitArg \
   $emailArg \
