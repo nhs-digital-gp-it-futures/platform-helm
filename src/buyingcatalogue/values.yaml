@@ -362,6 +362,18 @@ ordapi:
       baseUriConfig:
         name: "bc-buyingcatalogue"
         key: issuer-url
+    email:
+      hostUriConfig:
+        name: "bc-buyingcatalogue"
+        key: email-url
+      port: 587
+      authenticationRequired: false
+      userName:
+        name: "bc-buyingcatalogue"
+        key: email-user-name
+      password:
+        name: "bc-buyingcatalogue"
+        key: email-password
 
 email:
   enabled: true  

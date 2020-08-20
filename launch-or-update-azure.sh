@@ -237,8 +237,11 @@ else
   --set email.disabledPassword=$emailPassword 
   --set isapi.serviceDependencies.email.authenticationRequired=true 
   --set isapi.serviceDependencies.email.allowInvalidCertificate=true 
-  --set isapi.passwordReset.emailMessage.senderAddress=$emailUser 
-  --set isapi.registration.emailMessage.senderAddress=$emailUser"
+  --set isapi.passwordReset.emailMessage.senderAddress=$emailUser
+  --set isapi.registration.emailMessage.senderAddress=$emailUser
+  --set ordapi.serviceDependencies.email.authenticationRequired=true 
+  --set ordapi.serviceDependencies.email.allowInvalidCertificate=true 
+  --set ordapi.purchasing.emailMessage.senderAddress=$emailUser"
 fi
 
 if [ -n "$ipOverride" ]
