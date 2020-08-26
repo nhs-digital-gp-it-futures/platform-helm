@@ -29,11 +29,11 @@ dependencies:
   version: ~0.1.0
 - name: bapi-db-deploy
   condition: bapi-db-deploy.enabled
-  version: 1.24.8
+  version: 1.24.9
   repository: "@gpitfuturesdevacr"
 - name: bapi
   condition: bapi.enabled
-  version: 1.24.8
+  version: 1.24.9
   repository: "@gpitfuturesdevacr"
 - name: dapi
   condition: dapi.enabled
@@ -41,27 +41,27 @@ dependencies:
   repository: "@gpitfuturesdevacr"
 - name: isapi
   condition: isapi.enabled
-  version: 1.24.7
+  version: 1.24.8
   repository: "@gpitfuturesdevacr"
 - name: isapi-db-deploy
   condition: isapi-db-deploy.enabled
-  version: 1.24.7
+  version: 1.24.8
   repository: "@gpitfuturesdevacr"
 - name: oapi
   condition: oapi.enabled
-  version: 1.24.7
+  version: 1.24.8
   repository: "@gpitfuturesdevacr"
 - name: ordapi
   condition: ordapi.enabled
-  version: 1.24.8
+  version: 1.24.10
   repository: "@gpitfuturesdevacr"
 - name: ordapi-db-deploy
   condition: ordapi-db-deploy.enabled
-  version: 1.24.8
+  version: 1.24.10
   repository: "@gpitfuturesdevacr"
 - name: email
   condition: email.enabled
-  version: 1.24.7
+  version: 1.24.8
   repository: "@gpitfuturesdevacr"
 - name: file-loader
   condition: file-loader.enabled
@@ -69,19 +69,19 @@ dependencies:
   repository: "@gpitfuturesdevacr"
 - name: mp
   condition: mp.enabled
-  version: 1.26.2
+  version: 1.26.3
   repository: "@gpitfuturesdevacr"
 - name: pb
   condition: pb.enabled
-  version: 1.24.7
+  version: 1.24.8
   repository: "@gpitfuturesdevacr"
 - name: admin
   condition: admin.enabled
-  version: 1.24.5
+  version: 1.24.6
   repository: "@gpitfuturesdevacr"
 - name: of
   condition: of.enabled
-  version: 1.24.9
+  version: 1.24.10
   repository: "@gpitfuturesdevacr"
 - name: redis
   condition: redis.enabled
