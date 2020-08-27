@@ -224,6 +224,10 @@ pb-ac-tests:
   enabled: true
   testFilter: SmokeTest
 
+mp-ac-tests:
+  enabled: true
+  testFilter: SmokeTest
+
 allure:  
   enabled: true
   ingress:
