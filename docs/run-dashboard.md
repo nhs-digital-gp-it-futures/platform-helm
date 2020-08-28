@@ -1,16 +1,17 @@
-#### Pre-req's
+## Prerequisites
+- have kubernetes cli installed - [install it](local-k8s-setup.md)
 
-If this is your first time trying to run the dashboard, issue the following command: 
-```shell
-kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/v2.0.0/aio/deploy/recommended.yaml
-```
+- If this is your first time trying to run the dashboard, issue the following command: 
+    ```shell
+    kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/v2.0.0/aio/deploy/recommended.yaml
+    ```
 
 # Running the dashboard
 You may wish to use the Kubernetes dashboard to view what is happening within the cluster.
 
-From a terminal at the `platform/local-helm` sub folder, run one of the following scripts depending on your environment.
+From a terminal at the root of the directory, run one of the following scripts in a shell of your choice.
 
-#### Note: Running this script will take over your terminal!**
+*****NOTE***** this script will take over your terminal.
 
 -----
 
@@ -30,9 +31,9 @@ Copy the URL displayed in your terminal and paste it into a browser to view the 
 
 -----
 
-If prompted to signin to the Kubernetes dashboard, select the Kubeconfig option and pick the “config” file under '`C:\Users\<Username>\.kube\config`'.
+If prompted to signin to the Kubernetes dashboard, select the Kubeconfig option and pick the “config” file under `~\.kube\config` - Assuming ~ is your user's folder.
 
-Note: Microsoft Edge does not work currently allow you to select 'Sign-in', use Chrome 
+*****NOTE***** Microsoft Edge does not work currently allow you to select 'Sign-in', use Chrome 
 
 #### References
 
