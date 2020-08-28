@@ -55,6 +55,6 @@ In order for the script to also clear the databases and storage containers, you'
 
 Run the tear down script 
 
-`tear-down-azure.sh <namespace> -a <blob store account connection string>`
+`tear-down-azure.sh -n <namespace> -a '<blob store account connection string>'`
 
 you can get the connection string from the [azure portal](https://portal.azure.com/#@HSCIC365.onmicrosoft.com/resource/subscriptions/7b12a8a2-f06f-456f-b6f9-aa2d92e0b2ec/resourceGroups/gpitfutures-dev-rg-sa/providers/Microsoft.Storage/storageAccounts/gpitfuturesdevsa/keys)
