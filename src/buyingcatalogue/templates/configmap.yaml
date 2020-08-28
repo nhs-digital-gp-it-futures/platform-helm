@@ -40,3 +40,5 @@ data:
   pb-url: {{  $pbUrl | quote }}
   document-container: {{ $container | quote }}
   run-id: {{ $runId | quote }}
+  mp-supplier-url: {{ printf "%s/marketing/supplier/solution/" $pbUrl }}
+  mp-authority-url: {{ printf "%s/marketing/authority/solution/" $pbUrl }}
