@@ -3,11 +3,15 @@
 The build pipeline for this repository is set up so that each branch publishes to its own namespace in the dev environment, which is then available when pushed.
 
 *****WARNING*****
-Resources on the cluster are limited, so please try not too create many environments, and remove them once finished.
+Resources on the cluster are limited, so please try not to create too many environments, and remove them once finished.
+
+## Prerequisites
+- [Azure CLI](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli?view=azure-cli-latest) installed
+- have kubernetes cli installed - [install it](local-k8s-setup.md)
 
 ## Viewing the Kubernetes Dashboard for the Dev environment
 
-To view the kubernetes dashboard in dev, run the below (assumming you have the [azure cli](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli?view=azure-cli-latest) installed)
+To view the kubernetes dashboard in dev, run the snippet below 
 
 ```PS
 az aks get-credentials --name gpitfutures-dev-aks -g gpitfutures-dev-rg-aks --admin # note --admin at end is required for k8s v1.16+
@@ -21,19 +25,14 @@ Note: In the event of issues accessing 127.0.0.1 '(NET::ERR_CERT_INVALID)' that 
 Create a branch & push it
 
 ```bash
-git checkout -b feature/my-feature
+git checkout -b feature/<story-id>-my-feature
 <Do Something>
 git push
 ```
 
 The pipeline will start creating an environment. Progress can be viewed here: [nhs-digital-gp-it-futures.platform-helm](https://buyingcatalog.visualstudio.com/Buying%20Catalogue/_build?definitionId=75&_a=summary)
 
-Once the environment is created, you'll see a namespace in the dashboard called `buyingcatalogue-<branch name>`.
-
-If you amend your hosts file as below (replacing \<namespace>), you'll be able to browse to the environment:
-```text
-51.11.46.27 <namespace>-dev.buyingcatalogue.digital.nhs.uk
-```
+Once the environment is created, you'll see a namespace in the dashboard called `bc-<story-id>-my-feature`. 
 
 ## Launch from script
 
@@ -50,8 +49,12 @@ The deployment is also hooked up to the PR process, which will create another en
 ## Environment Removal
 
 **IT IS IMPORTANT TO CLEAR DOWN ANY CREATED ENVIRONMENTS**
-To do so, connect `kubectl` as above, and run:
 
-- `tear-down-azure.sh <namespace>` to remove the deployment
-- Remove any created DBs in the azure database server
-- Remove the created container on the azure storage account
+*****NOTE*****
+In order for the script to also clear the databases and storage containers, you'll need to be connected to the VPN
+
+Run the tear down script 
+
+`tear-down-azure.sh -n <namespace> -a '<blob store account connection string>'`
+
+you can get the connection string from the [azure portal](https://portal.azure.com/#@HSCIC365.onmicrosoft.com/resource/subscriptions/7b12a8a2-f06f-456f-b6f9-aa2d92e0b2ec/resourceGroups/gpitfutures-dev-rg-sa/providers/Microsoft.Storage/storageAccounts/gpitfuturesdevsa/keys)
