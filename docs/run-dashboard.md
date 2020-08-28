@@ -9,7 +9,7 @@
 # Running the dashboard
 You may wish to use the Kubernetes dashboard to view what is happening within the cluster.
 
-From a terminal at the root of the directory, run one of the following scripts in a shell of your choice.
+From a terminal at the root of the repository, run one of the following scripts in a shell of your choice.
 
 *****NOTE***** this script will take over your terminal.
 
