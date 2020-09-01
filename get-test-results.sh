@@ -1,5 +1,10 @@
 #!/bin/bash
 
+# Default values
+timeout=600
+resultsDir="/app/allure-results"
+resultFilePrefixes=("mp-authority" "mp-supplier" "pb")
+
 function displayHelp {
   printf "usage: ./get-test-results.sh [OPTIONS]
           -h, --help
@@ -18,13 +23,25 @@ function displayHelp {
           -t, --timeout <number of seconds>
             Amount of seconds to keep trying to grab the latest results for before giving up
             Defaults to $timeout
+          [OPTIONAL]
+          -p, --prefix <test suite prefixes>          
+            Override the list of test suite prefixes
+            The script will wait until the $resultsDir directory - for each entry in the prefix list, contains at least one prefix
+            Eg: ./get-test-results.sh -n <ns> -v <version> --prefix 'mp-authority mp-smoke-tests'
+            will wait until $resultsDir inside the allure container contains at least 1 'mp-authority-*.trx' and 1 'mp-smoke-tests-*.trx' file
+            Defaults to ${resultFilePrefixes[*]}
           "
   exit
 }
 
+# Default values
+timeout=600
+resultsDir="/app/allure-results"
+resultFilePrefixes=("mp-authority" "mp-supplier" "pb")
+
 # Option strings
-SHORT="hv:n:d:t:"
-LONG="help,version:,namespace:,dir:,timeout:"
+SHORT="hv:n:d:t:p:"
+LONG="help,version:,namespace:,dir:,timeout:,prefix:"
 
 # read the options
 OPTS=$(getopt --options $SHORT --long $LONG --name "$0" -- "$@")
@@ -54,6 +71,10 @@ while true ; do
       timeout="$2"
       shift 2
       ;;
+    -p | --prefix )
+      read -r -a resultFilePrefixes <<< "$2"
+      shift 2
+      ;;
     -- )
       shift
       break
@@ -65,29 +86,47 @@ while true ; do
   esac
 done
 
-# Default values
-timeout=600
-resultsDir="/app/allure-results"
-allurePodName=$(kubectl get pod -l app.kubernetes.io/name=allure -o jsonpath="{.items[0].metadata.name}" -n $namespace)
+function filesContainElementWithPrefix () {
+  local prefix="$1"
+  for element in ${files[@]}; do [[ "$element" == "$prefix"* ]] && return 0; done
+  return 1
+}
+
+function getLatestFiles() {
+  latestFiles=()
+  for prefix in ${resultFilePrefixes[@]}; do
+    latestFiles+=("$(echo "$files" | sort --reverse | grep "$prefix" | awk 'NR==1')")
+  done
+}
+
+function copyLatestFiles() {
+  for file in ${latestFiles[@]}; do
+    kubectl cp $allurePodName:$resultsDir/$file results/$file -n $namespace
+  done
+}
 
 if [ -z ${version+x} ] || [ -z ${namespace+x} ]; then   
   echo "Required values are missing!"
-
   displayHelp
   exit 1
 fi
 
-echo "Waiting for any test results for build $version..."
+echo "Waiting for all test results for build $version..."
 n=0
-#TODO: same flow, but make sure we have the report from this build from all ac-tests suites and copy them over to ./results
-until [ -n "$recentTestResult" ] || [ "$n" -ge "$timeout" ]; do
+allurePodName=$(kubectl get pod -l app.kubernetes.io/name=allure -o jsonpath="{.items[0].metadata.name}" -n $namespace)
+until [ "$numberOfFilesFound" = "${#resultFilePrefixes[@]}" ] || [ "$n" -ge "$timeout" ]; do
+  files=$(kubectl exec $allurePodName -n $namespace -- sh -c "cd $resultsDir && ls *$version-*.trx" 2> /dev/null)
+  numberOfFilesFound=0
+  for prefix in ${resultFilePrefixes[@]}; do
+    filesContainElementWithPrefix "$prefix"
+    if [ $? -eq 0 ]; then numberOfFilesFound=$((numberOfFilesFound+1)) ; fi
+  done
   sleep 5
   n=$((n+5)) 
-  recentTestResult=$(kubectl exec $allurePodName -n $namespace -- sh -c "cd $resultsDir && ls -t *$version-*.trx | awk 'NR==1'" 2> /dev/null)
 done
 
 if [ "$n" -eq "$timeout" ]; then echo "Couldn't find most recent test result for build $version in $timeout seconds, exiting..." && exit 1; fi
 
-echo "Found the most recent test result for build $version in $recentTestResult"
-
-kubectl cp $allurePodName:$resultsDir/$recentTestResult results/$recentTestResult -n $namespace
+echo "Found the most recent test result for build $version"
+getLatestFiles
+copyLatestFiles
