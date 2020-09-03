@@ -8,13 +8,15 @@ function displayHelp {
             Set repo to latest dev versions (defaults to true)
           -r, --useRemote [true|false]
             Use remote repo (defaults to true)
+          -u, --updateCharts [true|false]
+            Update charts from dev/master (defaults to true)
           "
   exit
 }
 
 # Option strings
-SHORT="hl:r:"
-LONG="help,latest:,useRemote:"
+SHORT="hl:r:u:"
+LONG="help,latest:,useRemote:,updateCharts:"
 
 # read the options
 OPTS=$(getopt --options $SHORT --long $LONG --name "$0" -- "$@")
@@ -45,6 +47,12 @@ while true ; do
       fi
       shift 2
       ;;
+    -u | --updateCharts )
+      if [ "$2" = "false" ]; then
+          updateCharts="false"
+      fi
+      shift 2
+      ;;
     -- )
       shift
       break
@@ -62,13 +70,15 @@ if [[ "$context" != "docker-desktop" ]]; then
 fi
 
 if [[ "$useRemote" != "false" ]]; then
-  if [[ "$latest" != "false" ]]; then
-    echo -e "Getting Latest Chart Versions... \n"
-    ./update-chart-versions.sh -v development
-  else
-    echo -e "Getting Master Chart Versions... \n"
-    ./update-chart-versions.sh -v master
-  fi 
+  if [[ "$updateCharts" != "false" ]]; then
+    if [[ "$latest" != "false" ]]; then
+      echo -e "Getting Latest Chart Versions... \n"
+      ./update-chart-versions.sh -v development
+    else
+      echo -e "Getting Master Chart Versions... \n"
+      ./update-chart-versions.sh -v master
+    fi 
+  fi
 
   echo -e "\n Updating Dependencies... \n"
   rm $chart/charts/*.tgz
