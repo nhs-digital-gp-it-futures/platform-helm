@@ -37,7 +37,7 @@ dependencies:
   repository: "@gpitfuturesdevacr"
 - name: dapi
   condition: dapi.enabled
-  version: 1.24.7
+  version: 1.24.7       
   repository: "@gpitfuturesdevacr"
 - name: isapi
   condition: isapi.enabled
@@ -53,11 +53,11 @@ dependencies:
   repository: "@gpitfuturesdevacr"
 - name: ordapi
   condition: ordapi.enabled
-  version: 1.24.10
+  version: 1.24.11
   repository: "@gpitfuturesdevacr"
 - name: ordapi-db-deploy
   condition: ordapi-db-deploy.enabled
-  version: 1.24.10
+  version: 1.24.11
   repository: "@gpitfuturesdevacr"
 - name: email
   condition: email.enabled
