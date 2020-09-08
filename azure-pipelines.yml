@@ -274,7 +274,7 @@ jobs:
       testResultsFormat: 'VSTest'
       testResultsFiles: '**/*.trx' 
       mergeTestResults: true
-      failTaskOnFailedTests: true
+      failTaskOnFailedTests: false
       testRunTitle: 'Acceptance test results'
       publishRunAttachments: true
 
