@@ -68,6 +68,15 @@ done
 # Default values
 timeout=600
 resultsDir="/app/allure-results"
+
+#namespace="bc-9761-resolve-null-issue-on-dev"
+
+n=0
+until [ -n $(kubectl get pod -l app.kubernetes.io/name=allure -n $namespace 2> /dev/null)] || [ "$n" -ge "$timeout" ]; do
+  sleep 5
+  n=$((n+5)) 
+done
+
 allurePodName=$(kubectl get pod -l app.kubernetes.io/name=allure -o jsonpath="{.items[0].metadata.name}" -n $namespace)
 
 if [ -z ${version+x} ] || [ -z ${namespace+x} ]; then   
