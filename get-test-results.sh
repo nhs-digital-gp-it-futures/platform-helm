@@ -68,19 +68,9 @@ done
 # Default values
 timeout=600
 resultsDir="/app/allure-results"
+allurePodName=$(kubectl get pod -l app.kubernetes.io/name=allure -o jsonpath="{.items[0].metadata.name}" -n ${namespace,,})
 
-#namespace="bc-9761-resolve-null-issue-on-dev"
-
-n=0
-until [ -n $allurePod] || [ "$n" -ge "$timeout" ]; do
-  #sleep 5
-  n=$((n+5)) 
-  allurePod=$(kubectl get pod -l app.kubernetes.io/name=allure -n $namespace  2> /dev/null)
-done
-
-allurePodName=$(kubectl get pod -l app.kubernetes.io/name=allure -o jsonpath="{.items[0].metadata.name}" -n $namespace)
-
-if [ -z ${version+x} ] || [ -z ${namespace+x} ]; then   
+if [ -z ${version+x} ] || [ -z ${namespace,,+x} ]; then   
   echo "Required values are missing!"
 
   displayHelp
@@ -93,11 +83,11 @@ n=0
 until [ -n "$recentTestResult" ] || [ "$n" -ge "$timeout" ]; do
   sleep 5
   n=$((n+5)) 
-  recentTestResult=$(kubectl exec $allurePodName -n $namespace -- sh -c "cd $resultsDir && ls -t *$version-*.trx | awk 'NR==1'" 2> /dev/null)
+  recentTestResult=$(kubectl exec $allurePodName -n ${namespace,,} -- sh -c "cd $resultsDir && ls -t *$version-*.trx | awk 'NR==1'" 2> /dev/null)
 done
 
 if [ "$n" -eq "$timeout" ]; then echo "Couldn't find most recent test result for build $version in $timeout seconds, exiting..." && exit 1; fi
 
 echo "Found the most recent test result for build $version in $recentTestResult"
 
-kubectl cp $allurePodName:$resultsDir/$recentTestResult results/$recentTestResult -n $namespace
+kubectl cp $allurePodName:$resultsDir/$recentTestResult results/$recentTestResult -n ${namespace,,}
