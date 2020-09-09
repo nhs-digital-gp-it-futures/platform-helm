@@ -249,9 +249,10 @@ jobs:
     name: setupSeleniumGrid
     displayName: Setup Selenium Grid
 
-  - task: Delay@1
-    inputs:
-      delayForMinutes: '1' 
+  - bash: |
+      ping -c 10 127.0.0.1
+    name: delayNextStep
+    displayName: Delay Next Step
 
   - bash: |
       ./launch-or-update-azure.sh -c remote \
