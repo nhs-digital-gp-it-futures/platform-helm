@@ -250,6 +250,11 @@ jobs:
     displayName: Setup Selenium Grid
 
   - bash: |
+      ping -c 10 127.0.0.1
+    name: delayNextStep
+    displayName: Delay Next Step
+
+  - bash: |
       ./launch-or-update-azure.sh -c remote \
         -n $(namespace) \
         -d gpitfutures-dev-sql-pri.database.windows.net \
