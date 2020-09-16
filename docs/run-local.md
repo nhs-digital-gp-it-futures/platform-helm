@@ -17,7 +17,7 @@ Note that this system relies upon helm charts. Instructions on how to install he
 
 ### Set up Ingress
 
-Ingress is required for the identity api to work. To enable the ingress, execute these two snippets in shell of your preference
+Ingress is required for the identity api to work. To enable the ingress, execute these three snippets in shell of your preference
 
 ```bash
 helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
