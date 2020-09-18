@@ -113,7 +113,7 @@ jobs:
   - task: HelmInstaller@1
     displayName: 'install helm'
     inputs:
-      helmVersionToInstall: 'latest'
+      helmVersionToInstall: '3.3.1'
   - bash: |
       helm repo add gpitfuturesdevacr https://gpitfuturesdevacr.azurecr.io/helm/v1/repo --username gpitfuturesdevacr --password $(gpitfuturesdevacr-pass)
       helm dependency update src/buyingcatalogue
