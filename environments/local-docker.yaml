@@ -273,6 +273,11 @@ mp-ac-tests:
   imagePullSecrets: 
   - name: regcredlocal
 
+admin-ac-tests:
+  enabled: true  
+  imagePullSecrets: 
+  - name: regcredlocal
+
 allure:  
   enabled: true
   imagePullSecrets: 
