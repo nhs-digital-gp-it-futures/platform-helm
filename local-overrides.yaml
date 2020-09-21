@@ -85,6 +85,8 @@ pb-ac-tests:
 mp-ac-tests:
   enabled: false
 
+admin-ac-tests:
+  enabled: false
+
 allure:
-  enabled: false  
-  
+  enabled: false

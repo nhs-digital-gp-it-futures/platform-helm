@@ -98,6 +98,10 @@ dependencies:
   condition: mp-ac-tests.enabled
   version: %%mp-ac-tests%%
   repository: "@gpitfuturesdevacr"
+- name: admin-ac-tests
+  condition: admin-ac-tests.enabled
+  version: %%admin-ac-tests%%
+  repository: "@gpitfuturesdevacr"
 - name: allure
   condition: allure.enabled
   version: %%allure%%

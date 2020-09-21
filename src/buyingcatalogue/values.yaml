@@ -704,6 +704,35 @@ mp-ac-tests:
   testFilter:
   testResultDirectory: "/data/buyingcatalogue/test"
 
+admin-ac-tests:
+  enabled: true
+  replicaCount: 1
+  image:
+    repository: gpitfuturesdevacr.azurecr.io/nhsd/buying-catalogue/admin-ac-tests
+  useLocalImage: false
+  imagePullSecrets: 
+  nameOverride: "admin-ac-tests"
+  fullnameOverride: "gpitfutures-bc-admin-ac-tests"
+  hubUrl: "http://sel-grid-selenium-hub.selenium-grid:4444/wd/hub"
+  pbUrlConfig:
+    name: "bc-buyingcatalogue"
+    key: pb-url
+  runIdConfig:
+    name: "bc-buyingcatalogue"
+    key: run-id
+  db: 
+    nameConfig:
+      name: "bc-buyingcatalogue"
+      key: db-isapi-name
+    serverConfig:
+      name: "bc-buyingcatalogue"
+      key: db-server
+    passwordSecret:
+      name: "bc-buyingcatalogue"
+      key: db-password  
+  testFilter:
+  testResultDirectory: "/data/buyingcatalogue/test"
+
 allure:  
   enabled: true
   disabledUrl: 
