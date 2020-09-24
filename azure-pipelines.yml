@@ -236,7 +236,13 @@ jobs:
       inlineScript: 'az aks get-credentials -n gpitfutures-dev-aks -g gpitfutures-dev-rg-aks'
     name: kubectlContext
     displayName: Get Kubernetes Context
-    
+
+  - task: HelmInstaller@1
+    displayName: 'install helm'
+    inputs:
+      helmVersionToInstall: '3.3.1'
+      #helmVersionToInstall: 'latest'
+
   - bash: |
       helm repo add gpitfuturesdevacr https://gpitfuturesdevacr.azurecr.io/helm/v1/repo --username gpitfuturesdevacr --password $(gpitfuturesdevacr-pass)
       helm repo add stable https://kubernetes-charts.storage.googleapis.com/
