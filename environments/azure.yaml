@@ -228,6 +228,10 @@ mp-ac-tests:
   enabled: true
   testFilter: SmokeTest
 
+admin-ac-tests:
+  enabled: true
+  testFilter: SmokeTest
+
 allure:  
   enabled: true
   ingress:
