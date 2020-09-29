@@ -83,15 +83,16 @@ n=0
 until [ -n "$allTestsFinished" ] || [ "$n" -ge "$timeout" ]; do
   sleep 5
   n=$((n+5)) 
-  echo "Wait 5 ($n)"
+  
+  printf "\n***Wait 5 ($n)***\n"
 
   #recentTestResult=$(kubectl exec $allurePodName -n ${namespace,,} -- sh -c "cd $resultsDir && ls -t *$version-*.trx | awk 'NR==1'" 2> /dev/null)
   adminResult=$(kubectl exec $allurePodName -n ${namespace,,} -- sh -c "cd $resultsDir && ls -t admin*$version-*.trx | awk 'NR==1'" 2> /dev/null)
-  echo "-found: $adminResult"
+  echo "$adminResult"
   mpResult=$(kubectl exec $allurePodName -n ${namespace,,} -- sh -c "cd $resultsDir && ls -t mp*$version-*.trx | awk 'NR==1'" 2> /dev/null)
-  echo "-found: $mpResult"
+  echo "$mpResult"
   pbResult=$(kubectl exec $allurePodName -n ${namespace,,} -- sh -c "cd $resultsDir && ls -t pb*$version-*.trx | awk 'NR==1'" 2> /dev/null)
-  echo "-found: $pbResult"
+  echo "$pbResult"
 
   if [ -n "$adminResult" ] && [ -n "$mpResult" ] && [ -n "$pbResult" ]; then allTestsFinished="true"; fi
 done

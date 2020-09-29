@@ -257,7 +257,7 @@ jobs:
     displayName: Setup Selenium Grid
 
   - bash: |
-      ping -c 20 127.0.0.1
+      ping -c 30 127.0.0.1
     name: delayNextStep
     displayName: Delay Next Step
 
