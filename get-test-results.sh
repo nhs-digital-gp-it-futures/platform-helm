@@ -66,7 +66,8 @@ while true ; do
 done
 
 # Default values
-timeout=600
+#timeout=600
+timeout=30
 resultsDir="/app/allure-results"
 allurePodName=$(kubectl get pod -l app.kubernetes.io/name=allure -o jsonpath="{.items[0].metadata.name}" -n ${namespace,,})
 
@@ -96,10 +97,20 @@ until [ -n "$allTestsFinished" ] || [ "$n" -ge "$timeout" ]; do
   if [ -n "$adminResult" ] && [ -n "$mpResult" ] && [ -n "$pbResult" ]; then allTestsFinished="true"; fi
 done
 
-if [ "$n" -eq "$timeout" ]; then echo "Couldn't find most recent test result for build $version in $timeout seconds, exiting..." && exit 1; fi
+#if [ "$n" -eq "$timeout" ]; then echo "Couldn't find most recent test result for build $version in $timeout seconds, exiting..." && exit 1; fi
 
-echo "Found the most recent test result for build $version in $recentTestResult"
-
-kubectl cp $allurePodName:$resultsDir/$adminResult results/$adminResult -n ${namespace,,}
-kubectl cp $allurePodName:$resultsDir/$mpResult results/$mpResult -n ${namespace,,}
-kubectl cp $allurePodName:$resultsDir/$pbResult results/$pbResult -n ${namespace,,}
+if [ -n "$adminResult" ] || [ -n "$mpResult" ] || [ -n "$pbResult" ]; then
+    echo "Found the most recent test results for build $version"
+    if [ -n "$adminResult" ]; then
+        kubectl cp $allurePodName:$resultsDir/$adminResult results/$adminResult -n ${namespace,,} 2> /dev/null;
+    fi
+    if [ -n "$mpResult" ]; then
+      kubectl cp $allurePodName:$resultsDir/$mpResult results/$mpResult -n ${namespace,,} 2> /dev/null;
+    fi
+    if [ -n "$pbResult" ]; then
+      kubectl cp $allurePodName:$resultsDir/$pbResult results/$pbResult -n ${namespace,,} 2> /dev/null;
+    fi
+elif [ "$n" -eq "$timeout" ]; then echo "Couldn't find most recent test result for build $version in $timeout seconds, exiting..." && exit 1
+else
+    echo "Exiting..." && exit 1
+fi
