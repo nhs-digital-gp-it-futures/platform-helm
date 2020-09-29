@@ -9,3 +9,5 @@ local-overrides.yaml
 **/Chart-*.yaml 
 #ignore generated namespace.yaml
 namespace.yaml
+#ignore results
+**/*.trx 

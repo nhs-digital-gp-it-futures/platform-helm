@@ -80,14 +80,21 @@ fi
 echo "Waiting for any test results for build $version..."
 n=0
 #TODO: same flow, but make sure we have the report from this build from all ac-tests suites and copy them over to ./results
-until [ -n "$recentTestResult" ] || [ "$n" -ge "$timeout" ]; do
+until [ -n "$allTestsFinished" ] || [ "$n" -ge "$timeout" ]; do
   sleep 5
   n=$((n+5)) 
-  recentTestResult=$(kubectl exec $allurePodName -n ${namespace,,} -- sh -c "cd $resultsDir && ls -t *$version-*.trx | awk 'NR==1'" 2> /dev/null)
+  #recentTestResult=$(kubectl exec $allurePodName -n ${namespace,,} -- sh -c "cd $resultsDir && ls -t *$version-*.trx | awk 'NR==1'" 2> /dev/null)
+  adminResult=$(kubectl exec $allurePodName -n ${namespace,,} -- sh -c "cd $resultsDir && ls -t admin*$version-*.trx | awk 'NR==1'" 2> /dev/null)
+  mpResult=$(kubectl exec $allurePodName -n ${namespace,,} -- sh -c "cd $resultsDir && ls -t mp*$version-*.trx | awk 'NR==1'" 2> /dev/null)
+  pbResult=$(kubectl exec $allurePodName -n ${namespace,,} -- sh -c "cd $resultsDir && ls -t pb*$version-*.trx | awk 'NR==1'" 2> /dev/null)
+
+  if [ -n "$adminResult" ] && [ -n "$mpResult" ] && [ -n "$adminResult" ]; then allTestsFinished="true"; fi
 done
 
 if [ "$n" -eq "$timeout" ]; then echo "Couldn't find most recent test result for build $version in $timeout seconds, exiting..." && exit 1; fi
 
 echo "Found the most recent test result for build $version in $recentTestResult"
 
-kubectl cp $allurePodName:$resultsDir/$recentTestResult results/$recentTestResult -n ${namespace,,}
+kubectl cp $allurePodName:$resultsDir/$adminResult results/$adminResult -n ${namespace,,}
+kubectl cp $allurePodName:$resultsDir/$mpResult results/$mpResult -n ${namespace,,}
+kubectl cp $allurePodName:$resultsDir/$pbResult results/$pbResult -n ${namespace,,}

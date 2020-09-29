@@ -240,8 +240,8 @@ jobs:
   - task: HelmInstaller@1
     displayName: 'install helm'
     inputs:
-      helmVersionToInstall: '3.3.1'
-      #helmVersionToInstall: 'latest'
+      #helmVersionToInstall: '3.3.1'
+      helmVersionToInstall: 'latest'
 
   - bash: |
       helm repo add gpitfuturesdevacr https://gpitfuturesdevacr.azurecr.io/helm/v1/repo --username gpitfuturesdevacr --password $(gpitfuturesdevacr-pass)
@@ -278,11 +278,13 @@ jobs:
     name: deploySystem
     displayName: Deploy System
 
-  - bash: 'ls "./results"'
-    displayName: Grab test results
+  - bash: |
+      cd ./results
+      ls -R
+    displayName: Check Results Directory
 
   - bash: './get-test-results.sh -v $(semVer) -n $(namespace)'
-    displayName: Check Results Directory
+    displayName: Grab test results
 
   - task: PublishTestResults@2
     inputs:
