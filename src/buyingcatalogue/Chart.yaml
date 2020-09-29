@@ -92,15 +92,15 @@ dependencies:
   version: ~0.1.0
 - name: pb-ac-tests
   condition: pb-ac-tests.enabled
-  version: ~0.5.0-alpha
+  version: 1.0.1
   repository: "@gpitfuturesdevacr"
 - name: mp-ac-tests
   condition: mp-ac-tests.enabled
-  version: ~0.80.0-alpha
+  version: 1.0.1
   repository: "@gpitfuturesdevacr"
 - name: admin-ac-tests
   condition: admin-ac-tests.enabled
-  version: ~0.1.0-alpha
+  version: 1.1.1
   repository: "@gpitfuturesdevacr"
 - name: allure
   condition: allure.enabled
