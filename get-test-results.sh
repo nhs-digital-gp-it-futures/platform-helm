@@ -87,11 +87,11 @@ until [ -n "$allTestsFinished" ] || [ "$n" -ge "$timeout" ]; do
 
   #recentTestResult=$(kubectl exec $allurePodName -n ${namespace,,} -- sh -c "cd $resultsDir && ls -t *$version-*.trx | awk 'NR==1'" 2> /dev/null)
   adminResult=$(kubectl exec $allurePodName -n ${namespace,,} -- sh -c "cd $resultsDir && ls -t admin*$version-*.trx | awk 'NR==1'" 2> /dev/null)
-  echo "$adminResult"
+  echo "-found: $adminResult"
   mpResult=$(kubectl exec $allurePodName -n ${namespace,,} -- sh -c "cd $resultsDir && ls -t mp*$version-*.trx | awk 'NR==1'" 2> /dev/null)
-  echo "$mpResult"
+  echo "-found: $mpResult"
   pbResult=$(kubectl exec $allurePodName -n ${namespace,,} -- sh -c "cd $resultsDir && ls -t pb*$version-*.trx | awk 'NR==1'" 2> /dev/null)
-  echo "$pbResult"
+  echo "-found: $pbResult"
 
   if [ -n "$adminResult" ] && [ -n "$mpResult" ] && [ -n "$pbResult" ]; then allTestsFinished="true"; fi
 done
