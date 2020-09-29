@@ -278,8 +278,11 @@ jobs:
     name: deploySystem
     displayName: Deploy System
 
-  - bash: './get-test-results.sh -v $(semVer) -n $(namespace)'
+  - bash: 'ls "./results"'
     displayName: Grab test results
+
+  - bash: './get-test-results.sh -v $(semVer) -n $(namespace)'
+    displayName: Check Results Directory
 
   - task: PublishTestResults@2
     inputs:
