@@ -66,7 +66,7 @@ while true ; do
 done
 
 # Default values
-timeout=600
+timeout=120
 resultsDir="/app/allure-results"
 allurePodName=$(kubectl get pod -l app.kubernetes.io/name=allure -o jsonpath="{.items[0].metadata.name}" -n ${namespace,,})
 
