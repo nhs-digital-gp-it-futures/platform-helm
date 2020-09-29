@@ -100,7 +100,7 @@ dependencies:
   repository: "@gpitfuturesdevacr"
 - name: admin-ac-tests
   condition: admin-ac-tests.enabled
-  version: ~0.1.0-alpha
+  version: 1.1.1
   repository: "@gpitfuturesdevacr"
 - name: allure
   condition: allure.enabled
