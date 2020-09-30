@@ -113,8 +113,7 @@ jobs:
   - task: HelmInstaller@1
     displayName: 'install helm'
     inputs:
-      helmVersionToInstall: '3.3.1'
-      #helmVersionToInstall: 'latest'
+      helmVersionToInstall: 'latest'
   - bash: |
       helm repo add gpitfuturesdevacr https://gpitfuturesdevacr.azurecr.io/helm/v1/repo --username gpitfuturesdevacr --password $(gpitfuturesdevacr-pass)
       helm dependency update src/buyingcatalogue
@@ -240,8 +239,7 @@ jobs:
   - task: HelmInstaller@1
     displayName: 'install helm'
     inputs:
-      helmVersionToInstall: '3.3.1'
-      #helmVersionToInstall: 'latest'
+      helmVersionToInstall: 'latest'
 
   - bash: |
       helm repo add gpitfuturesdevacr https://gpitfuturesdevacr.azurecr.io/helm/v1/repo --username gpitfuturesdevacr --password $(gpitfuturesdevacr-pass)
@@ -257,7 +255,7 @@ jobs:
     displayName: Setup Selenium Grid
 
   - bash: |
-      ping -c 10 127.0.0.1
+      ping -c 30 127.0.0.1
     name: delayNextStep
     displayName: Delay Next Step
 
@@ -310,8 +308,7 @@ jobs:
   - task: HelmInstaller@1
     displayName: 'install helm'
     inputs:
-      helmVersionToInstall: '3.3.1'
-      #helmVersionToInstall: 'latest'
+      helmVersionToInstall: 'latest'
 
   - bash: |
       helm repo add gpitfuturesdevacr https://gpitfuturesdevacr.azurecr.io/helm/v1/repo --username gpitfuturesdevacr --password $(gpitfuturesdevacr-pass)
