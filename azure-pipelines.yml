@@ -276,6 +276,11 @@ jobs:
     name: deploySystem
     displayName: Deploy System
 
+    - bash: |
+      ping -c 240 127.0.0.1
+    name: delayNextStep2
+    displayName: Delay Next Step again
+
   - bash: './get-test-results.sh -v $(semVer) -n $(namespace)'
     displayName: Grab test results
 
