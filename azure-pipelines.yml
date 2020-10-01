@@ -276,7 +276,7 @@ jobs:
     name: deploySystem
     displayName: Deploy System
 
-    - bash: |
+  - bash: |
       ping -c 240 127.0.0.1
     name: delayNextStep2
     displayName: Delay Next Step again
