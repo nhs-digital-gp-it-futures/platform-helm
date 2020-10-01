@@ -29,59 +29,59 @@ dependencies:
   version: ~0.1.0
 - name: bapi-db-deploy
   condition: bapi-db-deploy.enabled
-  version: 1.24.9
+  version: 1.34.0-alpha.2
   repository: "@gpitfuturesdevacr"
 - name: bapi
   condition: bapi.enabled
-  version: 1.24.9
+  version: 1.34.0-alpha.2
   repository: "@gpitfuturesdevacr"
 - name: dapi
   condition: dapi.enabled
-  version: 1.24.7
+  version: 1.31.0-alpha.2
   repository: "@gpitfuturesdevacr"
 - name: isapi
   condition: isapi.enabled
-  version: 1.24.8
+  version: 1.33.0-alpha.6
   repository: "@gpitfuturesdevacr"
 - name: isapi-db-deploy
   condition: isapi-db-deploy.enabled
-  version: 1.24.8
+  version: 1.33.0-alpha.6
   repository: "@gpitfuturesdevacr"
 - name: oapi
   condition: oapi.enabled
-  version: 1.24.8
+  version: 1.33.0-alpha.6
   repository: "@gpitfuturesdevacr"
 - name: ordapi
   condition: ordapi.enabled
-  version: 1.24.11
+  version: 1.36.0-alpha.9
   repository: "@gpitfuturesdevacr"
 - name: ordapi-db-deploy
   condition: ordapi-db-deploy.enabled
-  version: 1.24.11
+  version: 1.36.0-alpha.9
   repository: "@gpitfuturesdevacr"
 - name: email
   condition: email.enabled
-  version: 1.24.8
+  version: 1.33.0-alpha.6
   repository: "@gpitfuturesdevacr"
 - name: file-loader
   condition: file-loader.enabled
-  version: 1.24.7
+  version: 1.31.0-alpha.2
   repository: "@gpitfuturesdevacr"
 - name: mp
   condition: mp.enabled
-  version: 1.26.3
+  version: 1.30.0-alpha.2
   repository: "@gpitfuturesdevacr"
 - name: pb
   condition: pb.enabled
-  version: 1.24.11
+  version: 1.36.0-alpha.4
   repository: "@gpitfuturesdevacr"
 - name: admin
   condition: admin.enabled
-  version: 1.24.6
+  version: 1.30.0-alpha.6
   repository: "@gpitfuturesdevacr"
 - name: of
   condition: of.enabled
-  version: 1.24.10
+  version: 1.35.0-alpha.72
   repository: "@gpitfuturesdevacr"
 - name: redis
   condition: redis.enabled
@@ -96,11 +96,11 @@ dependencies:
   repository: "@gpitfuturesdevacr"
 - name: mp-ac-tests
   condition: mp-ac-tests.enabled
-  version: 1.0.1
+  version: 1.2.0-alpha.4
   repository: "@gpitfuturesdevacr"
 - name: admin-ac-tests
   condition: admin-ac-tests.enabled
-  version: 1.1.1
+  version: 1.2.0-alpha.3
   repository: "@gpitfuturesdevacr"
 - name: allure
   condition: allure.enabled
