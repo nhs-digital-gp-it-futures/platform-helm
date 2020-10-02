@@ -42,7 +42,7 @@ if ($context -ne "docker-desktop")
 {
     write-host "Not running in the local context - please switch to docker desktop"
     write-host "Exiting...."
-    start-sleep 20
+    start-sleep 5
     exit 1
 }
 
@@ -50,17 +50,16 @@ if ($context -ne "docker-desktop")
 $namespacePresent = kubectl get namespace $namespace
 if (!($namespacePresent))
 {
-    kubectl create namespace $namespace
-    write-host "`nNamespace has been created`n"
+    kubectl apply -f .\local-namespace.yml
 }
 
 # Check for Azure repo creds
 $regCredentials=kubectl get secret regcredlocal -n $namespace
 if (!($regCredentials))
 {
-    write-host "Missing Credentials for ACR - please follow instructions in docs\k8s-private-registry.md"
+    write-host "`nMissing Credentials for ACR - please follow instructions in docs\k8s-private-registry.md"
     write-host "Exiting...."
-    start-sleep 20
+    start-sleep 5
     exit 1
 }
 
