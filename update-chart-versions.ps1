@@ -44,7 +44,7 @@ foreach ($line in $currentFile)
         # Check if it exists in the repo
         if (($latestChartVersions -match "gpitfuturesdevacr/"+$chartLine.name)[0])
         {
-            [string]$chartLine.latestVersion = ($latestChartVersions -match "gpitfuturesdevacr/"+$chartLine.name)[0].split("`t")[1]  
+            [string]$chartLine.latestVersion = ($latestChartVersions -match "gpitfuturesdevacr/"+$chartLine.name)[0].split("`t")[1] -replace " ", ""
             if ($chartLine.latestVersion -ne $chartLine.currentVersion)
             {
                 # Update desired version to latest for component
@@ -75,7 +75,14 @@ if (!(Test-Path "./$chart/Chart-$dateStamp.yaml"))
     Rename-Item -Path ./$chart/Chart.yaml -NewName "Chart-$dateStamp.yaml"
 }
 
-set-content -path ./$chart/Chart.yaml -Value $currentFile -force
+$updatedFile = @()
+foreach ($line in $currentFile)
+{
+    $updatedLine=$line.replace("`n","").replace("`r","")
+    $updatedFile+=$updatedLine
+}
+
+set-content -path ./$chart/Chart.yaml -Value $updatedFile -force
 
 # Remove old versions of Chart-<date>.yaml (older than 2 days)
 Get-ChildItem -Path ./$chart/ Chart-*.yaml | Where-Object { !$_.PSIsContainer -and $_.CreationTime -lt ((Get-Date).AddDays(-2)) } | Remove-Item -Force
