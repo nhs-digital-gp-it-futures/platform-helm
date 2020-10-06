@@ -33,6 +33,10 @@ eval set -- "$OPTS"
 
 chartDirectory="src/buyingcatalogue"
 pathToChart="./$chartDirectory/Chart.yaml"
+pathToTempChart="./$chartDirectory/ChartTemp.yaml"
+
+# Removes any Windows Chars from file
+sed 's/'"$(printf '\015')"'//g' $pathToChart > $pathToTempChart
 
 namePrefix="- name: "
 versionPrefix="  version: "
@@ -111,7 +115,7 @@ while IFS= read -r line; do
   if [[ $line =~ ^"$versionPrefix"* ]]; then
       localComponentVersions+=($(echo "${line#${versionPrefix}}"))
   fi
-done < "$pathToChart"
+done < "$pathToTempChart"
 
 if [ "${#localComponentNames[@]}" -ne "${#localComponentVersions[@]}" ]; then
   >&2 echo "Number of components doesn't match the number of versions, exiting."
@@ -208,4 +212,7 @@ done < "$chartDirectory/Chart.template"
 
 # Remove old versions of Chart-<date>.yaml (older than 2 days)
 find ./$chartDirectory/ -name "Chart-*.yaml" -type f -mtime +3 -exec rm -f {} \;
+
+# Remove Temp Chart File
+rm -f $pathToTempChart
 
