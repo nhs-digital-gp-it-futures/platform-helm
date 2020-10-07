@@ -1,3 +1,5 @@
 containerName: "documents"
 mp:
   enabled: false
+mp-ac-tests:
+  enabled: false

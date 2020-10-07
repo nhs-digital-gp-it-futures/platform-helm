@@ -23,3 +23,5 @@ redis:
   enabled: false
 redis-commander:
   enabled: false
+admin-ac-tests:
+  enabled: false
