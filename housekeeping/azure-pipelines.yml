@@ -216,20 +216,29 @@ jobs:
 
             helm repo add stable https://kubernetes-charts.storage.googleapis.com/
 
-    - task: DownloadPipelineArtifact@2
-      displayName: Download Helm Pipeline Artifacts  
-      inputs:
-        source: 'specific'
-        project: 'c5f97979-5b03-4d10-ba8d-871d0526b408'
-        pipeline: '75'
-        runBranch: 'refs/heads/master'
-        runVersion: 'latestFromBranch'
-        artifact: 'build-artifact'
-        downloadPath: '$(System.ArtifactsDirectory)'
+    # - task: DownloadPipelineArtifact@2
+    #   displayName: Download Helm Pipeline Artifacts  
+    #   inputs:
+    #     source: 'specific'
+    #     project: 'c5f97979-5b03-4d10-ba8d-871d0526b408'
+    #     pipeline: '75'
+    #     runBranch: 'refs/heads/master'
+    #     runVersion: 'latestFromBranch'
+    #     artifact: 'build-artifact'
+    #     downloadPath: '$(System.ArtifactsDirectory)'
+
+    # - bash: 'ls -R'
+    #   displayName: Get Folders (ArtifactsDirectory)
+    #   workingDirectory: '$(System.ArtifactsDirectory)'
+
+    - bash: |
+        ./update-chart-versions.sh -v development
+      name: UpdateVersions
+      displayName: Grab and update component versions
 
     - bash: 'ls -R'
-      displayName: Get Folders (ArtifactsDirectory)
-      workingDirectory: '$(System.ArtifactsDirectory)'
+      displayName: Get Folders (CurrentDirectory)
+      #workingDirectory: '$(System.ArtifactsDirectory)'
 
 ### Disabled task - reports on tickets open. Task is for a separate ticket.
 #  - job: getWorkitems
