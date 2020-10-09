@@ -251,7 +251,7 @@ jobs:
 
     - bash: |
           cd selenium-grid 
-          ./launch-selenium-grid.sh --ip "$(devClusterIp)" --add "$(namespace).dev.buyingcatalogue.digital.nhs.uk"
+          ./launch-selenium-grid.sh --add "$(namespace).dev.buyingcatalogue.digital.nhs.uk"
       name: setupSeleniumGrid
       displayName: Setup Selenium Grid
 
@@ -286,19 +286,17 @@ jobs:
       name: delayNextStep2
       displayName: Delay Next Step again
 
-    # - bash: './get-test-results.sh -n $(namespace)'
-    #   displayName: Grab test results
+    - bash: './get-test-results.sh -n $(namespace)'
+      displayName: Grab test results
 
-    # - task: PublishTestResults@2
-    #   inputs:
-    #     testResultsFormat: 'VSTest'
-    #     testResultsFiles: '**/*.trx' 
-    #     mergeTestResults: true
-    #     failTaskOnFailedTests: false
-    #     testRunTitle: 'Acceptance test results'
-    #     publishRunAttachments: true
-
-#           -v $(semVer) \
+    - task: PublishTestResults@2
+      inputs:
+        testResultsFormat: 'VSTest'
+        testResultsFiles: '**/*.trx' 
+        mergeTestResults: true
+        failTaskOnFailedTests: false
+        testRunTitle: 'Acceptance test results (Full Suite)'
+        publishRunAttachments: true
 
 ### Disabled task - reports on tickets open. Task is for a separate ticket.
 #  - job: getWorkitems
