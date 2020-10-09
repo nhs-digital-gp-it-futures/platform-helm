@@ -93,6 +93,8 @@ until [ -n "$allTestsFinished" ] || [ "$n" -ge "$timeout" ]; do
   echo "$mpResult"
   pbResult=$(kubectl exec $allurePodName -n ${namespace,,} -- sh -c "cd $resultsDir && ls -t pb*$version-*.trx | awk 'NR==1'" 2> /dev/null)
   echo "$pbResult"
+  ofResult=$(kubectl exec $allurePodName -n ${namespace,,} -- sh -c "cd $resultsDir && ls -t of*$version-*.trx | awk 'NR==1'" 2> /dev/null)
+  echo "$ofResult"
 
   if [ -n "$adminResult" ] && [ -n "$mpResult" ] && [ -n "$pbResult" ]; then allTestsFinished="true"; fi
 done
