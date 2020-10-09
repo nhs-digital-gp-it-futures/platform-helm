@@ -6,15 +6,15 @@ schedules:
       - master
     always: true
 
-trigger: none
-#trigger:
-#  batch: true
-#  branches:
-#    include:
-#      - feature/7969-clear-old-environments
-#  paths:
-#    include:
-#      - housekeeping/*
+#trigger: none
+trigger:
+ batch: true
+ branches:
+   include:
+     - feature/*
+ paths:
+   include:
+     - housekeeping/*
 
 pr: none
 
