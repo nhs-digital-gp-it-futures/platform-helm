@@ -185,7 +185,7 @@ jobs:
     variables:
     - group: dev-secrets
     - name: namespace
-      value: "dev-dummy"
+      value: "buyingcatalogue-development-helm-dev-dummy"
 
     steps:
     - task: AzureCLI@2
@@ -249,33 +249,39 @@ jobs:
     - bash: 'echo $(namespace)'
       displayName: Debug
 
-    # - bash: |
-    #       cd selenium-grid 
-    #       ./launch-selenium-grid.sh --ip "$(devClusterIp)" --add "$(namespace).buyingcatalogue.digital.nhs.uk"
-    #   name: setupSeleniumGrid
-    #   displayName: Setup Selenium Grid
+    - bash: |
+          cd selenium-grid 
+          ./launch-selenium-grid.sh --ip "$(devClusterIp)" --add "$(namespace).buyingcatalogue.digital.nhs.uk"
+      name: setupSeleniumGrid
+      displayName: Setup Selenium Grid
 
-    # - bash: |
-    #     ping -c 30 127.0.0.1
-    #   name: delayNextStep
-    #   displayName: Delay Next Step
+    - bash: |
+        ping -c 30 127.0.0.1
+      name: delayNextStep
+      displayName: Delay Next Step
 
-    # - bash: |
-    #     ./launch-or-update-azure.sh -c remote \
-    #       -n $(namespace) \
-    #       -d gpitfutures-dev-sql-pri.database.windows.net \
-    #       -u $(gpitdevsqladminusername) \
-    #       -p $(gpitdevsqladminpassword) \
-    #       -w true \
-    #       -v $(semVer) \
-    #       -s "/p:DatabaseEdition=Standard /p:DatabaseServiceObjective=S0" \
-    #       -a "$(gpitdevstorageaccountconnectionstring)" \
-    #       -r $(srt-redishost) \
-    #       -q $(srt-redispass) \
-    #       --db-user-pass $(gpitfuturesdevdbpassword) \
-    #       -f "azure-dev.yaml"
-    #   name: deploySystem
-    #   displayName: Deploy System
+    - bash: |
+        ./launch-or-update-azure.sh \
+          -c remote \
+          -n $(namespace) \
+          -d gpitfutures-dev-sql-pri.database.windows.net \
+          -u $(gpitdevsqladminusername) \
+          -p $(gpitdevsqladminpassword) \
+          -w true \
+          -s "/p:DatabaseEdition=Standard /p:DatabaseServiceObjective=S0" \
+          -a "$(gpitdevstorageaccountconnectionstring)" \
+          -i "$(devClusterIp)" \
+          -r $(srt-redishost) \
+          -q $(srt-redispass) \
+          --cookie-secret=$(srt-cookiesecret) \
+          --client-secret=$(gpitfuturesdevclientsecret) \
+          --db-user-pass=$(gpitfuturesdevdbpassword) \
+          -f "azure-dev.yaml" \
+          --helm-upgrade-args "--debug --dry-run"
+      name: deploySystem
+      displayName: Deploy System
+
+#           -v $(semVer) \
 
 ### Disabled task - reports on tickets open. Task is for a separate ticket.
 #  - job: getWorkitems
