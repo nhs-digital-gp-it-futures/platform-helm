@@ -264,7 +264,7 @@ redis-commander:
     port: 8181    
 
 pb-ac-tests:
-  enabled: false
+  enabled: true
   imagePullSecrets: 
   - name: regcredlocal
 
@@ -275,6 +275,11 @@ mp-ac-tests:
 
 admin-ac-tests:
   enabled: true  
+  imagePullSecrets: 
+  - name: regcredlocal
+
+of-ac-tests:
+  enabled: false  
   imagePullSecrets: 
   - name: regcredlocal
 
