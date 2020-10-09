@@ -269,12 +269,17 @@ pb-ac-tests:
   - name: regcredlocal
 
 mp-ac-tests:
-  enabled: true  
+  enabled: false  
   imagePullSecrets: 
   - name: regcredlocal
 
 admin-ac-tests:
-  enabled: true  
+  enabled: false  
+  imagePullSecrets: 
+  - name: regcredlocal
+
+of-ac-tests:
+  enabled: false  
   imagePullSecrets: 
   - name: regcredlocal
 

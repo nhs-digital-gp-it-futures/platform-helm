@@ -232,6 +232,10 @@ admin-ac-tests:
   enabled: true
   testFilter: SmokeTest
 
+of-ac-tests:
+  enabled: true  
+  testFilter: SmokeTest
+
 allure:  
   enabled: true
   ingress:
