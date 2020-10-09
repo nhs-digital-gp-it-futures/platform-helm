@@ -251,7 +251,7 @@ jobs:
 
     - bash: |
           cd selenium-grid 
-          ./launch-selenium-grid.sh --ip "$(devClusterIp)" --add "$(namespace).buyingcatalogue.digital.nhs.uk"
+          ./launch-selenium-grid.sh --ip "$(devClusterIp)" --add "$(namespace).dev.buyingcatalogue.digital.nhs.uk"
       name: setupSeleniumGrid
       displayName: Setup Selenium Grid
 
@@ -262,7 +262,7 @@ jobs:
 
     - bash: |
         ./launch-or-update-azure.sh \
-          -c remote \
+          -c local-cache \
           -n $(namespace) \
           -d gpitfutures-dev-sql-pri.database.windows.net \
           -u $(gpitdevsqladminusername) \
@@ -276,8 +276,7 @@ jobs:
           --cookie-secret=$(srt-cookiesecret) \
           --client-secret=$(gpitfuturesdevclientsecret) \
           --db-user-pass=$(gpitfuturesdevdbpassword) \
-          -f "azure-dev.yaml" \
-          --helm-upgrade-args "--debug --dry-run"
+          -f "azure-dev.yaml"
       name: deploySystem
       displayName: Deploy System
 
