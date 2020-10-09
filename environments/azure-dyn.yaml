@@ -2,16 +2,16 @@ dbPassword:
 clientSecret:
 appBaseUrl: "https://<namespace>.dyn.buyingcatalogue.digital.nhs.uk"
 baseIsapiEnabledUrl: "https://<namespace>.dyn.buyingcatalogue.digital.nhs.uk/identity"
-
+​
 testStorage:
   storageClassName: "azurefile"
   accessMode: "ReadWriteMany"
-
+​
 keyVault:
   enabled: false  
   name: gpitfutures-dev-core-kv #should override per environment
   isapiCertificateSecretName: buyingcataloguedev
-
+​
 azurite:
   enabled: false
   connectionString:                          # override per environment
@@ -19,7 +19,7 @@ azurite:
 dapi:
   enabled: true  
   replicaCount: 1  
-
+​
 db:
   enabled: false
   disabledUrl: "" #azure sql url
@@ -32,17 +32,17 @@ bapi-db-deploy:
     includeImport: "TRUE"
     includePublish: "TRUE"
     insertTestData: "TRUE"
-
+​
 isapi-db-deploy:
   enabled: true
-
+​
 ordapi-db-deploy:
   enabled: true
     
 bapi:  
   enabled: true  
   replicaCount: 1
-
+​
 isapi:
   enabled: true  
   replicaCount: 1  
@@ -65,8 +65,8 @@ isapi:
         - https://<namespace>.dyn.buyingcatalogue.digital.nhs.uk/signout-callback-oidc        #To override from build
         - https://<namespace>.dyn.buyingcatalogue.digital.nhs.uk/admin/signout-callback-oidc  #To override from build
         - https://<namespace>.dyn.buyingcatalogue.digital.nhs.uk/order/signout-callback-oidc  #To override from build
-
-  allowInvalidCertificate: ### set to false once valid cert added
+​
+  allowInvalidCertificate: false
   serviceDependencies:
     email:
       allowInvalidCertificate: true                 # our maildev image uses self-signed certs, override in prod
@@ -89,17 +89,17 @@ isapi:
           - /identity/error/*
           - /identity/connect/*
           - /identity/.well-known/*
-
+​
 oapi:
   enabled: true  
   replicaCount: 1
-  allowInvalidCertificate: true ### set to false once valid cert added
+  allowInvalidCertificate: false
     
 ordapi:
   enabled: true  
   replicaCount: 1
-  allowInvalidCertificate: true ### set to false once valid cert added
-
+  allowInvalidCertificate: false
+​
 email:
   enabled: true  #probably leave enabled apart from prod  
   replicaCount: 1
@@ -113,11 +113,11 @@ email:
       - host: <namespace>.dyn.buyingcatalogue.digital.nhs.uk #To override from build
         paths: 
           - /email*
-
+​
 file-loader:
   enabled: true
   replicaCount: 1
-
+​
 mp:
   enabled: true
   replicaCount: 1
@@ -135,7 +135,7 @@ mp:
       - host: <namespace>.dyn.buyingcatalogue.digital.nhs.uk #To override from build
         paths: 
           - /marketing/*
-
+​
 pb: 
   enabled: true
   replicaCount: 1
@@ -159,7 +159,7 @@ pb:
     loginEnabled : "true"
     useCapabilitiesSelector: "true"
     showCovid19: "true"
-
+​
 admin: 
   enabled: true
   replicaCount: 1
@@ -178,7 +178,7 @@ admin:
         paths: 
           - /admin/*
     tls: []      
-
+​
 of: 
   enabled: true
   replicaCount: 1
@@ -198,14 +198,14 @@ of:
           - /order/*
     tls: []  
   baseUri: "/order"  
-
+​
 redis:
   enabled: false
   disabledUrl:                                            # Override per environment
   cluster:
     enabled: false
   usePassword: false
-
+​
 redis-commander:
   enabled: false
   urlPrefix: redis-commander
@@ -219,16 +219,20 @@ redis-commander:
       - host: <namespace>.dyn.buyingcatalogue.digital.nhs.uk #To override from build
         paths: 
           - /redis-commander/*
-
+​
 pb-ac-tests:
   enabled: true
   testFilter: SmokeTest
-
+​
 mp-ac-tests:
   enabled: true
   testFilter: SmokeTest
-
+​
 admin-ac-tests:
+  enabled: true
+  testFilter: SmokeTest
+​
+of-ac-tests:
   enabled: true
   testFilter: SmokeTest
 
