@@ -233,7 +233,7 @@ admin-ac-tests:
   testFilter: SmokeTest
 
 of-ac-tests:
-  enabled: true  
+  enabled: false  
   testFilter: SmokeTest
 
 allure:  
