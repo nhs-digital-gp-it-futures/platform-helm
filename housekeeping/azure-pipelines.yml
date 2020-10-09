@@ -216,21 +216,6 @@ jobs:
             helm repo add stable https://kubernetes-charts.storage.googleapis.com/
             helm repo update
 
-    # - task: DownloadPipelineArtifact@2
-    #   displayName: Download Helm Pipeline Artifacts  
-    #   inputs:
-    #     source: 'specific'
-    #     project: 'c5f97979-5b03-4d10-ba8d-871d0526b408'
-    #     pipeline: '75'
-    #     runBranch: 'refs/heads/master'
-    #     runVersion: 'latestFromBranch'
-    #     artifact: 'build-artifact'
-    #     downloadPath: '$(System.ArtifactsDirectory)'
-
-    # - bash: 'ls -R'
-    #   displayName: Get Folders (ArtifactsDirectory)
-    #   workingDirectory: '$(System.ArtifactsDirectory)'
-
     - bash: |
         ./update-chart-versions.sh -v development
       name: UpdateVersions
@@ -241,13 +226,6 @@ jobs:
         helm dependency update $chart
       name: updateDependencies
       displayName: Update Dependencies for Chart
-
-    # - bash: 'ls -R'
-    #   displayName: Get Folders (CurrentDirectory)
-    #   #workingDirectory: '$(System.ArtifactsDirectory)'
-
-    - bash: 'echo $(namespace)'
-      displayName: Debug
 
     - bash: |
           cd selenium-grid 
@@ -282,9 +260,9 @@ jobs:
       displayName: Deploy System
 
     - bash: |
-        ping -c 480 127.0.0.1
-      name: delayNextStep2
-      displayName: Delay Next Step again
+        ping -c 1800 127.0.0.1
+      name: delayNextStep30m
+      displayName: Delay Next Step again (30 mins)
 
     - bash: './get-test-results.sh -n $(namespace)'
       displayName: Grab test results
