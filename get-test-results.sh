@@ -112,6 +112,9 @@ if [ -n "$adminResult" ] || [ -n "$mpResult" ] || [ -n "$pbResult" ]; then
     if [ -n "$pbResult" ]; then
       kubectl cp $allurePodName:$resultsDir/$pbResult results/$pbResult -n ${namespace,,} 2> /dev/null;
     fi
+    if [ -n "$ofResult" ]; then
+      kubectl cp $allurePodName:$resultsDir/$ofResult results/$ofResult -n ${namespace,,} 2> /dev/null;
+    fi
 elif [ "$n" -eq "$timeout" ]; then echo "Couldn't find most recent test result for build $version in $timeout seconds, exiting..." && exit 1
 else
     echo "Exiting..." && exit 1
