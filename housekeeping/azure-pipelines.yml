@@ -277,9 +277,26 @@ jobs:
           --client-secret=$(gpitfuturesdevclientsecret) \
           --db-user-pass=$(gpitfuturesdevdbpassword) \
           -f "azure-dev.yaml" \
-          --helm-upgrade-args "--set mp-ac-tests.testFilter="
+          --helm-upgrade-args "--set pb-ac-tests.testFilter= --set admin-ac-tests.testFilter= --set mp-ac-tests.testFilter="
       name: deploySystem
       displayName: Deploy System
+
+    - bash: |
+        ping -c 480 127.0.0.1
+      name: delayNextStep2
+      displayName: Delay Next Step again
+
+    # - bash: './get-test-results.sh -n $(namespace)'
+    #   displayName: Grab test results
+
+    # - task: PublishTestResults@2
+    #   inputs:
+    #     testResultsFormat: 'VSTest'
+    #     testResultsFiles: '**/*.trx' 
+    #     mergeTestResults: true
+    #     failTaskOnFailedTests: false
+    #     testRunTitle: 'Acceptance test results'
+    #     publishRunAttachments: true
 
 #           -v $(semVer) \
 
