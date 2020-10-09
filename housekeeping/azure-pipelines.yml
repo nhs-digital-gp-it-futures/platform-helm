@@ -242,9 +242,12 @@ jobs:
       name: updateDependencies
       displayName: Update Dependencies for Chart
 
-    - bash: 'ls -R'
-      displayName: Get Folders (CurrentDirectory)
-      #workingDirectory: '$(System.ArtifactsDirectory)'
+    # - bash: 'ls -R'
+    #   displayName: Get Folders (CurrentDirectory)
+    #   #workingDirectory: '$(System.ArtifactsDirectory)'
+
+    - bash: 'echo $(namespace)'
+      displayName: Debug
 
     # - bash: |
     #       cd selenium-grid 
