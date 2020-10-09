@@ -276,7 +276,8 @@ jobs:
           --cookie-secret=$(srt-cookiesecret) \
           --client-secret=$(gpitfuturesdevclientsecret) \
           --db-user-pass=$(gpitfuturesdevdbpassword) \
-          -f "azure-dev.yaml"
+          -f "azure-dev.yaml" \
+          --helm-upgrade-args "--set mp-ac-tests.testFilter="
       name: deploySystem
       displayName: Deploy System
 
