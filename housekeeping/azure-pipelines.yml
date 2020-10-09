@@ -177,7 +177,61 @@ jobs:
       name: housekeepingSA
       displayName: Housekeeping - Clear down Storage Account Containers
 
-### Disabled task - reports on tickets open. Not required at this time.
+  - job: deployACtoDevEnvironment
+    displayName: Deploy and run AC tests to Dev
+    pool:
+      vmImage: 'ubuntu-latest'
+
+    variables:
+    - group: dev-secrets
+
+    steps:
+    - task: AzureCLI@2
+      inputs:
+        azureSubscription: 'NHSAPP-BuyingCatalogue (Non-Prod)'
+        scriptType: 'bash'
+        scriptLocation: 'inlineScript'
+        inlineScript: 'az aks get-credentials -n gpitfutures-dev-aks -g gpitfutures-dev-rg-aks'
+      name: kubectlContext
+      displayName: Get Kubernetes Context
+
+    - task: HelmInstaller@1
+      displayName: 'install helm'
+      inputs:
+        helmVersionToInstall: 'latest'
+
+    - task: AzureCLI@2
+      name: setupHelmRepos
+      displayName: Setup Helm Repos
+      inputs:
+        azureSubscription: 'NHSAPP-BuyingCatalogue (Non-Prod)'
+        scriptType: 'bash'
+        scriptLocation: 'inlineScript'
+        inlineScript: |
+            helm repo add \
+              gpitfuturesdevacr \
+              https://gpitfuturesdevacr.azurecr.io/helm/v1/repo \
+              --username gpitfuturesdevacr \
+              --password $(gpitfuturesdevacr-pass)
+
+            helm repo add stable https://kubernetes-charts.storage.googleapis.com/
+
+    - task: DownloadPipelineArtifact@2
+      displayName: Download Helm Pipeline Artifacts  
+      inputs:
+        source: 'specific'
+        project: 'c5f97979-5b03-4d10-ba8d-871d0526b408'
+        pipeline: '75'
+        runBranch: 'refs/heads/master'
+        runVersion: 'latestFromBranch'
+        artifact: 'build-artifact'
+        downloadPath: '$(System.ArtifactsDirectory)'
+
+    - bash: 'ls -R'
+      displayName: Get Folders (ArtifactsDirectory)
+      workingDirectory: '$(System.ArtifactsDirectory)'
+
+### Disabled task - reports on tickets open. Task is for a separate ticket.
 #  - job: getWorkitems
 #    pool: server
 #    displayName: Get all work items
