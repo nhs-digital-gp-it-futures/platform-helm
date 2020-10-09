@@ -102,6 +102,10 @@ dependencies:
   condition: admin-ac-tests.enabled
   version: %%admin-ac-tests%%
   repository: "@gpitfuturesdevacr"
+- name: of-ac-tests
+  condition: of-ac-tests.enabled
+  version: %%of-ac-tests%%
+  repository: "@gpitfuturesdevacr"
 - name: allure
   condition: allure.enabled
   version: %%allure%%
