@@ -6,15 +6,15 @@ schedules:
       - master
     always: true
 
-trigger: none
-#trigger:
-#  batch: true
-#  branches:
-#    include:
-#      - feature/7969-clear-old-environments
-#  paths:
-#    include:
-#      - housekeeping/*
+#trigger: none
+trigger:
+ batch: true
+ branches:
+   include:
+     - feature/*
+ paths:
+   include:
+     - housekeeping/*
 
 pr: none
 
@@ -177,7 +177,106 @@ jobs:
       name: housekeepingSA
       displayName: Housekeeping - Clear down Storage Account Containers
 
-### Disabled task - reports on tickets open. Not required at this time.
+  - job: deployACtoDevEnvironment
+    displayName: Deploy and run AC tests to Dev
+    pool:
+      vmImage: 'ubuntu-latest'
+
+    variables:
+    - group: dev-secrets
+    - name: namespace
+      value: "buyingcatalogue-development-helm-dev-dummy"
+
+    steps:
+    - task: AzureCLI@2
+      inputs:
+        azureSubscription: 'NHSAPP-BuyingCatalogue (Non-Prod)'
+        scriptType: 'bash'
+        scriptLocation: 'inlineScript'
+        inlineScript: 'az aks get-credentials -n gpitfutures-dev-aks -g gpitfutures-dev-rg-aks'
+      name: kubectlContext
+      displayName: Get Kubernetes Context
+
+    - task: HelmInstaller@1
+      displayName: 'install helm'
+      inputs:
+        helmVersionToInstall: 'latest'
+
+    - task: AzureCLI@2
+      name: setupHelmRepos
+      displayName: Setup Helm Repos
+      inputs:
+        azureSubscription: 'NHSAPP-BuyingCatalogue (Non-Prod)'
+        scriptType: 'bash'
+        scriptLocation: 'inlineScript'
+        inlineScript: |
+            helm repo add gpitfuturesdevacr https://gpitfuturesdevacr.azurecr.io/helm/v1/repo \
+              --username gpitfuturesdevacr \
+              --password $(gpitfuturesdevacr-pass)
+            helm repo add stable https://kubernetes-charts.storage.googleapis.com/
+            helm repo update
+
+    - bash: |
+        ./update-chart-versions.sh -v development
+      name: UpdateVersions
+      displayName: Grab and update component versions
+
+    - bash: |
+        chart="src/buyingcatalogue"
+        helm dependency update $chart
+      name: updateDependencies
+      displayName: Update Dependencies for Chart
+
+    - bash: |
+          cd selenium-grid 
+          ./launch-selenium-grid.sh --add "$(namespace).dev.buyingcatalogue.digital.nhs.uk"
+      name: setupSeleniumGrid
+      displayName: Setup Selenium Grid
+
+    - bash: |
+        ping -c 30 127.0.0.1
+      name: delayNextStep
+      displayName: Delay Next Step
+
+    - bash: |
+        ./launch-or-update-azure.sh \
+          -c local-cache \
+          -n $(namespace) \
+          -d gpitfutures-dev-sql-pri.database.windows.net \
+          -u $(gpitdevsqladminusername) \
+          -p $(gpitdevsqladminpassword) \
+          -w true \
+          -s "/p:DatabaseEdition=Standard /p:DatabaseServiceObjective=S0" \
+          -a "$(gpitdevstorageaccountconnectionstring)" \
+          -i "$(devClusterIp)" \
+          -r $(srt-redishost) \
+          -q $(srt-redispass) \
+          --cookie-secret=$(srt-cookiesecret) \
+          --client-secret=$(gpitfuturesdevclientsecret) \
+          --db-user-pass=$(gpitfuturesdevdbpassword) \
+          -f "azure-dev.yaml" \
+          --helm-upgrade-args "--set pb-ac-tests.testFilter= --set admin-ac-tests.testFilter= --set mp-ac-tests.testFilter= --set of-ac-tests.enabled=true --set of-ac-tests.testFilter="
+      name: deploySystem
+      displayName: Deploy System
+
+    - bash: |
+        ping -c 1800 127.0.0.1
+      name: delayNextStep30m
+      displayName: Delay Next Step again (30 mins)
+
+    - bash: './get-test-results.sh -n $(namespace)'
+      displayName: Grab test results
+
+    - task: PublishTestResults@2
+      inputs:
+        testResultsFormat: 'VSTest'
+        testResultsFiles: '**/*.trx' 
+        mergeTestResults: true
+        failTaskOnFailedTests: false
+        testRunTitle: 'Acceptance test results (Full Suite)'
+        publishRunAttachments: true
+
+### Disabled task - reports on tickets open. Task is for a separate ticket.
 #  - job: getWorkitems
 #    pool: server
 #    displayName: Get all work items
