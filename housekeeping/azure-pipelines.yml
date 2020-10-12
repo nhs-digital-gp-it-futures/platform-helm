@@ -185,7 +185,7 @@ jobs:
     variables:
     - group: dev-secrets
     - name: namespace
-      value: "buyingcatalogue-development-helm-dev-dummy"
+      value: "buyingcatalogue-development-helm"
 
     steps:
     - task: AzureCLI@2
