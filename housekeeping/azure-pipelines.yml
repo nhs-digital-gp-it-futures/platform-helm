@@ -255,7 +255,7 @@ jobs:
           --client-secret=$(gpitfuturesdevclientsecret) \
           --db-user-pass=$(gpitfuturesdevdbpassword) \
           -f "azure-dev.yaml" \
-          --helm-upgrade-args "--set pb-ac-tests.testFilter= --set admin-ac-tests.testFilter= --set mp-ac-tests.testFilter= --set of-ac-tests.enabled=true" #--set of-ac-tests.testFilter="
+          --helm-upgrade-args "--set pb-ac-tests.testFilter= --set admin-ac-tests.testFilter= --set mp-ac-tests.testFilter= --set of-ac-tests.enabled=true --set of-ac-tests.testFilter="
       name: deploySystem
       displayName: Deploy System
 
