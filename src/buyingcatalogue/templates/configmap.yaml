@@ -42,4 +42,4 @@ data:
   run-id: {{ $runId | quote }}
   mp-supplier-url: {{ printf "%s/marketing/supplier/solution/" $pbUrl }}
   mp-authority-url: {{ printf "%s/marketing/authority/solution/" $pbUrl }}
-  of-ac-url: {{ printf "%s/order" $pbUrl }}
+  of-ac-url: {{ printf "%s/order/" $pbUrl }}
