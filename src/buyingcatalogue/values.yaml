@@ -746,6 +746,9 @@ of-ac-tests:
   pbUrlConfig:
     name: "bc-buyingcatalogue"
     key: pb-url
+  ofUrlConfig:
+    name: "bc-buyingcatalogue"
+    key: of-ac-url
   runIdConfig:
     name: "bc-buyingcatalogue"
     key: run-id
