@@ -70,7 +70,8 @@ timeout=120
 resultsDir="/app/allure-results"
 allurePodName=$(kubectl get pod -l app.kubernetes.io/name=allure -o jsonpath="{.items[0].metadata.name}" -n ${namespace,,})
 
-if [ -z ${version+x} ] || [ -z ${namespace,,+x} ]; then   
+#if [ -z ${version+x} ] || [ -z ${namespace,,+x} ]; then   
+if [ -z ${namespace,,+x} ]; then   
   echo "Required values are missing!"
 
   displayHelp
@@ -93,6 +94,8 @@ until [ -n "$allTestsFinished" ] || [ "$n" -ge "$timeout" ]; do
   echo "$mpResult"
   pbResult=$(kubectl exec $allurePodName -n ${namespace,,} -- sh -c "cd $resultsDir && ls -t pb*$version-*.trx | awk 'NR==1'" 2> /dev/null)
   echo "$pbResult"
+  ofResult=$(kubectl exec $allurePodName -n ${namespace,,} -- sh -c "cd $resultsDir && ls -t of*$version-*.trx | awk 'NR==1'" 2> /dev/null)
+  echo "$ofResult"
 
   if [ -n "$adminResult" ] && [ -n "$mpResult" ] && [ -n "$pbResult" ]; then allTestsFinished="true"; fi
 done
@@ -109,6 +112,9 @@ if [ -n "$adminResult" ] || [ -n "$mpResult" ] || [ -n "$pbResult" ]; then
     fi
     if [ -n "$pbResult" ]; then
       kubectl cp $allurePodName:$resultsDir/$pbResult results/$pbResult -n ${namespace,,} 2> /dev/null;
+    fi
+    if [ -n "$ofResult" ]; then
+      kubectl cp $allurePodName:$resultsDir/$ofResult results/$ofResult -n ${namespace,,} 2> /dev/null;
     fi
 elif [ "$n" -eq "$timeout" ]; then echo "Couldn't find most recent test result for build $version in $timeout seconds, exiting..." && exit 1
 else
