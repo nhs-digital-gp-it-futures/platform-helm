@@ -65,7 +65,7 @@ if (!($regCredentials))
 
 if (($useRemote -ne "false") -and ($r -eq $false))
 {
-    if(($updateCharts -ne "false") -and ($u -ne $false))
+    if(($updateCharts -ne "false") -and ($u -eq $false))
     {    
         if (($latest -ne "false") -and ($l -eq $false))
         {
