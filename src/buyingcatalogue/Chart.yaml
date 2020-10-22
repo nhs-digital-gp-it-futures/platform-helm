@@ -73,7 +73,7 @@ dependencies:
   repository: "@gpitfuturesdevacr"
 - name: pb
   condition: pb.enabled
-  version: 1.24.12
+  version: 1.24.13
   repository: "@gpitfuturesdevacr"
 - name: admin
   condition: admin.enabled
@@ -101,6 +101,10 @@ dependencies:
 - name: admin-ac-tests
   condition: admin-ac-tests.enabled
   version: 1.1.1
+  repository: "@gpitfuturesdevacr"
+- name: of-ac-tests
+  condition: of-ac-tests.enabled
+  version: 1.0.5
   repository: "@gpitfuturesdevacr"
 - name: allure
   condition: allure.enabled
