@@ -23,6 +23,7 @@ if (!(az account show)){
 $gitBranches = @()
 $inactiveContainers = @()
 $jobLength = 4
+$jobLengthExt = 5
 
 $gitBranches = get-ActiveGitBranches -directories $directories
 
@@ -36,7 +37,14 @@ $containers = get-BlobStoreContainers -storageConnectionString $azureStorageConn
 
 foreach ($line in $containers){ 
     if (($line -replace '\D+').length -gt 3){
-        $job = ($line -replace '\D+').Substring(0,$jobLength)
+        try
+        {
+            $job = ($line -replace '\D+').Substring(0,$jobLengthExt)
+        }
+        catch
+        {
+            $job = ($line -replace '\D+').Substring(0,$jobLength)
+        }
 
         if ($gitBranches -match $job){
             write-host "active container: $line found" -ForegroundColor Green

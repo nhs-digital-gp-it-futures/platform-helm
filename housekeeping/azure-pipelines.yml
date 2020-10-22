@@ -95,7 +95,7 @@ jobs:
     variables:
     - group: dev-secrets
     - name: outDebug
-      value: "$false"
+      value: "$true"
     - name: gitRepos
       value: "PublicBrowseAcceptanceTests,buying-catalogue-admin,BuyingCatalogueDocumentService,BuyingCatalogueIdentity,BuyingCatalogueOrdering,BuyingCatalogueService,MarketingPageAcceptanceTests,marketing-pages,order-form,OrderFormAcceptanceTests,platform-helm,public-browse,PublicBrowseAcceptanceTests"
 
