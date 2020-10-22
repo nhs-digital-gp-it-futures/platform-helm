@@ -66,9 +66,9 @@ foreach ($inactiveNs in $inactiveNamespaces){
         write-host "`nDEBUGGING k8s Cleardown...."
     }
 
-    remove-KubernetesResources -branchNamespace $inactiveNs -debug $debugging
-    remove-BlobStoreContainers -branchNamespace $inactiveNs -storageConnectionString $azureStorageConnectionString -debug $debugging
-    remove-Databases -branchNamespace "bc-$inactiveNs" -databaseServer $dbServer -rg $resourceGroup -debug $debugging
+    remove-KubernetesResources -branchNamespace $inactiveNs -codeDebug $debugging
+    remove-BlobStoreContainers -branchNamespace $inactiveNs -storageConnectionString $azureStorageConnectionString -codeDebug $debugging
+    remove-Databases -branchNamespace "bc-$inactiveNs" -databaseServer $dbServer -rg $resourceGroup -codeDebug $debugging
 }
 
 start-sleep 10

@@ -40,7 +40,7 @@ function remove-KubernetesResources {
         [Parameter(Mandatory)]   
         [string]$branchNamespace,
         [Parameter()] 
-        [string]$codeDebug=$true
+        [string]$debug=$true
     )    
 
     if ($codeDebug -eq $false){
@@ -120,5 +120,44 @@ function remove-BlobStoreContainers {
     }
     else {
         write-host "DEBUG: az storage container delete --name '$branchNamespace-documents' --connection-string '<storageConnectionString>'"
+    }
+}
+
+function remove-PersistentVolume {
+    param(
+        [Parameter(Mandatory)]   
+        [string]$volumeName,
+        [Parameter()] 
+        [bool]$codeDebug=$true
+    ) 
+
+    if ($codeDebug -eq $false){
+        "delete"
+    }
+    else {
+        write-host "DEBUG: kubectl delete pv $volumeName"
+        #write-host "DEBUG: az storage container delete --name '$branchNamespace-documents' --connection-string '<storageConnectionString>'"
+    }
+}
+
+function remove-ShareVolume {
+    param(
+        [Parameter(Mandatory)]   
+        [string]$volumeName,
+        [Parameter(Mandatory)]   
+        [string]$resourceGroup,
+        [Parameter()] 
+        [bool]$codeDebug=$true
+    ) 
+
+    $saName=$(az storage account list --resource-group $resourceGroup | ConvertFrom-Json | select -ExpandProperty name)
+    $saConnectionString=$(az storage account show-connection-string --name $saName --resource-group $resourceGroup --query connectionString -o tsv)
+
+    if ($codeDebug -eq $false){
+        "delete"
+    }
+    else {
+        write-host "DEBUG: az storage share delete --name "kubernetes-dynamic-$volumeName" --connection-string <storageConnectionString>"
+        az storage share exists --name "kubernetes-dynamic-$volumeName" --connection-string $saConnectionString
     }
 }

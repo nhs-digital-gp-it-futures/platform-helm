@@ -1,21 +1,18 @@
 param(
-    # [Parameter(Mandatory)]  
-    # [string]$azureStorageConnectionString,
+    #[Parameter(Mandatory)]  
+    #[string]$azureStorageConnectionString,
     # [Parameter()]  
     # [string]$directories,
     # [Parameter()] 
     # [string]$dbServer="gpitfutures-dev-sql-pri",
-    # [Parameter()] 
-    # [string]$resourceGroup="gpitfutures-dev-rg-sql-pri",
     [Parameter()] 
-    [string]$debugging=$true
+    [string]$resourceGroup="gpitfutures-dev-rg-aks-pool",
+    [Parameter()] 
+    [bool]$debugging=$true
 )
 
-# Import-Module -Name "$PSScriptRoot/sharedFunctions/sharedFunctions.psm1" -Function get-ActiveGitBranches
-# Import-Module -Name "$PSScriptRoot/sharedFunctions/sharedFunctions.psm1" -Function remove-KubernetesResources
-# Import-Module -Name "$PSScriptRoot/sharedFunctions/sharedFunctions.psm1" -Function remove-BlobStoreContainers
-# Import-Module -Name "$PSScriptRoot/sharedFunctions/sharedFunctions.psm1" -Function remove-Databases
-
+Import-Module -Name "$PSScriptRoot/sharedFunctions/sharedFunctions.psm1" -Function remove-PersistentVolume -force
+Import-Module -Name "$PSScriptRoot/sharedFunctions/sharedFunctions.psm1" -Function remove-ShareVolume -force
 
 ### Error checking
 
@@ -45,47 +42,25 @@ write-host "`nKubernetes Persistent Volume cleardown status`n"
 ### Cleardown Kubernetes Persistent Volumes ###
 ###############################################
 
+$boundVolumes=@()
+$inactiveVols=@()
+
 foreach ($namespace in $namespaces)
 {
-    kubectl get pvc -n $namespace
+    $boundVolumes += (kubectl get pvc -n $namespace --output JSON | convertfrom-json).items.spec.volumeName
 }
 
 $persistentVolumes = (kubectl get pv --output JSON | convertfrom-json).items
 
-foreach ($volume in $persistentVolumes)
-{
-    write-host $volume.metadata.name
-    write-host $volume.status.phase
+foreach ($volume in $persistentVolumes){
+    if ($boundVolumes -notcontains $volume.metadata.name){
+        write-host $volume.metadata.name
+        write-host $volume.status.phase
+
+        $inactiveVols+=$volume.metadata.name
+        remove-PersistentVolume -volumeName $volume.metadata.name -codeDebug $debugging
+        remove-ShareVolume -volumeName $volume.metadata.name -resourceGroup "$resourceGroup" -codeDebug
+    }
 }
-
-
-
-# write-host "`nKubernetes branch cleardown status`n"
-
-# foreach ($line in $namespaces){ 
-#     $ns = $line.split(" ")[0]
-#     $job = $ns.split("-")[1]
-
-#     if (($ns -like "bc-*" -or $ns -like "feature-*") -and $ns -notlike "bc-merge*"){
-        
-#         if ($gitBranches -match $job){
-#             write-host "active branch:"$ns "found" -ForegroundColor Green
-#         }
-#         else {
-#             write-host "inactive branch:"$ns -ForegroundColor Red
-#             $inactiveNamespaces += $ns
-#         }
-#     }
-# }
-
-# foreach ($inactiveNs in $inactiveNamespaces){
-#     if ($debugging -ne $false){
-#         write-host "`nDEBUGGING k8s Cleardown...."
-#     }
-
-#     remove-KubernetesResources -branchNamespace $inactiveNs -debug $debugging
-#     remove-BlobStoreContainers -branchNamespace $inactiveNs -storageConnectionString $azureStorageConnectionString -debug $debugging
-#     remove-Databases -branchNamespace "bc-$inactiveNs" -databaseServer $dbServer -rg $resourceGroup -debug $debugging
-# }
 
 start-sleep 10

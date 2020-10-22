@@ -65,6 +65,6 @@ foreach ($inactiveDBs in ($inactiveDatabases | select-object -Unique)){
         write-host "`nDEBUGGING SQL Cleardown...."
     }
 
-    remove-Databases -branchNamespace $inactiveDBs -databaseServer $dbServer -rg $resourceGroup -debug $debugging
+    remove-Databases -branchNamespace $inactiveDBs -databaseServer $dbServer -rg $resourceGroup -codeDebug $debugging
 }
 

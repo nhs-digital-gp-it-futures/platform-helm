@@ -62,6 +62,6 @@ foreach ($inactiveCont in ($inactiveContainers | select-object -Unique)){
         write-host "`nDEBUGGING Container Cleardown...."
     }
 
-    remove-BlobStoreContainers -branchNamespace $inactiveCont -storageConnectionString $azureStorageConnectionString -debug $debugging
+    remove-BlobStoreContainers -branchNamespace $inactiveCont -storageConnectionString $azureStorageConnectionString -codeDebug $debugging
 }
 
