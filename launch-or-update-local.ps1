@@ -29,7 +29,7 @@ param(
         [ValidateSet('true','false')]
         [string]$updateCharts,
         [Parameter()]
-        [switch]$u=$true
+        [switch]$u=$false
     )
 
 # Parameters   
