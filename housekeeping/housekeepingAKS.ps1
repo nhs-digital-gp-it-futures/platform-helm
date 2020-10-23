@@ -8,7 +8,7 @@ param(
     [Parameter()] 
     [string]$resourceGroup="gpitfutures-dev-rg-sql-pri",
     [Parameter()] 
-    [string]$debugging=$true
+    [string]$debugging="true"
 )
 
 Import-Module -Name "$PSScriptRoot/sharedFunctions/sharedFunctions.psm1" -Function get-ActiveGitBranches
@@ -62,13 +62,13 @@ foreach ($line in $namespaces){
 }
 
 foreach ($inactiveNs in $inactiveNamespaces){
-    if ($debugging -ne $false){
+    if ($debugging -ne "false"){
         write-host "`nDEBUGGING k8s Cleardown...."
     }
 
-    remove-KubernetesResources -branchNamespace $inactiveNs -debug $debugging
-    remove-BlobStoreContainers -branchNamespace $inactiveNs -storageConnectionString $azureStorageConnectionString -debug $debugging
-    remove-Databases -branchNamespace "bc-$inactiveNs" -databaseServer $dbServer -rg $resourceGroup -debug $debugging
+    remove-KubernetesResources -branchNamespace $inactiveNs -codeDebug "$debugging"
+    remove-BlobStoreContainers -branchNamespace $inactiveNs -storageConnectionString $azureStorageConnectionString -codeDebug "$debugging"
+    remove-Databases -branchNamespace "bc-$inactiveNs" -databaseServer $dbServer -rg $resourceGroup -codeDebug "$debugging"
 }
 
 start-sleep 10

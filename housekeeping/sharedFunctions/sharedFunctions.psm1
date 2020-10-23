@@ -22,12 +22,10 @@ function get-ActiveGitBranches {
     if ($directories){
         foreach ($gitDir in $directories -split(",")){
             set-location -path .\$gitDir
-            #write-host "`nDEBUG: $gitDir"
             git fetch
             foreach ($gitbranch in (git branch -r))
             {  
                 $gitBranches += $gitbranch.trim()
-                #write-host "DEBUG: -"$gitbranch.trim()
             }
             set-location -path ..\
         } 
@@ -40,10 +38,10 @@ function remove-KubernetesResources {
         [Parameter(Mandatory)]   
         [string]$branchNamespace,
         [Parameter()] 
-        [string]$codeDebug=$true
+        [string]$codeDebug="true"
     )    
 
-    if ($codeDebug -eq $false){
+    if ($codeDebug -eq "false"){
         kubectl delete ns $branchNamespace
     }
     else {
@@ -74,7 +72,7 @@ function remove-Databases {
         [Parameter(Mandatory)]  
         [string]$rg,
         [Parameter()] 
-        [string]$codeDebug=$true
+        [string]$codeDebug="true"
     ) 
 
     $services=@("bapi","isapi","ordapi")
@@ -85,7 +83,7 @@ function remove-Databases {
     }
 
     foreach ($dbName in $databaseNames){
-        if ($codeDebug -eq $false){
+        if ($codeDebug -eq "false"){
             az sql db delete --name "$dbName" --resource-group "$rg" --server "$databaseServer" --yes
         }
         else{
@@ -112,13 +110,51 @@ function remove-BlobStoreContainers {
         [Parameter(Mandatory)]  
         [string]$storageConnectionString,
         [Parameter()] 
-        [string]$codeDebug=$true
+        [string]$codeDebug="true"
     ) 
 
-    if ($codeDebug -eq $false){
+    if ($codeDebug -eq "false"){
         az storage container delete --name "$branchNamespace-documents" --connection-string "$storageConnectionString"
     }
     else {
         write-host "DEBUG: az storage container delete --name '$branchNamespace-documents' --connection-string '<storageConnectionString>'"
+    }
+}
+
+function remove-PersistentVolume {
+    param(
+        [Parameter(Mandatory)]   
+        [string]$volumeName,
+        [Parameter()] 
+        [string]$codeDebug="true"
+    ) 
+
+    if ($codeDebug -eq "false"){
+        kubectl delete pv $volumeName
+    }
+    else {
+        write-host "DEBUG: kubectl delete pv $volumeName"
+    }
+}
+
+function remove-ShareVolume {
+    param(
+        [Parameter(Mandatory)]   
+        [string]$volumeName,
+        [Parameter(Mandatory)]   
+        [string]$resourceGroup,
+        [Parameter()] 
+        [string]$codeDebug="true"
+    ) 
+
+    $saName=$(az storage account list --resource-group $resourceGroup | ConvertFrom-Json | select -ExpandProperty name)
+    $saConnectionString=$(az storage account show-connection-string --name $saName --resource-group $resourceGroup --query connectionString -o tsv)
+
+    if ($codeDebug -eq "false"){
+        az storage share delete --name "kubernetes-dynamic-$volumeName" --connection-string $saConnectionString
+    }
+    else {
+        write-host "DEBUG: az storage share delete --name "kubernetes-dynamic-$volumeName" --connection-string <storageConnectionString>"
+        az storage share exists --name "kubernetes-dynamic-$volumeName" --connection-string $saConnectionString
     }
 }

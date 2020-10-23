@@ -95,7 +95,7 @@ jobs:
     variables:
     - group: dev-secrets
     - name: outDebug
-      value: "$false"
+      value: "false"
     - name: gitRepos
       value: "PublicBrowseAcceptanceTests,buying-catalogue-admin,BuyingCatalogueDocumentService,BuyingCatalogueIdentity,BuyingCatalogueOrdering,BuyingCatalogueService,MarketingPageAcceptanceTests,marketing-pages,order-form,OrderFormAcceptanceTests,platform-helm,public-browse,PublicBrowseAcceptanceTests"
 
@@ -176,6 +176,18 @@ jobs:
           -debugging "$(outDebug)"
       name: housekeepingSA
       displayName: Housekeeping - Clear down Storage Account Containers
+
+    - task: AzureCLI@2
+      inputs:
+        azureSubscription: 'NHSAPP-BuyingCatalogue (Non-Prod)'
+        scriptType: 'pscore'
+        scriptLocation: 'scriptPath'
+        scriptPath: ./platform-helm/housekeeping/housekeepingVols.ps1
+        arguments: > 
+          -resourceGroup "gpitfutures-dev-rg-aks-pool"
+          -debugging "$(outDebug)"
+      name: housekeepingVols
+      displayName: Housekeeping - Clear down Kubernetes Persistent Volumes
 
   - job: deployACtoDevEnvironment
     displayName: Deploy and run AC tests to Dev

@@ -6,7 +6,7 @@ param(
     [Parameter()] 
     [string]$resourceGroup="gpitfutures-dev-rg-sql-pri",
     [Parameter()] 
-    [string]$debugging=$true
+    [string]$debugging="true"
 )
 
 Import-Module -Name "$PSScriptRoot/sharedFunctions/sharedFunctions.psm1" -Function get-ActiveGitBranches
@@ -25,6 +25,7 @@ if (!(az account show)){
 $gitBranches = @()
 $inactiveDatabases = @()
 $jobLength = 4
+$jobLengthExt = 5
 
 #$directories="platform-helm","platform"
 $gitBranches = get-ActiveGitBranches -directories $directories
@@ -39,7 +40,14 @@ $sqlDatabases = get-Databases -databaseServer $dbServer -rg $resourceGroup
 
 foreach ($line in $sqlDatabases){ 
     if (($line -replace '\D+').length -gt 3){
-        $job = ($line -replace '\D+').Substring(0,$jobLength)
+        try
+        {
+            $job = ($line -replace '\D+').Substring(0,$jobLengthExt)
+        }
+        catch
+        {
+            $job = ($line -replace '\D+').Substring(0,$jobLength)
+        }
 
         if ($gitBranches -match $job){
             write-host "active database: $line found" -ForegroundColor Green
@@ -53,10 +61,10 @@ foreach ($line in $sqlDatabases){
 }
 
 foreach ($inactiveDBs in ($inactiveDatabases | select-object -Unique)){
-    if ($debugging -ne $false){
+    if ($debugging -ne "false"){
         write-host "`nDEBUGGING SQL Cleardown...."
     }
 
-    remove-Databases -branchNamespace $inactiveDBs -databaseServer $dbServer -rg $resourceGroup -debug $debugging
+    remove-Databases -branchNamespace $inactiveDBs -databaseServer $dbServer -rg $resourceGroup -codeDebug "$debugging"
 }
 
