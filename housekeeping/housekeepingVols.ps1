@@ -1,10 +1,4 @@
 param(
-    #[Parameter(Mandatory)]  
-    #[string]$azureStorageConnectionString,
-    # [Parameter()]  
-    # [string]$directories,
-    # [Parameter()] 
-    # [string]$dbServer="gpitfutures-dev-sql-pri",
     [Parameter()] 
     [string]$resourceGroup="gpitfutures-dev-rg-aks-pool",
     [Parameter()] 
@@ -30,10 +24,7 @@ else{
 
 ### Global Variables
 
-$gitBranches = @()
-# $inactiveNamespaces = @()
-
-# $gitBranches = get-ActiveGitBranches -directories $directories
+$boundVolumes=@()
 
 write-host "`nKubernetes Persistent Volume cleardown status`n"
 
@@ -41,14 +32,16 @@ write-host "`nKubernetes Persistent Volume cleardown status`n"
 ### Cleardown Kubernetes Persistent Volumes ###
 ###############################################
 
-$boundVolumes=@()
-
 foreach ($namespace in $namespaces){    
     $pvc=(kubectl get pvc -n $namespace --output JSON | convertfrom-json).items
 
     if ($pvc.status.phase -eq "Bound"){
         $boundVolumes += $pvc.spec.volumeName
-        #write-host "DEBUG: PVC Found: " $pvc.spec.volumeName
+        
+        if ($debugging -eq "true")
+        {
+            write-host "DEBUG: PVC Found: " $pvc.spec.volumeName
+        }
     }
 }
 

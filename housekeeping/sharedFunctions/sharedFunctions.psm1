@@ -130,7 +130,7 @@ function remove-PersistentVolume {
     ) 
 
     if ($codeDebug -eq "false"){
-        "delete"
+        kubectl delete pv $volumeName
     }
     else {
         write-host "DEBUG: kubectl delete pv $volumeName"
@@ -151,7 +151,7 @@ function remove-ShareVolume {
     $saConnectionString=$(az storage account show-connection-string --name $saName --resource-group $resourceGroup --query connectionString -o tsv)
 
     if ($codeDebug -eq "false"){
-        "delete"
+        az storage share delete --name "kubernetes-dynamic-$volumeName" --connection-string $saConnectionString
     }
     else {
         write-host "DEBUG: az storage share delete --name "kubernetes-dynamic-$volumeName" --connection-string <storageConnectionString>"
