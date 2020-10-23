@@ -8,7 +8,7 @@ param(
     [Parameter()] 
     [string]$resourceGroup="gpitfutures-dev-rg-aks-pool",
     [Parameter()] 
-    [bool]$debugging=$true
+    [string]$debugging="true"
 )
 
 Import-Module -Name "$PSScriptRoot/sharedFunctions/sharedFunctions.psm1" -Function remove-PersistentVolume -force
@@ -58,8 +58,8 @@ foreach ($volume in $persistentVolumes){
         write-host $volume.status.phase
 
         $inactiveVols+=$volume.metadata.name
-        remove-PersistentVolume -volumeName $volume.metadata.name -codeDebug $debugging
-        remove-ShareVolume -volumeName $volume.metadata.name -resourceGroup "$resourceGroup" -codeDebug
+        remove-PersistentVolume -volumeName $volume.metadata.name -codeDebug "$debugging"
+        remove-ShareVolume -volumeName $volume.metadata.name -resourceGroup "$resourceGroup" -codeDebug "$debugging"
     }
 }
 

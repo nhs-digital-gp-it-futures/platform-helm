@@ -6,7 +6,7 @@ param(
     [Parameter()] 
     [string]$resourceGroup="gpitfutures-dev-rg-sql-pri",
     [Parameter()] 
-    [string]$debugging=$true
+    [string]$debugging="true"
 )
 
 Import-Module -Name "$PSScriptRoot/sharedFunctions/sharedFunctions.psm1" -Function get-ActiveGitBranches
@@ -61,10 +61,10 @@ foreach ($line in $sqlDatabases){
 }
 
 foreach ($inactiveDBs in ($inactiveDatabases | select-object -Unique)){
-    if ($debugging -ne $false){
+    if ($debugging -ne "false"){
         write-host "`nDEBUGGING SQL Cleardown...."
     }
 
-    remove-Databases -branchNamespace $inactiveDBs -databaseServer $dbServer -rg $resourceGroup -codeDebug $debugging
+    remove-Databases -branchNamespace $inactiveDBs -databaseServer $dbServer -rg $resourceGroup -codeDebug "$debugging"
 }
 

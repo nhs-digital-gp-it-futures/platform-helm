@@ -4,7 +4,7 @@ param(
     [Parameter(Mandatory)]  
     [string]$azureStorageConnectionString,
     [Parameter()] 
-    [string]$debugging=$true
+    [string]$debugging="true"
 )
 
 Import-Module -Name "$PSScriptRoot/sharedFunctions/sharedFunctions.psm1" -Function get-ActiveGitBranches
@@ -58,10 +58,10 @@ foreach ($line in $containers){
 }
 
 foreach ($inactiveCont in ($inactiveContainers | select-object -Unique)){
-    if ($debugging -ne $false){
+    if ($debugging -ne "false"){
         write-host "`nDEBUGGING Container Cleardown...."
     }
 
-    remove-BlobStoreContainers -branchNamespace $inactiveCont -storageConnectionString $azureStorageConnectionString -codeDebug $debugging
+    remove-BlobStoreContainers -branchNamespace $inactiveCont -storageConnectionString $azureStorageConnectionString -codeDebug "$debugging"
 }
 
