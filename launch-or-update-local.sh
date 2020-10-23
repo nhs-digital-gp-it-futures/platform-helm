@@ -69,6 +69,26 @@ if [[ "$context" != "docker-desktop" ]]; then
   exit 1
 fi
 
+echo -e "# Switches Selected for run are: \n#"
+if [[ "$useRemote" != "false" ]]; then
+  echo -e "# Use Remote Repo for Updates\t\t(change with -r false)"
+  if [[ "$updateCharts" != "false" ]]; then
+    echo -e "# Download Updated Versions of Charts\t(change with -u false)"
+    if [[ "$latest" != "false" ]]; then
+      echo -e "# Version of Charts to get: Development\t(change with -l false)"
+    else
+      echo -e "# Version of Charts to get: Master"
+    fi
+  else
+    echo -e "# Download Current Versions of Charts"
+  fi
+else
+  echo -e "# Use Local Files - no updates"
+fi
+
+echo -e "#\n# If this is not correct please CTRL + C now (continuing in 5 seconds)"
+sleep 5s
+
 if [[ "$useRemote" != "false" ]]; then
   if [[ "$updateCharts" != "false" ]]; then
     if [[ "$latest" != "false" ]]; then

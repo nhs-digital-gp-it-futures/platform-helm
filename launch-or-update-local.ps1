@@ -36,6 +36,8 @@ param(
 $chart="src/buyingcatalogue"
 $namespace="buyingcatalogue"
 
+# Error Checking
+
 # Check context is docker dashboard
 $context = kubectl config current-context
 if ($context -ne "docker-desktop")
@@ -62,6 +64,43 @@ if (!($regCredentials))
     start-sleep 5
     exit 1
 }
+
+# Check for Buying Catalogue Helm Repo
+$helmRepoList=helm repo list -o json | ConvertFrom-Json
+if ($helmRepoList.name -notcontains "gpitfuturesdevacr")
+{
+    write-host "`nMissing Buying Catalogue Repo"
+    write-host "Exiting...."
+    start-sleep 5
+    exit 1
+}
+
+Clear-Host
+Write-Host "# Switches Selected for run are: `n"
+if (($useRemote -ne "false") -and ($r -eq $false)){
+    Write-Host "# Use Remote Repo for Updates`t`t(change with -r)"
+    
+    if (($updateCharts -ne "false") -and ($u -eq $false)){
+        Write-Host "# Download Updated Versions of Charts`t(change with -u)"
+
+        if (($latest -ne "false") -and ($l -eq $false)){
+            Write-Host "# Version of Charts to get: Development`t(change with -l)"
+        }
+        else {
+            Write-Host "# Version of Charts to get: Master"
+        }
+    }    
+    else {
+        Write-Host "# Download Current Versions of Charts"
+    }
+}
+else {
+    Write-Host "# Use Local Files - no updates"
+}
+
+Write-Host "#`n# If this is not correct please CTRL + C now (continuing in 5 seconds)"
+start-sleep 5
+
 
 if (($useRemote -ne "false") -and ($r -eq $false))
 {
