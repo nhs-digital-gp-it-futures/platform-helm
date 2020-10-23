@@ -110,7 +110,7 @@ function remove-BlobStoreContainers {
         [Parameter(Mandatory)]  
         [string]$storageConnectionString,
         [Parameter()] 
-        [string]$codeDebug=$true
+        [string]$codeDebug="true"
     ) 
 
     if ($codeDebug -eq "false"){
@@ -134,7 +134,6 @@ function remove-PersistentVolume {
     }
     else {
         write-host "DEBUG: kubectl delete pv $volumeName"
-        #write-host "DEBUG: az storage container delete --name '$branchNamespace-documents' --connection-string '<storageConnectionString>'"
     }
 }
 
