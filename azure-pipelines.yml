@@ -113,7 +113,8 @@ jobs:
   - task: HelmInstaller@1
     displayName: 'install helm'
     inputs:
-      helmVersionToInstall: 'latest'
+      #helmVersionToInstall: 'latest'
+      helmVersionToInstall: '3.3.4'
   - bash: |
       helm repo add gpitfuturesdevacr https://gpitfuturesdevacr.azurecr.io/helm/v1/repo --username gpitfuturesdevacr --password $(gpitfuturesdevacr-pass)
       helm dependency update src/buyingcatalogue
@@ -239,11 +240,12 @@ jobs:
   - task: HelmInstaller@1
     displayName: 'install helm'
     inputs:
-      helmVersionToInstall: 'latest'
+      #helmVersionToInstall: 'latest'
+      helmVersionToInstall: '3.3.4'
 
   - bash: |
       helm repo add gpitfuturesdevacr https://gpitfuturesdevacr.azurecr.io/helm/v1/repo --username gpitfuturesdevacr --password $(gpitfuturesdevacr-pass)
-      helm repo add stable https://kubernetes-charts.storage.googleapis.com/
+      helm repo add stable https://charts.helm.sh/stable/
       helm repo update
     name: addRepos
     displayName: Add gpitfuturesdevacr & stable repo
@@ -313,7 +315,8 @@ jobs:
   - task: HelmInstaller@1
     displayName: 'install helm'
     inputs:
-      helmVersionToInstall: 'latest'
+      #helmVersionToInstall: 'latest'
+      helmVersionToInstall: '3.3.4'
 
   - bash: |
       helm repo add gpitfuturesdevacr https://gpitfuturesdevacr.azurecr.io/helm/v1/repo --username gpitfuturesdevacr --password $(gpitfuturesdevacr-pass)
