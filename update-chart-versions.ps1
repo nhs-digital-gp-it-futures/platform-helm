@@ -16,6 +16,14 @@ param(
 $index = 0
 $chartVersions = @()
 $versionSource = If ($v -eq "master") {$null} Else {"--devel"} 
+$gitFlow=@(
+    "isapi",
+    "isapi-db-deploy",
+    "oapi",
+    "of",
+    "pb"
+)
+#write-host $gitFlow
 
 # Update the local cache from the Repo and confirm dev repo is queried
 $updateRepos=helm repo update | select-string -SimpleMatch "gpitfuturesdevacr"
@@ -31,7 +39,8 @@ else
 }  
 
 ### Build array of versions ###
-$latestChartVersions = helm search repo gpit $versionSource 
+$latestChartVersions = helm search repo gpit $versionSource
+$masterChartVersions = helm search repo gpit
 $currentFile = @(Get-Content ./$chart/chart.yaml)
 
 foreach ($line in $currentFile)
@@ -44,7 +53,15 @@ foreach ($line in $currentFile)
         # Check if it exists in the repo
         if (($latestChartVersions -match "gpitfuturesdevacr/"+$chartLine.name)[0])
         {
-            [string]$chartLine.latestVersion = ($latestChartVersions -match "gpitfuturesdevacr/"+$chartLine.name)[0].split("`t")[1] -replace " ", ""
+            if ($gitFlow -match $chartLine.name)
+            {
+                [string]$chartLine.latestVersion = ($latestChartVersions -match "gpitfuturesdevacr/"+$chartLine.name)[0].split("`t")[1] -replace " ", ""
+            }
+            else 
+            {
+                [string]$chartLine.latestVersion = ($masterChartVersions -match "gpitfuturesdevacr/"+$chartLine.name)[0].split("`t")[1] -replace " ", ""
+            }
+            
             if ($chartLine.latestVersion -ne $chartLine.currentVersion)
             {
                 # Update desired version to latest for component
