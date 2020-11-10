@@ -95,6 +95,15 @@ if [ -z "$versionSourceSet" ]; then
   exit 1
 fi
 
+#gitflow=("isapi" "isapi-db-deploy" "oapi" "of" "pb")
+
+gitflow=(
+"isapi" 
+"isapi-db-deploy" 
+"oapi" 
+"of" 
+"pb")
+
 # Update the local cache from the Repo and confirm dev repo is queried
 echo -e "Updating local repo cache... \n"
 updateRepos=$(helm repo update|grep "gpitfuturesdevacr")
@@ -132,6 +141,7 @@ done
 
 # build a map (chart => version) for remote charts
 declare -A remoteChartsToVersions
+declare -A masterChartsToVersions
 
 if [ ! "$usePassedArgsOnly" ] && [ ! "$namespace" ]; then
   echo -e "Grabbing Chart information from the acr... \n"
@@ -140,6 +150,13 @@ if [ ! "$usePassedArgsOnly" ] && [ ! "$namespace" ]; then
     component=$(echo $entry | cut -d: -f1 ) 
     version=$(echo $entry | cut -d: -f2 ) 
     remoteChartsToVersions[$component]=$version
+  done
+
+  masterChartAndVersions=$(helm search repo gpit | sed "s@gpitfuturesdevacr/@@" | awk 'NR>1{printf("%s:%s ", $1, $2)}')
+  for entry in ${masterChartAndVersions[*]}; do
+    component=$(echo $entry | cut -d: -f1 ) 
+    version=$(echo $entry | cut -d: -f2 ) 
+    masterChartsToVersions[$component]=$version
   done
 fi
 
@@ -165,12 +182,24 @@ for key in "${!localChartsToVersions[@]}"; do
 done
 
 for component in ${!localChartsToVersions[@]}; do
-  if [ "${remoteChartsToVersions[$component]+isset}" ]; then
-    localVersion="${localChartsToVersions[$component]}"
-    remoteVersion="${remoteChartsToVersions[$component]}"
-    if [ "$localVersion" != "$remoteVersion" ]; then
-        changeSet[$component]=$remoteVersion
+  if [[ " ${gitflow[@]} " =~ " ${component} " ]]; then
+    if [ "${remoteChartsToVersions[$component]+isset}" ]; then
+      localVersion="${localChartsToVersions[$component]}"
+      remoteVersion="${remoteChartsToVersions[$component]}"
+      if [ "$localVersion" != "$remoteVersion" ]; then
+          changeSet[$component]=$remoteVersion
+      fi
     fi
+  fi
+
+  if [[ ! " ${gitflow[@]} " =~ " ${component} " ]]; then
+      if [ "${masterChartsToVersions[$component]+isset}" ]; then
+        localVersion="${localChartsToVersions[$component]}"
+        remoteVersion="${masterChartsToVersions[$component]}"
+        if [ "$localVersion" != "$remoteVersion" ]; then
+            changeSet[$component]=$remoteVersion
+        fi
+      fi
   fi
 done
 
