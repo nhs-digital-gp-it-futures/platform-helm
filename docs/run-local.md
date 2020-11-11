@@ -21,8 +21,8 @@ Ingress is required for the identity api to work. To enable the ingress, execute
 
 ```bash
 helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
-helm repo add stable https://kubernetes-charts.storage.googleapis.com/
-helm install bc ingress-nginx/ingress-nginx
+helm repo add stable https://charts.helm.sh/stable
+helm install bc ingress-nginx/ingress-nginx --version 3.7.1
 ```
 
 ### Add Namespace
