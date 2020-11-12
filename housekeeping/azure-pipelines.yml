@@ -212,8 +212,7 @@ jobs:
     - task: HelmInstaller@1
       displayName: 'install helm'
       inputs:
-        #helmVersionToInstall: 'latest'
-        helmVersionToInstall: '3.3.4'
+        helmVersionToInstall: 'latest'
 
     - task: AzureCLI@2
       name: setupHelmRepos
