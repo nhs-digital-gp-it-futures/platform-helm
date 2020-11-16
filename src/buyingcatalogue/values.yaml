@@ -378,9 +378,9 @@ ordapi:
     emailMessage:
       senderName: 
       senderAddress: 
-      recipientName: 
-      recipientAddress: 
-      subject: 
+      recipientName: "Gav Wakeley"
+      recipientAddress: gavwakeley@gav.com
+      subject: "hi there"
       htmlBody:
       textBody:
 
