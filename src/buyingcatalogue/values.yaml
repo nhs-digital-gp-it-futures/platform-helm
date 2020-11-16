@@ -374,6 +374,15 @@ ordapi:
       password:
         name: "bc-buyingcatalogue"
         key: email-password
+  purchasing:
+    emailMessage:
+      senderName: 
+      senderAddress: 
+      recipientName: 
+      recipientAddress: 
+      subject: 
+      htmlBody:
+      textBody:
 
 email:
   enabled: true  
