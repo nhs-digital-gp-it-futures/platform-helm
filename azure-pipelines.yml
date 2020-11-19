@@ -401,7 +401,7 @@ jobs:
           -d gpitfutures-development-sql-pri.database.windows.net \
           -u $sqlDbAdminUser \
           -p $sqlDbAdminPass \
-          --base-path "$(namespace).dev.buyingcatalogue.digital.nhs.uk" \
+          --base-path "$(namespace).dynamic.buyingcatalogue.digital.nhs.uk" \
           -w true \
           -v $(semVer) \
           -s "/p:DatabaseEdition=Standard /p:DatabaseServiceObjective=S0" \
