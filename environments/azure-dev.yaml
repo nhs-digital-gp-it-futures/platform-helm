@@ -6,6 +6,7 @@ isapi:
 
 email:
   ingress:
+    annotations: 
       appgw.ingress.kubernetes.io/appgw-ssl-certificate: dev-buying-catalogue-digital-nhs-uk
 
 mp:
