@@ -176,6 +176,7 @@ jobs:
     artifact: build-artifact 
 
 - job: prepareEnvironment
+  displayName: Prepare Environment
   dependsOn: packageAndPublish
   condition: and(succeeded(), ne(variables['Build.SourceBranch'], 'refs/heads/master'))
   variables:
@@ -213,6 +214,7 @@ jobs:
     condition: eq(variables['Build.Reason'], 'ResourceTrigger')
 
 - job: deployToDev
+  displayName: Deploy to Development Env
   dependsOn:
     - packageAndPublish 
     - prepareEnvironment
@@ -293,7 +295,8 @@ jobs:
       testRunTitle: 'Acceptance test results'
       publishRunAttachments: true
 
-- job: cleanUpDynamicEnv
+- job: cleanUpBranchEnv
+  displayName: Clean up Branch Env
   dependsOn: packageAndPublish
   condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
   variables:
@@ -330,7 +333,6 @@ jobs:
     name: cleanUp
     displayName: Clean up dynamic environments
 
-
 # TODO
 # - job: runAcceptanceTests
 #   dependsOn: packageAndPublish
@@ -342,5 +344,3 @@ jobs:
 #     admin
 #     order
 #     identity  
-
-
