@@ -221,23 +221,23 @@ redis-commander:
           - /redis-commander/*
 
 pb-ac-tests:
-  enabled: false
+  enabled: true
   testFilter: SmokeTest
 
 mp-ac-tests:
-  enabled: false
+  enabled: true
   testFilter: SmokeTest
 
 admin-ac-tests:
-  enabled: false
+  enabled: true
   testFilter: SmokeTest
 
 of-ac-tests:
-  enabled: false
+  enabled: true
   testFilter: SmokeTest
 
 allure:  
-  enabled: false
+  enabled: true
   ingress:
     enabled: true
     annotations: 
