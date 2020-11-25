@@ -22,8 +22,7 @@ $gitFlow=@(
     "isapi",
     "isapi-db-deploy",
     "oapi",
-    "of",
-    "pb"
+    "of"
 )
 #write-host $gitFlow
 
