@@ -102,8 +102,6 @@ pool:
 jobs:
 - job: packageAndPublish
   displayName: Package And Publish Buyingcatalogue
-  variables:
-    - group: dev-secrets
   steps:
   - task: UseGitVersion@5
     displayName: gitversion
@@ -114,28 +112,54 @@ jobs:
     displayName: 'install helm'
     inputs:
       helmVersionToInstall: 'latest'
-  - bash: |
-      helm repo add gpitfuturesdevacr https://gpitfuturesdevacr.azurecr.io/helm/v1/repo --username gpitfuturesdevacr --password $(gpitfuturesdevacr-pass)
-      helm dependency update src/buyingcatalogue
-      helm package \
-          --version $(GitVersion.SemVer) \
-          --app-version $(GitVersion.SemVer) \
-          src/buyingcatalogue
+
+  - task: AzureCLI@2
+    inputs:
+      azureSubscription: 'NHSAPP-BuyingCatalogue (Non-Prod)'
+      scriptType: 'bash'
+      scriptLocation: 'inlineScript'
+      inlineScript: |
+          acr="gpitfuturesdevacr"
+
+          acrUsername=$(az acr credential show --name $acr --query username -o tsv)
+          acrPassword=$(az acr credential show --name $acr --query passwords[0].value -o tsv)
+          acrLoginSvr=$(az acr list --query "[?name=='$acr'].loginServer" -o tsv)
+
+          helm repo add $acr https://$acrLoginSvr/helm/v1/repo --username $acrUsername --password $acrPassword
+          helm repo add stable https://charts.helm.sh/stable/
+          helm dependency update src/buyingcatalogue
+          helm package \
+              --version $(GitVersion.SemVer) \
+              --app-version $(GitVersion.SemVer) \
+              src/buyingcatalogue
     displayName: 'helm package'
-  - bash: |
-      chartPackage=$(ls buyingcatalogue-*.tgz)
-      echo "Chart Package $chartPackage"
-      az acr helm push --force \
-          -n gpitfuturesdevacr \
-          -u gpitfuturesdevacr \
-          -p $(gpitfuturesdevacr-pass) \
-          $chartPackage
-      echo $(jq -n --arg version "$(GitVersion.SemVer)" '{helmChartVersion: $version}') > $(build.artifactStagingDirectory)/variables.json
-    failOnStderr: false
-    name: helmPush
+
+  - task: AzureCLI@2
+    inputs:
+      azureSubscription: 'NHSAPP-BuyingCatalogue (Non-Prod)'
+      scriptType: 'bash'
+      scriptLocation: 'inlineScript'
+      failOnStandardError: false
+      inlineScript: |
+          chartPackage=$(ls buyingcatalogue-*.tgz)
+          echo "Chart Package $chartPackage"
+
+          acr="gpitfuturesdevacr"
+          acrUsername=$(az acr credential show --name $acr --query username -o tsv)
+          acrPassword=$(az acr credential show --name $acr --query passwords[0].value -o tsv)
+          acrLoginSvr=$(az acr list --query "[?name=='$acr'].loginServer" -o tsv)
+
+          az acr helm push --force \
+              -n $acr \
+              -u $acrUsername \
+              -p $acrPassword \
+              $chartPackage
+          echo $(jq -n --arg version "$(GitVersion.SemVer)" '{helmChartVersion: $version}') > $(build.artifactStagingDirectory)/variables.json
     displayName: 'az acr helm push'
+
   - script: echo "##vso[task.setvariable variable=semVer;isOutput=true]$(GitVersion.SemVer)"
     name: setVersionStep  
+
   - bash: |
       echo "semver $(setVersionStep.semVer), MajorMinorPatch $(GitVersion.MajorMinorPatch), Reason $(Build.Reason), Branch $(Build.SourceBranch), BranchName $(Build.SourceBranchName)"
       if [ $(Build.Reason) = "PullRequest" ]
@@ -180,16 +204,16 @@ jobs:
   dependsOn: packageAndPublish
   condition: and(succeeded(), ne(variables['Build.SourceBranch'], 'refs/heads/master'))
   variables:
-    - group: dev-secrets
     - name: semVer
       value: $[ dependencies.packageAndPublish.outputs['setVersionStep.semVer'] ]
+
   steps:
   - task: AzureCLI@2
     inputs:
       azureSubscription: 'NHSAPP-BuyingCatalogue (Non-Prod)'
       scriptType: 'bash'
       scriptLocation: 'inlineScript'
-      inlineScript: 'az aks get-credentials -n gpitfutures-dev-aks -g gpitfutures-dev-rg-aks'
+      inlineScript: 'az aks get-credentials -n gpitfutures-development-aks -g gpitfutures-development-rg-aks'
     name: kubectlContext
     displayName: Get Kubernetes Context
 
@@ -197,8 +221,21 @@ jobs:
     name: DeployVars
     displayName: Set up environment variables for deployment
   
-  - bash: |
-      helm repo add gpitfuturesdevacr https://gpitfuturesdevacr.azurecr.io/helm/v1/repo --username gpitfuturesdevacr --password $(gpitfuturesdevacr-pass)
+  - task: AzureCLI@2
+    inputs:
+      azureSubscription: 'NHSAPP-BuyingCatalogue (Non-Prod)'
+      scriptType: 'bash'
+      scriptLocation: 'inlineScript'
+      inlineScript: |
+          acr="gpitfuturesdevacr"
+
+          acrUsername=$(az acr credential show --name $acr --query username -o tsv)
+          acrPassword=$(az acr credential show --name $acr --query passwords[0].value -o tsv)
+          acrLoginSvr=$(az acr list --query "[?name=='$acr'].loginServer" -o tsv)
+
+          helm repo add $acr https://$acrLoginSvr/helm/v1/repo --username $acrUsername --password $acrPassword
+          helm repo add stable https://charts.helm.sh/stable/
+          helm repo update
     name: addRepo
     displayName: Add gpitfuturesdevacr repo
     condition: eq(variables['Build.Reason'], 'ResourceTrigger')
@@ -220,7 +257,7 @@ jobs:
     - prepareEnvironment
   condition: and(succeeded(), ne(variables['Build.SourceBranch'], 'refs/heads/master'))
   variables:
-    - group: dev-secrets
+    - group: dev-core-secrets
     - name: semVer
       value: $[ dependencies.packageAndPublish.outputs['setVersionStep.semVer'] ]
     - name: namespace
@@ -234,7 +271,7 @@ jobs:
       azureSubscription: 'NHSAPP-BuyingCatalogue (Non-Prod)'
       scriptType: 'bash'
       scriptLocation: 'inlineScript'
-      inlineScript: 'az aks get-credentials -n gpitfutures-dev-aks -g gpitfutures-dev-rg-aks'
+      inlineScript: 'az aks get-credentials -n gpitfutures-development-aks -g gpitfutures-development-rg-aks'
     name: kubectlContext
     displayName: Get Kubernetes Context
 
@@ -243,16 +280,27 @@ jobs:
     inputs:
       helmVersionToInstall: 'latest'
 
-  - bash: |
-      helm repo add gpitfuturesdevacr https://gpitfuturesdevacr.azurecr.io/helm/v1/repo --username gpitfuturesdevacr --password $(gpitfuturesdevacr-pass)
-      helm repo add stable https://charts.helm.sh/stable/
-      helm repo update
+  - task: AzureCLI@2
+    inputs:
+      azureSubscription: 'NHSAPP-BuyingCatalogue (Non-Prod)'
+      scriptType: 'bash'
+      scriptLocation: 'inlineScript'
+      inlineScript: |
+          acr="gpitfuturesdevacr"
+
+          acrUsername=$(az acr credential show --name $acr --query username -o tsv)
+          acrPassword=$(az acr credential show --name $acr --query passwords[0].value -o tsv)
+          acrLoginSvr=$(az acr list --query "[?name=='$acr'].loginServer" -o tsv)
+
+          helm repo add $acr https://$acrLoginSvr/helm/v1/repo --username $acrUsername --password $acrPassword
+          helm repo add stable https://charts.helm.sh/stable/
+          helm repo update
     name: addRepos
     displayName: Add gpitfuturesdevacr & stable repo
 
   - bash: |
         cd selenium-grid 
-        ./launch-selenium-grid.sh --ip "$(devClusterIp)" --add "$(namespace)-dev.buyingcatalogue.digital.nhs.uk"
+        ./launch-selenium-grid.sh --add "$(namespace).dev.buyingcatalogue.digital.nhs.uk"
     name: setupSeleniumGrid
     displayName: Setup Selenium Grid
 
@@ -261,27 +309,44 @@ jobs:
     name: delayNextStep
     displayName: Delay Next Step
 
-  - bash: |
-      ./launch-or-update-azure.sh -c remote \
-        -n $(namespace) \
-        -d gpitfutures-dev-sql-pri.database.windows.net \
-        -u $(gpitdevsqladminusername) \
-        -p $(gpitdevsqladminpassword) \
-        -w true \
-        -v $(semVer) \
-        -s "/p:DatabaseEdition=Standard /p:DatabaseServiceObjective=S0" \
-        -a "$(gpitdevstorageaccountconnectionstring)" \
-        -r $(srt-redishost) \
-        -q $(srt-redispass) \
-        --db-user-pass $(gpitfuturesdevdbpassword) \
-        -f "azure-dev.yaml"
+  - task: AzureCLI@2
+    inputs:
+      azureSubscription: 'NHSAPP-BuyingCatalogue (Non-Prod)'
+      scriptType: 'bash'
+      scriptLocation: 'inlineScript'
+      inlineScript: |
+          sqlDbAdminUser=$(az sql server list --query "[?name=='gpitfutures-development-sql-pri'].administratorLogin" -o tsv)
+          sqlDbAdminPass=$(az keyvault secret show --vault-name gpit-development-kv --name "gpitdevelopmentsqladminpassword" --query value -o tsv)
+          saConnectionString=$(az storage account show-connection-string --name gpitfuturesdevelopment --resource-group gpitfutures-development-rg-sa --query connectionString -o tsv)
+          appgwPip=$(az network public-ip show --name gpitfutures-development-pip --resource-group gpitfutures-development-rg-appgw --query ipAddress -o tsv)
+          redisHost=$(az redis show --resource-group gpitfutures-dev-core-rg-redis --name gpitfutures-dev-core-redis --query hostName -o tsv)
+          redisPass=$(az redis list-keys --resource-group gpitfutures-dev-core-rg-redis --name gpitfutures-dev-core-redis --query primaryKey -o tsv)
+
+          ./launch-or-update-azure.sh \
+          -c remote \
+          -n $(namespace) \
+          -d gpitfutures-development-sql-pri.database.windows.net \
+          -u $sqlDbAdminUser \
+          -p $sqlDbAdminPass \
+          --base-path "$(namespace).dev.buyingcatalogue.digital.nhs.uk" \
+          -w true \
+          -v $(semVer) \
+          -s "/p:DatabaseEdition=Standard /p:DatabaseServiceObjective=S0" \
+          -a "$saConnectionString" \
+          -i "$appgwPip" \
+          -r $redisHost \
+          -q $redisPass \
+          --cookie-secret=$(srt-cookiesecret) \
+          --client-secret=$(srt-clientsecret) \
+          --db-user-pass=$(srt-sqldevdbpass) \
+          -f "azure-dev.yaml"  
     name: deploySystem
     displayName: Deploy System
 
   - bash: |
       ping -c 240 127.0.0.1
     name: delayNextStep2
-    displayName: Delay Next Step again
+    displayName: Delay Next Step (4 mins)
 
   - bash: './get-test-results.sh -v $(semVer) -n $(namespace)'
     displayName: Grab test results
@@ -297,10 +362,11 @@ jobs:
 
 - job: cleanUpBranchEnv
   displayName: Clean up Branch Env
-  dependsOn: packageAndPublish
-  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+  dependsOn:
+    - packageAndPublish 
+    - deployToDev
+  condition: and(eq(variables['Build.SourceBranch'], 'refs/heads/master'), eq(dependencies.packageAndPublish.result, 'Succeeded'), eq(dependencies.deployToDev.result, 'Skipped'))
   variables:
-    - group: dev-secrets
     - name: semVer
       value: $[ dependencies.packageAndPublish.outputs['setVersionStep.semVer'] ]
   steps:
@@ -309,7 +375,7 @@ jobs:
       azureSubscription: 'NHSAPP-BuyingCatalogue (Non-Prod)'
       scriptType: 'bash'
       scriptLocation: 'inlineScript'
-      inlineScript: 'az aks get-credentials -n gpitfutures-dev-aks -g gpitfutures-dev-rg-aks'
+      inlineScript: 'az aks get-credentials -n gpitfutures-development-aks -g gpitfutures-development-rg-aks'
     name: kubectlContext
     displayName: Get Kubernetes Context
 
@@ -317,30 +383,31 @@ jobs:
     displayName: 'install helm'
     inputs:
       helmVersionToInstall: 'latest'
-
-  - bash: |
-      helm repo add gpitfuturesdevacr https://gpitfuturesdevacr.azurecr.io/helm/v1/repo --username gpitfuturesdevacr --password $(gpitfuturesdevacr-pass)
-    name: addRepo
-    displayName: Add gpitfuturesdevacr
     
+  - task: AzureCLI@2
+    inputs:
+      azureSubscription: 'NHSAPP-BuyingCatalogue (Non-Prod)'
+      scriptType: 'bash'
+      scriptLocation: 'inlineScript'
+      inlineScript: |
+          acr="gpitfuturesdevacr"
+
+          acrUsername=$(az acr credential show --name $acr --query username -o tsv)
+          acrPassword=$(az acr credential show --name $acr --query passwords[0].value -o tsv)
+          acrLoginSvr=$(az acr list --query "[?name=='$acr'].loginServer" -o tsv)
+
+          helm repo add $acr https://$acrLoginSvr/helm/v1/repo --username $acrUsername --password $acrPassword
+          helm repo add stable https://charts.helm.sh/stable/
+          helm repo update
+    name: addRepos
+    displayName: Add gpitfuturesdevacr & stable repo
+
   - task: AzureCLI@2
     inputs:
       azureSubscription: 'NHSAPP-BuyingCatalogue (Non-Prod)'
       scriptType: 'bash'
       scriptLocation: 'scriptPath'
       scriptPath: 'tear-down-azure.sh'
-      arguments: '-m "$(Build.SourceVersionMessage)" -d gpitfutures-dev-sql-pri -g gpitfutures-dev-rg-sql-pri -a "$(gpitdevstorageaccountconnectionstring)"'
+      arguments: '-m "$(Build.SourceVersionMessage)" -d gpitfutures-development-sql-pri -g gpitfutures-development-rg-sql-pri -a "$(az storage account show-connection-string --name gpitfuturesdevelopment --resource-group gpitfutures-development-rg-sa --query connectionString -o tsv)"'
     name: cleanUp
     displayName: Clean up dynamic environments
-
-# TODO
-# - job: runAcceptanceTests
-#   dependsOn: packageAndPublish
-#   variables:
-#     - group: dev-secrets
-#   steps:
-#     public browse
-#     marketing pages
-#     admin
-#     order
-#     identity  

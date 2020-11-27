@@ -14,8 +14,8 @@ Resources on the cluster are limited, so please try not to create too many envir
 To view the kubernetes dashboard in dev, run the snippet below 
 
 ```PS
-az aks get-credentials --name gpitfutures-dev-aks -g gpitfutures-dev-rg-aks --admin # note --admin at end is required for k8s v1.16+
-az aks browse --name gpitfutures-dev-aks -g gpitfutures-dev-rg-aks
+az aks get-credentials --name gpitfutures-development-aks -g gpitfutures-development-rg-aks --admin
+az aks browse --name gpitfutures-development-aks -g gpitfutures-development-rg-aks
 ```
 
 Note: In the event of issues accessing 127.0.0.1 '(NET::ERR_CERT_INVALID)' that CANNOT be overriden in Chrome, a [setting can be changed here to allow access - chrome://flags/#allow-insecure-localhost](chrome://flags/#allow-insecure-localhost)
@@ -39,7 +39,7 @@ Once the environment is created, you'll see a namespace in the dashboard called 
 There is a helper script that allows the direct creation of an environment in azure, mimicking the build process. To use:
 
 - Point `kubectl` to the development cluster 
-  - `az aks get-credentials -n gpitfutures-dev-aks -g gpitfutures-dev-rg-aks` to get the credentials, if you've not previously connected.
+  - `az aks get-credentials -n gpitfutures-development-aks -g gpitfutures-development-rg-aks` to get the credentials, if you've not previously connected.
 - Run `launch-or-update-azure.sh -h` for details of the parameters needed to deploy the system in the cloud. 
 
 ## PR Process
