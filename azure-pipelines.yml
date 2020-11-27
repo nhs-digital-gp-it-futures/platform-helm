@@ -205,9 +205,9 @@ jobs:
   dependsOn: packageAndPublish
   condition: and(succeeded(), ne(variables['Build.SourceBranch'], 'refs/heads/master'))
   variables:
-#    - group: dev-secrets
     - name: semVer
       value: $[ dependencies.packageAndPublish.outputs['setVersionStep.semVer'] ]
+
   steps:
   - task: AzureCLI@2
     inputs:
@@ -344,23 +344,6 @@ jobs:
     name: deploySystem
     displayName: Deploy System
 
-  # - bash: |
-  #     ./launch-or-update-azure.sh -c remote \
-  #       -n $(namespace) \
-  #       -d gpitfutures-dev-sql-pri.database.windows.net \
-  #       -u $(gpitdevsqladminusername) \
-  #       -p $(gpitdevsqladminpassword) \
-  #       -w true \
-  #       -v $(semVer) \
-  #       -s "/p:DatabaseEdition=Standard /p:DatabaseServiceObjective=S0" \
-  #       -a "$(gpitdevstorageaccountconnectionstring)" \
-  #       -r $(srt-redishost) \
-  #       -q $(srt-redispass) \
-  #       --db-user-pass $(gpitfuturesdevdbpassword) \
-  #       -f "azure-dev.yaml"
-  #   name: deploySystem
-  #   displayName: Deploy System
-
   - bash: |
       ping -c 240 127.0.0.1
     name: delayNextStep2
@@ -380,7 +363,6 @@ jobs:
 
 - job: cleanUpBranchEnv
   displayName: Clean up Branch Env
-  #dependsOn: packageAndPublish
   dependsOn:
     - packageAndPublish 
     - deployToDev
@@ -430,15 +412,3 @@ jobs:
       arguments: '-m "$(Build.SourceVersionMessage)" -d gpitfutures-development-sql-pri -g gpitfutures-development-rg-sql-pri -a "$(az storage account show-connection-string --name gpitfuturesdevelopment --resource-group gpitfutures-development-rg-sa --query connectionString -o tsv)"'
     name: cleanUp
     displayName: Clean up dynamic environments
-
-# TODO
-# - job: runAcceptanceTests
-#   dependsOn: packageAndPublish
-#   variables:
-#     - group: dev-secrets
-#   steps:
-#     public browse
-#     marketing pages
-#     admin
-#     order
-#     identity  
