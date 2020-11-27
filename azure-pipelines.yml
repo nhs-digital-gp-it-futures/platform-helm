@@ -102,8 +102,8 @@ pool:
 jobs:
 - job: packageAndPublish
   displayName: Package And Publish Buyingcatalogue
-  variables:
-    - group: dev-secrets
+#  variables:
+#    - group: dev-secrets
   steps:
   - task: UseGitVersion@5
     displayName: gitversion
@@ -137,23 +137,27 @@ jobs:
               src/buyingcatalogue
     displayName: 'helm package'
 
-  - bash: |
-      chartPackage=$(ls buyingcatalogue-*.tgz)
-      echo "Chart Package $chartPackage"
+  - task: AzureCLI@2
+    inputs:
+      azureSubscription: 'NHSAPP-BuyingCatalogue (Non-Prod)'
+      scriptType: 'bash'
+      scriptLocation: 'inlineScript'
+      failOnStandardError: false
+      inlineScript: |
+          chartPackage=$(ls buyingcatalogue-*.tgz)
+          echo "Chart Package $chartPackage"
 
-      acr="gpitfuturesdevacr"
-      acrUsername=$(az acr credential show --name $acr --query username -o tsv)
-      acrPassword=$(az acr credential show --name $acr --query passwords[0].value -o tsv)
-      acrLoginSvr=$(az acr list --query "[?name=='$acr'].loginServer" -o tsv)
+          acr="gpitfuturesdevacr"
+          acrUsername=$(az acr credential show --name $acr --query username -o tsv)
+          acrPassword=$(az acr credential show --name $acr --query passwords[0].value -o tsv)
+          acrLoginSvr=$(az acr list --query "[?name=='$acr'].loginServer" -o tsv)
 
-      az acr helm push --force \
-          -n $acr \
-          -u $acrUsername \
-          -p $acrPassword \
-          $chartPackage
-      echo $(jq -n --arg version "$(GitVersion.SemVer)" '{helmChartVersion: $version}') > $(build.artifactStagingDirectory)/variables.json
-    failOnStderr: false
-    name: helmPush
+          az acr helm push --force \
+              -n $acr \
+              -u $acrUsername \
+              -p $acrPassword \
+              $chartPackage
+          echo $(jq -n --arg version "$(GitVersion.SemVer)" '{helmChartVersion: $version}') > $(build.artifactStagingDirectory)/variables.json
     displayName: 'az acr helm push'
 
   - script: echo "##vso[task.setvariable variable=semVer;isOutput=true]$(GitVersion.SemVer)"
