@@ -345,10 +345,14 @@ jobs:
 
 - job: cleanUpBranchEnv
   displayName: Clean up Branch Env
-  dependsOn: packageAndPublish
-  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+  #dependsOn: packageAndPublish
+  dependsOn:
+    - packageAndPublish 
+    - deployToDev
+  #condition: and(eq(variables['Build.SourceBranch'], 'refs/heads/master'), eq(dependencies.packageAndPublish.result, 'Succeeded'), eq(dependencies.deployToDev.result, 'Skipped'))
+  condition: and(eq(variables['Build.SourceBranch'], 'refs/heads/feature/10347-amend-dynamic-dev-pipeline'), eq(dependencies.packageAndPublish.result, 'Succeeded'), eq(dependencies.deployToDev.result, 'Succeeded'))
   variables:
-    - group: dev-secrets
+#    - group: dev-secrets
     - name: semVer
       value: $[ dependencies.packageAndPublish.outputs['setVersionStep.semVer'] ]
   steps:
@@ -366,20 +370,40 @@ jobs:
     inputs:
       helmVersionToInstall: 'latest'
 
-  - bash: |
-      helm repo add gpitfuturesdevacr https://gpitfuturesdevacr.azurecr.io/helm/v1/repo --username gpitfuturesdevacr --password $(gpitfuturesdevacr-pass)
-    name: addRepo
-    displayName: Add gpitfuturesdevacr
+  # - bash: |
+  #     helm repo add gpitfuturesdevacr https://gpitfuturesdevacr.azurecr.io/helm/v1/repo --username gpitfuturesdevacr --password $(gpitfuturesdevacr-pass)
+  #   name: addRepo
+  #   displayName: Add gpitfuturesdevacr
     
+  - task: AzureCLI@2
+    inputs:
+      azureSubscription: 'NHSAPP-BuyingCatalogue (Non-Prod)'
+      scriptType: 'bash'
+      scriptLocation: 'inlineScript'
+      inlineScript: |
+          acr="gpitfuturesdevacr"
+
+          acrUsername=$(az acr credential show --name $acr --query username -o tsv)
+          acrPassword=$(az acr credential show --name $acr --query passwords[0].value -o tsv)
+          acrLoginSvr=$(az acr list --query "[?name=='$acr'].loginServer" -o tsv)
+
+          helm repo add $acr https://$acrLoginSvr/helm/v1/repo --username $acrUsername --password $acrPassword
+          helm repo add stable https://charts.helm.sh/stable/
+          helm repo update
+    name: addRepos
+    displayName: Add gpitfuturesdevacr & stable repo
+
   - task: AzureCLI@2
     inputs:
       azureSubscription: 'NHSAPP-BuyingCatalogue (Non-Prod)'
       scriptType: 'bash'
       scriptLocation: 'scriptPath'
       scriptPath: 'tear-down-azure.sh'
-      arguments: '-m "$(Build.SourceVersionMessage)" -d gpitfutures-development-sql-pri -g gpitfutures-development-rg-sql-pri -a "$(gpitdevstorageaccountconnectionstring)"'
+      arguments: '-m "$(Build.SourceVersionMessage)" -d gpitfutures-development-sql-pri -g gpitfutures-development-rg-sql-pri -a "$(az storage account show-connection-string --name gpitfuturesdevelopment --resource-group gpitfutures-development-rg-sa --query connectionString -o tsv)"'
     name: cleanUp
     displayName: Clean up dynamic environments
+
+    
 
 # TODO
 # - job: runAcceptanceTests
