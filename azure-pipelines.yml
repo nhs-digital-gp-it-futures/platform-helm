@@ -357,7 +357,7 @@ jobs:
       azureSubscription: 'NHSAPP-BuyingCatalogue (Non-Prod)'
       scriptType: 'bash'
       scriptLocation: 'inlineScript'
-      inlineScript: 'az aks get-credentials -n gpitfutures-dev-aks -g gpitfutures-dev-rg-aks'
+      inlineScript: 'az aks get-credentials -n gpitfutures-development-aks -g gpitfutures-development-rg-aks'
     name: kubectlContext
     displayName: Get Kubernetes Context
 
@@ -377,7 +377,7 @@ jobs:
       scriptType: 'bash'
       scriptLocation: 'scriptPath'
       scriptPath: 'tear-down-azure.sh'
-      arguments: '-m "$(Build.SourceVersionMessage)" -d gpitfutures-dev-sql-pri -g gpitfutures-dev-rg-sql-pri -a "$(gpitdevstorageaccountconnectionstring)"'
+      arguments: '-m "$(Build.SourceVersionMessage)" -d gpitfutures-development-sql-pri -g gpitfutures-development-rg-sql-pri -a "$(gpitdevstorageaccountconnectionstring)"'
     name: cleanUp
     displayName: Clean up dynamic environments
 
