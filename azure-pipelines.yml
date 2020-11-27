@@ -114,22 +114,42 @@ jobs:
     displayName: 'install helm'
     inputs:
       helmVersionToInstall: 'latest'
-  - bash: |
-      helm repo add gpitfuturesdevacr https://gpitfuturesdevacr.azurecr.io/helm/v1/repo --username gpitfuturesdevacr --password $(gpitfuturesdevacr-pass)
-      helm dependency update src/buyingcatalogue
-      helm package \
-          --version $(GitVersion.SemVer) \
-          --app-version $(GitVersion.SemVer) \
-          src/buyingcatalogue
+
+  - task: AzureCLI@2
+    inputs:
+      azureSubscription: 'NHSAPP-BuyingCatalogue (Non-Prod)'
+      scriptType: 'bash'
+      scriptLocation: 'inlineScript'
+      inlineScript: |
+          acr="gpitfuturesdevacr"
+
+          acrUsername=$(az acr credential show --name $acr --query username -o tsv)
+          acrPassword=$(az acr credential show --name $acr --query passwords[0].value -o tsv)
+          acrLoginSvr=$(az acr list --query "[?name=='$acr'].loginServer" -o tsv)
+
+          helm repo add $acr https://$acrLoginSvr/helm/v1/repo --username $acrUsername --password $acrPassword
+          helm repo add stable https://charts.helm.sh/stable/
+          helm repo update
+          helm dependency update src/buyingcatalogue
+          helm package \
+              --version $(GitVersion.SemVer) \
+              --app-version $(GitVersion.SemVer) \
+              src/buyingcatalogue
     displayName: 'helm package'
 
   - bash: |
       chartPackage=$(ls buyingcatalogue-*.tgz)
       echo "Chart Package $chartPackage"
+
+      acr="gpitfuturesdevacr"
+      acrUsername=$(az acr credential show --name $acr --query username -o tsv)
+      acrPassword=$(az acr credential show --name $acr --query passwords[0].value -o tsv)
+      acrLoginSvr=$(az acr list --query "[?name=='$acr'].loginServer" -o tsv)
+
       az acr helm push --force \
-          -n gpitfuturesdevacr \
-          -u gpitfuturesdevacr \
-          -p $(gpitfuturesdevacr-pass) \
+          -n $acr \
+          -u $acrUsername \
+          -p $acrPassword \
           $chartPackage
       echo $(jq -n --arg version "$(GitVersion.SemVer)" '{helmChartVersion: $version}') > $(build.artifactStagingDirectory)/variables.json
     failOnStderr: false
@@ -349,10 +369,8 @@ jobs:
   dependsOn:
     - packageAndPublish 
     - deployToDev
-  #condition: and(eq(variables['Build.SourceBranch'], 'refs/heads/master'), eq(dependencies.packageAndPublish.result, 'Succeeded'), eq(dependencies.deployToDev.result, 'Skipped'))
-  condition: and(eq(variables['Build.SourceBranch'], 'refs/heads/feature/10347-amend-dynamic-dev-pipeline'), eq(dependencies.packageAndPublish.result, 'Succeeded'), eq(dependencies.deployToDev.result, 'Succeeded'))
+  condition: and(eq(variables['Build.SourceBranch'], 'refs/heads/master'), eq(dependencies.packageAndPublish.result, 'Succeeded'), eq(dependencies.deployToDev.result, 'Skipped'))
   variables:
-#    - group: dev-secrets
     - name: semVer
       value: $[ dependencies.packageAndPublish.outputs['setVersionStep.semVer'] ]
   steps:
@@ -369,11 +387,6 @@ jobs:
     displayName: 'install helm'
     inputs:
       helmVersionToInstall: 'latest'
-
-  # - bash: |
-  #     helm repo add gpitfuturesdevacr https://gpitfuturesdevacr.azurecr.io/helm/v1/repo --username gpitfuturesdevacr --password $(gpitfuturesdevacr-pass)
-  #   name: addRepo
-  #   displayName: Add gpitfuturesdevacr
     
   - task: AzureCLI@2
     inputs:
@@ -402,8 +415,6 @@ jobs:
       arguments: '-m "$(Build.SourceVersionMessage)" -d gpitfutures-development-sql-pri -g gpitfutures-development-rg-sql-pri -a "$(az storage account show-connection-string --name gpitfuturesdevelopment --resource-group gpitfutures-development-rg-sa --query connectionString -o tsv)"'
     name: cleanUp
     displayName: Clean up dynamic environments
-
-    
 
 # TODO
 # - job: runAcceptanceTests
