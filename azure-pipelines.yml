@@ -406,8 +406,9 @@ jobs:
     inputs:
       azureSubscription: 'NHSAPP-BuyingCatalogue (Non-Prod)'
       scriptType: 'bash'
-      scriptLocation: 'scriptPath'
-      scriptPath: 'tear-down-azure.sh'
-      arguments: '-m "$(Build.SourceVersionMessage)" -d gpitfutures-development-sql-pri -g gpitfutures-development-rg-sql-pri -a "$(az storage account show-connection-string --name gpitfuturesdevelopment --resource-group gpitfutures-development-rg-sa --query connectionString -o tsv)"'
+      scriptLocation: 'inlineScript'
+      inlineScript: |
+        sqlConnectionString=$(az storage account show-connection-string --name gpitfuturesdevelopment --resource-group gpitfutures-development-rg-sa --query connectionString -o tsv)
+        ./tear-down-azure.sh -m "$(Build.SourceVersionMessage)" -d gpitfutures-development-sql-pri -g gpitfutures-development-rg-sql-pri -a "$sqlConnectionString"
     name: cleanUp
     displayName: Clean up dynamic environments

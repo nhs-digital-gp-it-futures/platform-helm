@@ -4,9 +4,9 @@ param(
     [Parameter()]  
     [string]$directories,
     [Parameter()] 
-    [string]$dbServer="gpitfutures-dev-sql-pri",
+    [string]$dbServer="gpitfutures-development-sql-pri",
     [Parameter()] 
-    [string]$resourceGroup="gpitfutures-dev-rg-sql-pri",
+    [string]$resourceGroup="gpitfutures-development-rg-sql-pri",
     [Parameter()] 
     [string]$debugging="true"
 )
