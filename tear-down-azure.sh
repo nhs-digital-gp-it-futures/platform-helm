@@ -29,6 +29,10 @@ OPTS=$(getopt --options $SHORT --long $LONG --name "$0" -- "$@")
 if [ $? != 0 ] ; then echo "Failed to parse options... exiting." >&2 ; exit 1 ; fi
 eval set -- "$OPTS"
 
+# Defaults
+dbServer="gpitfutures-development-sql-pri"
+resourceGroup="gpitfutures-development-rg-sql-pri"
+
 # extract options and their arguments into variables.
 while true ; do
   case "$1" in
@@ -122,10 +126,6 @@ function deleteAllResources {
     deleteBlobStoreContainers 2> /dev/null
     deleteDatabases
 }
-
-# Defaults
-dbServer="gpitfutures-dev-sql-pri"
-resourceGroup="gpitfutures-dev-rg-sql-pri"
 
 if [ -z "$azureStorageConnectionString" ]; then
     echo "Missing blob storage connection string argument, exiting..."
