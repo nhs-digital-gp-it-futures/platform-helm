@@ -6,7 +6,6 @@ schedules:
       - master
     always: true
 
-#trigger: none
 trigger:
  batch: true
  branches:
@@ -282,21 +281,15 @@ jobs:
               --cookie-secret=$(srt-cookiesecret) \
               --client-secret=$(srt-clientsecret) \
               --db-user-pass=$(srt-sqldevdbpass) \
-              -f "azure-dev.yaml" 
+              -f "azure-dev.yaml" \
+              --helm-upgrade-args "--set pb-ac-tests.testFilter= --set admin-ac-tests.testFilter= --set mp-ac-tests.testFilter= --set of-ac-tests.enabled=true --set of-ac-tests.testFilter="
       name: deploySystem
       displayName: Deploy System
 
-#\
-#--helm-upgrade-args "--set pb-ac-tests.testFilter= --set admin-ac-tests.testFilter= --set mp-ac-tests.testFilter= --set of-ac-tests.enabled=true --set of-ac-tests.testFilter="
-# - bash: |
-# ping -c 1800 127.0.0.1
-# name: delayNextStep30m
-# displayName: Delay Next Step again (30 mins)
-
     - bash: |
-        ping -c 240 127.0.0.1
-      name: delayNextStep4m
-      displayName: Delay Next Step again (4 mins)
+        ping -c 1800 127.0.0.1
+      name: delayNextStep30m
+      displayName: Delay Next Step again (30 mins)
 
     - bash: './get-test-results.sh -n $(namespace)'
       displayName: Grab test results
@@ -309,14 +302,3 @@ jobs:
         failTaskOnFailedTests: false
         testRunTitle: 'Acceptance test results (Full Suite)'
         publishRunAttachments: true
-
-### Disabled task - reports on tickets open. Task is for a separate ticket.
-#  - job: getWorkitems
-#    pool: server
-#    displayName: Get all work items
-#    steps:
-#      - task: queryWorkItems@0
-#        inputs:
-#          queryId: 'c2529b1c-442a-438b-9f2a-1ca69c9c269a'
-#          maxThreshold: '1000'
-#          minThreshold: '0'
