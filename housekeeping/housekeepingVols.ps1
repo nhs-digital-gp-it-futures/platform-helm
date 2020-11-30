@@ -1,6 +1,6 @@
 param(
     [Parameter()] 
-    [string]$resourceGroup="gpitfutures-dev-rg-aks-pool",
+    [string]$resourceGroup="gpitfutures-development-rg-aks-pool",
     [Parameter()] 
     [string]$debugging="true"
 )
