@@ -180,6 +180,29 @@ jobs:
               $chartPackage
     displayName: 'Helm Push to Test ACR'
 
+  - task: AzureCLI@2
+    condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+    inputs:
+      azureSubscription: 'NHSAPP-BuyingCatalogue (Prod)'
+      scriptType: 'bash'
+      scriptLocation: 'inlineScript'
+      failOnStandardError: false
+      inlineScript: |
+          chartPackage=$(ls buyingcatalogue-*.tgz)
+          echo "Chart Package $chartPackage"
+
+          acr="gpitfuturesprodacr"
+          acrUsername=$(az acr credential show --name $acr --query username -o tsv)
+          acrPassword=$(az acr credential show --name $acr --query passwords[0].value -o tsv)
+          acrLoginSvr=$(az acr list --query "[?name=='$acr'].loginServer" -o tsv)
+
+          az acr helm push --force \
+              -n $acr \
+              -u $acrUsername \
+              -p $acrPassword \
+              $chartPackage
+    displayName: 'Helm Push to Prod ACR'
+
   - script: echo "##vso[task.setvariable variable=semVer;isOutput=true]$(GitVersion.SemVer)"
     name: setVersionStep  
 
@@ -250,7 +273,7 @@ jobs:
       scriptType: 'bash'
       scriptLocation: 'inlineScript'
       inlineScript: |
-          acr="gpitfuturesdevacr"
+          acr="gpitfuturestestacr"
 
           acrUsername=$(az acr credential show --name $acr --query username -o tsv)
           acrPassword=$(az acr credential show --name $acr --query passwords[0].value -o tsv)
@@ -309,7 +332,7 @@ jobs:
       scriptType: 'bash'
       scriptLocation: 'inlineScript'
       inlineScript: |
-          acr="gpitfuturesdevacr"
+          acr="gpitfuturestestacr"
 
           acrUsername=$(az acr credential show --name $acr --query username -o tsv)
           acrPassword=$(az acr credential show --name $acr --query passwords[0].value -o tsv)
