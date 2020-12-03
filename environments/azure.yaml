@@ -134,7 +134,7 @@ mp:
     hosts:
       - host: <namespace>.dev.buyingcatalogue.digital.nhs.uk #To override from build
         paths: 
-          - /marketing/*
+          - /marketing*
 
 pb: 
   enabled: true
@@ -176,7 +176,7 @@ admin:
     hosts:
       - host: <namespace>.dev.buyingcatalogue.digital.nhs.uk #To override from build
         paths: 
-          - /admin/*
+          - /admin*
     tls: []      
 
 of: 
@@ -195,7 +195,7 @@ of:
     hosts:
       - host: <namespace>.dev.buyingcatalogue.digital.nhs.uk #To override from build
         paths: 
-          - /order/*
+          - /order*
     tls: []  
   baseUri: "/order"  
 
