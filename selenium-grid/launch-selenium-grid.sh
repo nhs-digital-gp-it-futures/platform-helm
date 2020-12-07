@@ -16,13 +16,15 @@ function displayHelp {
             Sets the timeout for waiting on living pods, defaults to $timeout
           -p, --pod-count <number of desired chrome pods>
             Sets the replica count for chrome pods, defaults to $pods
+          --helm-upgrade-args <arguments>
+            Pass additional arguments to helm upgrade
           "
   exit
 }
 
 # Option strings
 SHORT="ha:i:n:t:p:"
-LONG="help,add:,ip:,namespace:,timeout:,pod-count:"
+LONG="help,add:,ip:,namespace:,timeout:,pod-count:,helm-upgrade-args:"
 
 # read the options
 OPTS=$(getopt --options $SHORT --long $LONG --name "$0" -- "$@")
@@ -60,6 +62,10 @@ while true ; do
       ;;
     -p | --pod-count )
       pods="$2"
+      shift 2
+      ;;
+    --helm-upgrade-args )
+      helmUpgradeArgs="$2"
       shift 2
       ;;
     -- )
@@ -124,4 +130,4 @@ function constructHostAliasArgs {
 
 makeSureNamespaceExists
 
-helm upgrade sel-grid stable/selenium -i -f values.yaml -n $namespace $(constructHostAliasArgs) --set chrome.replicas=$pods
+helm upgrade sel-grid stable/selenium -i -f values.yaml -n $namespace $(constructHostAliasArgs) --set chrome.replicas=$pods $helmUpgradeArgs
