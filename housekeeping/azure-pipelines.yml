@@ -133,6 +133,15 @@ jobs:
             az aks update -n gpitfutures-development-aks -g gpitfutures-development-rg-aks --api-server-authorized-ip-ranges "" > /dev/null
 
     - task: AzureCLI@2
+      name: disableEnhancedStorageFirewall
+      displayName: Disable Enhanced SA Firewall Restrictions
+      inputs:
+        azureSubscription: 'NHSAPP-BuyingCatalogue (Non-Prod)'
+        scriptType: 'bash'
+        scriptLocation: 'inlineScript'
+        inlineScript: az storage account update --resource-group gpitfutures-development-rg-sa --name gpitfuturesdevelopment --default-action Allow > /dev/null
+
+    - task: AzureCLI@2
       inputs:
         azureSubscription: 'NHSAPP-BuyingCatalogue (Non-Prod)'
         scriptType: 'pscore'
@@ -323,3 +332,12 @@ jobs:
         inlineScript: |
             ipRange=$(az keyvault secret show --vault-name gpitfutures-dev-core-kv --name "gpitdevbjssvpn" --query value -o tsv)
             az aks update -n gpitfutures-development-aks -g gpitfutures-development-rg-aks --api-server-authorized-ip-ranges "$ipRange" > /dev/null
+
+    - task: AzureCLI@2
+      name: enableEnhancedStorageFirewall
+      displayName: Enable Enhanced SA Firewall Restrictions
+      inputs:
+        azureSubscription: 'NHSAPP-BuyingCatalogue (Non-Prod)'
+        scriptType: 'bash'
+        scriptLocation: 'inlineScript'
+        inlineScript: az storage account update --resource-group gpitfutures-development-rg-sa --name gpitfuturesdevelopment --default-action Deny > /dev/null
