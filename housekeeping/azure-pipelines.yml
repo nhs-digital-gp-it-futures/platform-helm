@@ -123,6 +123,16 @@ jobs:
       displayName: Get Kubernetes Context
 
     - task: AzureCLI@2
+      name: disableEnhancedAKSFirewall
+      displayName: Disable Enhanced AKS Firewall Restrictions
+      inputs:
+        azureSubscription: 'NHSAPP-BuyingCatalogue (Non-Prod)'
+        scriptType: 'bash'
+        scriptLocation: 'inlineScript'
+        inlineScript: |
+            az aks update -n gpitfutures-development-aks -g gpitfutures-development-rg-aks --api-server-authorized-ip-ranges "" > /dev/null
+
+    - task: AzureCLI@2
       inputs:
         azureSubscription: 'NHSAPP-BuyingCatalogue (Non-Prod)'
         scriptType: 'pscore'
@@ -302,3 +312,14 @@ jobs:
         failTaskOnFailedTests: false
         testRunTitle: 'Acceptance test results (Full Suite)'
         publishRunAttachments: true
+
+    - task: AzureCLI@2
+      name: enableEnhancedAKSFirewall
+      displayName: Enable Enhanced AKS Firewall Restrictions
+      inputs:
+        azureSubscription: 'NHSAPP-BuyingCatalogue (Non-Prod)'
+        scriptType: 'bash'
+        scriptLocation: 'inlineScript'
+        inlineScript: |
+            ipRange=$(az keyvault secret show --vault-name gpitfutures-dev-core-kv --name "gpitdevbjssvpn" --query value -o tsv)
+            az aks update -n gpitfutures-development-aks -g gpitfutures-development-rg-aks --api-server-authorized-ip-ranges "$ipRange" > /dev/null
