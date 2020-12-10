@@ -97,7 +97,7 @@ function calculateNamespaceNames {
 }
 
 function deleteKubernetesResources {
-    kubectl delete ns $branchNamespace $prNamespace || true
+    kubectl delete namespace $branchNamespace $prNamespace || true
 }
 
 function deleteBlobStoreContainers {
