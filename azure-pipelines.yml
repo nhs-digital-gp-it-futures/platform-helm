@@ -344,6 +344,16 @@ jobs:
     name: addRepos
     displayName: Add gpitfuturesdevacr & stable repo
 
+  - task: AzureCLI@2
+    name: disableEnhancedAKSFirewall
+    displayName: Disable Enhanced AKS Firewall Restrictions
+    inputs:
+      azureSubscription: 'NHSAPP-BuyingCatalogue (Non-Prod)'
+      scriptType: 'bash'
+      scriptLocation: 'inlineScript'
+      inlineScript: |
+          az aks update -n gpitfutures-development-aks -g gpitfutures-development-rg-aks --api-server-authorized-ip-ranges "" > /dev/null
+
   - bash: |
         cd selenium-grid 
         ./launch-selenium-grid.sh --add "$(namespace).dev.buyingcatalogue.digital.nhs.uk"
@@ -406,6 +416,17 @@ jobs:
       testRunTitle: 'Acceptance test results'
       publishRunAttachments: true
 
+  - task: AzureCLI@2
+    name: enableEnhancedAKSFirewall
+    displayName: Enable Enhanced AKS Firewall Restrictions
+    inputs:
+      azureSubscription: 'NHSAPP-BuyingCatalogue (Non-Prod)'
+      scriptType: 'bash'
+      scriptLocation: 'inlineScript'
+      inlineScript: |
+          ipRange=$(az keyvault secret show --vault-name gpitfutures-dev-core-kv --name "gpitdevbjssvpn" --query value -o tsv)
+          az aks update -n gpitfutures-development-aks -g gpitfutures-development-rg-aks --api-server-authorized-ip-ranges "$ipRange" > /dev/null
+
 - job: cleanUpBranchEnv
   displayName: Clean up Branch Env
   dependsOn:
@@ -449,6 +470,16 @@ jobs:
     displayName: Add gpitfuturesdevacr & stable repo
 
   - task: AzureCLI@2
+    name: disableEnhancedAKSFirewall
+    displayName: Disable Enhanced AKS Firewall Restrictions
+    inputs:
+      azureSubscription: 'NHSAPP-BuyingCatalogue (Non-Prod)'
+      scriptType: 'bash'
+      scriptLocation: 'inlineScript'
+      inlineScript: |
+          az aks update -n gpitfutures-development-aks -g gpitfutures-development-rg-aks --api-server-authorized-ip-ranges "" > /dev/null
+
+  - task: AzureCLI@2
     inputs:
       azureSubscription: 'NHSAPP-BuyingCatalogue (Non-Prod)'
       scriptType: 'bash'
@@ -458,3 +489,14 @@ jobs:
         ./tear-down-azure.sh -m "$(Build.SourceVersionMessage)" -d gpitfutures-development-sql-pri -g gpitfutures-development-rg-sql-pri -a "$sqlConnectionString"
     name: cleanUp
     displayName: Clean up dynamic environments
+
+  - task: AzureCLI@2
+    name: enableEnhancedAKSFirewall
+    displayName: Enable Enhanced AKS Firewall Restrictions
+    inputs:
+      azureSubscription: 'NHSAPP-BuyingCatalogue (Non-Prod)'
+      scriptType: 'bash'
+      scriptLocation: 'inlineScript'
+      inlineScript: |
+          ipRange=$(az keyvault secret show --vault-name gpitfutures-dev-core-kv --name "gpitdevbjssvpn" --query value -o tsv)
+          az aks update -n gpitfutures-development-aks -g gpitfutures-development-rg-aks --api-server-authorized-ip-ranges "$ipRange" > /dev/null
