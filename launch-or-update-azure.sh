@@ -7,6 +7,8 @@ function displayHelp {
             Display help
           -c, --chart [local|local-cache|remote]
             chart is (default) remote(gpitfuturesdevacr/buyingcatalogue), or local (src/buyingcatalogue) 
+          -l, --helm-repo <Helm Repo>
+            Container Repository where images are to be updated from (defaults to gpitfuturesdevacr/buyingcatalogue)
           -n, --namespace <namespace>
             Namespace to deploy to; otherwise generated to be a random 8 characters
           -d, --db-server <database server>
@@ -53,8 +55,8 @@ function displayHelp {
   exit
 }
 # Option strings
-SHORT="hc:n:d:u:p:v:wb:s:a:i:r:q:f:"
-LONG="help,chart:,namespace:,db-server:,db-admin-user:,db-admin-pass:,version:,wait,base-path:,sql-package-args:,azure-storage-connection-string:,ip,redis-server:,redis-password:,file-overrides:,client-secret:,cookie-secret:,db-user-pass:,email-server:,email-user:,email-pass:,helm-upgrade-args:"
+SHORT="hc:l:n:d:u:p:v:wb:s:a:i:r:q:f:"
+LONG="help,chart:,helm-repo:,namespace:,db-server:,db-admin-user:,db-admin-pass:,version:,wait,base-path:,sql-package-args:,azure-storage-connection-string:,ip,redis-server:,redis-password:,file-overrides:,client-secret:,cookie-secret:,db-user-pass:,email-server:,email-user:,email-pass:,helm-upgrade-args:"
 
 # read the options
 OPTS=$(getopt --options $SHORT --long $LONG --name "$0" -- "$@")
@@ -86,6 +88,10 @@ while true ; do
       then
         chart="src/buyingcatalogue"
       fi
+      shift 2
+      ;;
+    -l | --helm-repo )
+      repo="$2"
       shift 2
       ;;
     -n | --namespace )
@@ -205,7 +211,12 @@ if [ -z ${redisServer+x} ] || [ -z ${redisPassword+x} ]; then
   exit
 fi
 
-if [ -n "$version" ] && [ "$chart" = "gpitfuturesdevacr/buyingcatalogue" ]
+if [ -n "$repo" ] && [[ $chart == *"acr/buyingcatalogue"* ]]
+then  
+  chart="$repo"
+fi
+
+if [ -n "$version" ] && [[ $chart == *"acr/buyingcatalogue"* ]]
 then  
   versionArg="--version $version"  
 fi
