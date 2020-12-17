@@ -29,11 +29,11 @@ dependencies:
   version: ~0.1.0
 - name: bapi-db-deploy
   condition: bapi-db-deploy.enabled
-  version: 1.24.25
+  version: 1.24.27
   repository: "@gpitfuturesdevacr"
 - name: bapi
   condition: bapi.enabled
-  version: 1.24.25
+  version: 1.24.27
   repository: "@gpitfuturesdevacr"
 - name: dapi
   condition: dapi.enabled
@@ -69,7 +69,7 @@ dependencies:
   repository: "@gpitfuturesdevacr"
 - name: mp
   condition: mp.enabled
-  version: 1.26.5
+  version: 1.26.6
   repository: "@gpitfuturesdevacr"
 - name: pb
   condition: pb.enabled
@@ -104,7 +104,7 @@ dependencies:
   repository: "@gpitfuturesdevacr"
 - name: of-ac-tests
   condition: of-ac-tests.enabled
-  version: 1.4.9
+  version: 1.4.10
   repository: "@gpitfuturesdevacr"
 - name: allure
   condition: allure.enabled

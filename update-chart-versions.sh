@@ -101,8 +101,7 @@ gitflow=(
 "isapi" 
 "isapi-db-deploy" 
 "oapi" 
-"of" 
-"pb")
+"of")
 
 # Update the local cache from the Repo and confirm dev repo is queried
 echo -e "Updating local repo cache... \n"
