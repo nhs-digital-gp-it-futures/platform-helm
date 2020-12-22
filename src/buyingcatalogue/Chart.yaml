@@ -69,11 +69,11 @@ dependencies:
   repository: "@gpitfuturesdevacr"
 - name: mp
   condition: mp.enabled
-  version: 1.26.6
+  version: 1.26.8
   repository: "@gpitfuturesdevacr"
 - name: pb
   condition: pb.enabled
-  version: 1.24.18
+  version: 1.24.23
   repository: "@gpitfuturesdevacr"
 - name: admin
   condition: admin.enabled
