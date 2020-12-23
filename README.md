@@ -36,3 +36,4 @@ To see the results of these tests, have a look at the [Allure Dashboard](https:/
 |                             REDIS                                                                             |       6379        |                                                             |
 |             [REDIS COMMANDER](http://localhost:8181)                                                          |       8181        |                                                             |
 |             [ALLURE](http://localhost:5050/allure-docker-service/projects/default/reports/latest/index.html)  |       5050        | [ALLURE](https://host.docker.internal/allure-docker-service/projects/default/reports/latest/index.html) |
+.
