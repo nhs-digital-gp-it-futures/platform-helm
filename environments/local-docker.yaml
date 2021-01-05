@@ -279,7 +279,7 @@ admin-ac-tests:
   - name: regcredlocal
 
 of-ac-tests:
-  enabled: false  
+  enabled: true  
   imagePullSecrets: 
   - name: regcredlocal
 
