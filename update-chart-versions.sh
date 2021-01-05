@@ -181,7 +181,12 @@ for key in "${!localChartsToVersions[@]}"; do
 done
 
 for component in ${!localChartsToVersions[@]}; do
-  if [[ " ${gitflow[@]} " =~ " ${component} " ]]; then
+  checkMasterVersion=$(echo ${remoteChartsToVersions[$component]} | egrep -o '[0-9]{1}' | head -n 1)
+  if [ ! "$checkMasterVersion" ]; then 
+    checkMasterVersion=0
+  fi
+  
+  if [[ " ${gitflow[@]} " =~ " ${component} " ]] || (( $checkMasterVersion >= 2 )); then
     if [ "${remoteChartsToVersions[$component]+isset}" ]; then
       localVersion="${localChartsToVersions[$component]}"
       remoteVersion="${remoteChartsToVersions[$component]}"
@@ -189,16 +194,14 @@ for component in ${!localChartsToVersions[@]}; do
           changeSet[$component]=$remoteVersion
       fi
     fi
-  fi
-
-  if [[ ! " ${gitflow[@]} " =~ " ${component} " ]]; then
-      if [ "${masterChartsToVersions[$component]+isset}" ]; then
-        localVersion="${localChartsToVersions[$component]}"
-        remoteVersion="${masterChartsToVersions[$component]}"
-        if [ "$localVersion" != "$remoteVersion" ]; then
-            changeSet[$component]=$remoteVersion
-        fi
+  else
+    if [ "${masterChartsToVersions[$component]+isset}" ]; then
+      localVersion="${localChartsToVersions[$component]}"
+      remoteVersion="${masterChartsToVersions[$component]}"
+      if [ "$localVersion" != "$remoteVersion" ]; then
+          changeSet[$component]=$remoteVersion
       fi
+    fi
   fi
 done
 
@@ -214,9 +217,9 @@ for argument in ${extraArgs[@]}; do
 done
 
 echo -e "List of updates to be carried out: \n"
-printf '%-20s  %-8s %-16s %-12s %-16s\n' "COMPONENT" "" "CURRENT VERSION" "" "UPDATED VERSION"
+printf '%-20s  %-8s %-16s %-16s %-16s\n' "COMPONENT" "" "CURRENT VERSION" "" "UPDATED VERSION"
 for component in ${!changeSet[@]}; do
-  printf '%-20s from %-4s %-16s %-4s => %-4s %-16s\n' "$component" "" "${localChartsToVersions[$component]}" "" "" "${changeSet[$component]}"
+  printf '%-20s from %-4s %-23s %-3s => %-2s %-16s\n' "$component" "" "${localChartsToVersions[$component]}" "" "" "${changeSet[$component]}"
 done
 
 # Make a back-up of the previous version of the Chart.yaml
