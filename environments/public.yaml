@@ -3,5 +3,3 @@ mp:
   enabled: false
 mp-ac-tests:
   enabled: false
-of-ac-tests:
-  enabled: false
