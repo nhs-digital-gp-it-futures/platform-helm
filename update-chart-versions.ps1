@@ -64,9 +64,11 @@ foreach ($line in $currentFile)
             # Check if it exists in the repo
             if (($latestChartVersions -match "gpitfuturesdevacr/"+$chartLine.name)[0])
             {
-                if ($gitFlow -match $chartLine.name)
+                $latestCompVersion = ($latestChartVersions -match "gpitfuturesdevacr/"+$chartLine.name)[0].split("`t")[1] -replace " ", ""
+                
+                if ($gitFlow -match $chartLine.name -or $latestCompVersion -gt 2)
                 {
-                    [string]$chartLine.latestVersion = ($latestChartVersions -match "gpitfuturesdevacr/"+$chartLine.name)[0].split("`t")[1] -replace " ", ""
+                    [string]$chartLine.latestVersion = $latestCompVersion
                 }
                 else 
                 {
