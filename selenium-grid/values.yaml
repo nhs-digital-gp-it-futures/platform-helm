@@ -77,8 +77,8 @@ chrome:
 
   ## Selenium node options
   # chromeVersion:
-  nodeMaxInstances: 2
-  nodeMaxSession: 2
+  nodeMaxInstances: 4
+  nodeMaxSession: 4
   ## In milliseconds
   # nodeRegisterCycle: 5000
   # nodePort: 5555
