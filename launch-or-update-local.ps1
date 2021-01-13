@@ -1,5 +1,5 @@
 ##########################################################
-### Deploy local cluster                               ###
+### Deploy local cluster                               ### 
 ### usage:                                             ###
 ###  ./launch-or-update-local.ps1                      ###
 ###                                                    ###
