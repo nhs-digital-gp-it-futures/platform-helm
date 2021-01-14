@@ -53,11 +53,11 @@ dependencies:
   repository: "@gpitfuturesdevacr"
 - name: ordapi
   condition: ordapi.enabled
-  version: 2.0.15
+  version: 1.24.16
   repository: "@gpitfuturesdevacr"
 - name: ordapi-db-deploy
   condition: ordapi-db-deploy.enabled
-  version: 2.0.15
+  version: 1.24.16
   repository: "@gpitfuturesdevacr"
 - name: email
   condition: email.enabled
@@ -77,11 +77,11 @@ dependencies:
   repository: "@gpitfuturesdevacr"
 - name: admin
   condition: admin.enabled
-  version: 2.0.1
+  version: 2.0.2
   repository: "@gpitfuturesdevacr"
 - name: of
   condition: of.enabled
-  version: 1.24.11
+  version: 1.24.10
   repository: "@gpitfuturesdevacr"
 - name: redis
   condition: redis.enabled
