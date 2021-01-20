@@ -29,11 +29,11 @@ dependencies:
   version: ~0.1.0
 - name: bapi-db-deploy
   condition: bapi-db-deploy.enabled
-  version: 2.0.5
+  version: 2.0.15
   repository: "@gpitfuturesdevacr"
 - name: bapi
   condition: bapi.enabled
-  version: 2.0.5
+  version: 2.0.15
   repository: "@gpitfuturesdevacr"
 - name: dapi
   condition: dapi.enabled
@@ -53,11 +53,11 @@ dependencies:
   repository: "@gpitfuturesdevacr"
 - name: ordapi
   condition: ordapi.enabled
-  version: 2.0.16
+  version: 2.0.20
   repository: "@gpitfuturesdevacr"
 - name: ordapi-db-deploy
   condition: ordapi-db-deploy.enabled
-  version: 2.0.16
+  version: 2.0.20
   repository: "@gpitfuturesdevacr"
 - name: email
   condition: email.enabled
@@ -81,7 +81,7 @@ dependencies:
   repository: "@gpitfuturesdevacr"
 - name: of
   condition: of.enabled
-  version: 1.24.13
+  version: 1.24.16
   repository: "@gpitfuturesdevacr"
 - name: redis
   condition: redis.enabled
@@ -92,7 +92,7 @@ dependencies:
   version: ~0.1.0
 - name: pb-ac-tests
   condition: pb-ac-tests.enabled
-  version: 2.0.0
+  version: 2.0.1
   repository: "@gpitfuturesdevacr"
 - name: mp-ac-tests
   condition: mp-ac-tests.enabled
@@ -100,11 +100,11 @@ dependencies:
   repository: "@gpitfuturesdevacr"
 - name: admin-ac-tests
   condition: admin-ac-tests.enabled
-  version: 2.0.1
+  version: 2.1.0
   repository: "@gpitfuturesdevacr"
 - name: of-ac-tests
   condition: of-ac-tests.enabled
-  version: 1.4.11
+  version: 2.0.0
   repository: "@gpitfuturesdevacr"
 - name: allure
   condition: allure.enabled
