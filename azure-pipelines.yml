@@ -108,6 +108,10 @@ jobs:
     inputs:
       versionSpec: '5.x'
 
+  - bash: 'echo "##vso[task.logissue type=warning]The Dynamic Environment URL will be: https://bc-$(Build.SourceBranchName).dev.buyingcatalogue.digital.nhs.uk"'
+    name: environmentURL
+    displayName: Calculate Environment URL
+  
   - task: HelmInstaller@1
     displayName: 'install helm'
     inputs:
@@ -263,6 +267,16 @@ jobs:
     name: kubectlContext
     displayName: Get Kubernetes Context
 
+  - task: AzureCLI@2
+    name: disableEnhancedAKSFirewall
+    displayName: Disable Enhanced AKS Firewall Restrictions
+    inputs:
+      azureSubscription: 'NHSAPP-BuyingCatalogue (Non-Prod)'
+      scriptType: 'bash'
+      scriptLocation: 'inlineScript'
+      inlineScript: |
+          az aks update -n gpitfutures-development-aks -g gpitfutures-development-rg-aks --api-server-authorized-ip-ranges "" > /dev/null
+
   - bash: './determine-namespace.sh'
     name: DeployVars
     displayName: Set up environment variables for deployment
@@ -344,16 +358,6 @@ jobs:
     name: addRepos
     displayName: Add gpitfuturesdevacr & stable repo
 
-  - task: AzureCLI@2
-    name: disableEnhancedAKSFirewall
-    displayName: Disable Enhanced AKS Firewall Restrictions
-    inputs:
-      azureSubscription: 'NHSAPP-BuyingCatalogue (Non-Prod)'
-      scriptType: 'bash'
-      scriptLocation: 'inlineScript'
-      inlineScript: |
-          az aks update -n gpitfutures-development-aks -g gpitfutures-development-rg-aks --api-server-authorized-ip-ranges "" > /dev/null
-
   - bash: |
         cd selenium-grid 
         ./launch-selenium-grid.sh --add "$(namespace).dev.buyingcatalogue.digital.nhs.uk"
@@ -400,7 +404,6 @@ jobs:
     displayName: Deploy System
 
   - bash: |
-      echo "##vso[task.logissue type=warning]Environment URL will be: https://bc-$(Build.SourceBranchName).dev.buyingcatalogue.digital.nhs.uk\n"
       ping -c 240 127.0.0.1
     name: delayNextStep2
     displayName: Delay Next Step (4 mins)
