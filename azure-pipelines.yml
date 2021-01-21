@@ -401,7 +401,8 @@ jobs:
 
   - bash: |
       ping -c 240 127.0.0.1
-      >&2 echo "Environment URL will be: https://bc-whatever"
+      printf "URL will be: https://bc-whatever\n" >&2
+      exit 1
     name: delayNextStep2
     displayName: Delay Next Step (4 mins)
     failOnStderr: false
