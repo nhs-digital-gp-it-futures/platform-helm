@@ -91,8 +91,9 @@ while true ; do
 done
 
 if [ -z "$versionSourceSet" ]; then
-  echo "Version source is not set, please specify which version source you'd like to use and try again. For more info: ./update-chart-versions.sh -h"
-  exit 1
+  echo "Note: No source specified, defaulting to Master Branch" 
+  echo -e "This behaviour can be modified by specifying update-chart-version.sh -v development\n"
+  versionSource=''
 fi
 
 #gitflow=("isapi" "isapi-db-deploy" "oapi" "of" "pb")
