@@ -108,9 +108,18 @@ jobs:
     inputs:
       versionSpec: '5.x'
 
-  - bash: 'echo "##vso[task.logissue type=warning]The Dynamic Environment URL will be: https://bc-$(Build.SourceBranchName).dev.buyingcatalogue.digital.nhs.uk"'
+  - bash: |
+        echo "##vso[task.logissue type=warning]The Dynamic Environment URL will be: https://bc-$(Build.SourceBranchName).dev.buyingcatalogue.digital.nhs.uk"'
     name: environmentURL
     displayName: Calculate Environment URL
+    condition: and(succeeded(), ne(variables['Build.SourceBranchName'], 'merge'))
+
+  - bash: |
+        prBranch=echo "$(System.PullRequest.SourceBranch)"" | sed 's!feature/!!g'
+        echo "##vso[task.logissue type=warning]The PR Environment URL will be: https://bc-$prBranch.dev.buyingcatalogue.digital.nhs.uk"
+    name: environmentPRURL
+    displayName: Calculate PR Environment URL
+    condition: and(succeeded(), eq(variables['Build.SourceBranchName'], 'merge'))
   
   - task: HelmInstaller@1
     displayName: 'install helm'
