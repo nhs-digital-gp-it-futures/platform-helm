@@ -109,7 +109,7 @@ jobs:
       versionSpec: '5.x'
 
   - bash: |
-        echo "##vso[task.logissue type=warning]The Dynamic Environment URL will be: https://bc-$(Build.SourceBranchName).dev.buyingcatalogue.digital.nhs.uk"'
+        echo "##vso[task.logissue type=warning]The Dynamic Environment URL will be: https://bc-$(Build.SourceBranchName).dev.buyingcatalogue.digital.nhs.uk"
     name: environmentURL
     displayName: Calculate Environment URL
     condition: and(succeeded(), ne(variables['Build.SourceBranchName'], 'merge'))
