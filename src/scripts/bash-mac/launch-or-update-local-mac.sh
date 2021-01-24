@@ -103,8 +103,11 @@ if [[ "$useRemote" != "false" ]]; then
   echo -e "\n Updating Dependencies... \n"
   rm $chart/charts/*.tgz
   helm dependency update $chart
-
 fi
+
+if [ ! -d "$chart/templates/allure" ] || [ ! -d "$chart/templates/azurite" ] || [ ! -d "$chart/templates/db" ] || [ ! -d "$chart/templates/redis-commander" ]; then
+  echo "Error: ./$chart/Templates is missing one or more core folders (allure, azurite, db or redis-commander)."
+fi  
 
 if [[ "$OSTYPE" == "darwin"* ]]; then 
   helm upgrade bc $chart -n buyingcatalogue -i -f environments/local-docker.yaml -f environments/local-docker-mac.yaml -f local-overrides.yaml $@
