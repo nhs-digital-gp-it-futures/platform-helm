@@ -5,11 +5,10 @@ os=$(uname -s)
 if [[ "$os" != "Darwin" ]]; then 
   >&2 echo -e "Script is not running on a mac!\n"
   sleep 2
-  #exit 1
+  exit 1
 fi
 
 if [ -f "/usr/local/bin/bash" ]; then
-#if [ -f "/usr/local/bin/helm" ]; then ##### SWITCHME!!!
   echo -e "Correct Bash version detected\n"
 else
   echo -e "Unsupported Bash version detected: $BASH_VERSION"
@@ -17,8 +16,8 @@ else
   echo -e '-> See https://itnext.io/upgrading-bash-on-macos-7138bd1066ba'
   echo -e '-> Once done you will need to restart your terminal session'
   
-  #sleep 20
-  #exit 1
+  sleep 20
+  exit 1
 fi
 
 optionSelected=$1
