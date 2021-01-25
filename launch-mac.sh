@@ -12,6 +12,16 @@ if [[ "$os" != "Darwin" ]]; then
   exit 1
 fi
 
+if ! [ -d "/usr/local/opt/gnu-getopt/bin" ]; then
+  echo 'Error: gnu-getopt is not installed.' >&2
+  echo 'Install gnu-getopt via brew: brew install gnu-getopt'
+  echo 'Ensure after installing you export the PATH variable:' 
+  echo 'export PATH="$(brew --prefix gnu-getopt)/bin:$PATH"'
+  echo 'and then restart your terminal to apply it'
+  sleep 10
+  exit 1
+fi
+
 if [ -f "$bashPath" ]; then
   echo -e "Correct Bash version detected\n"
 else
@@ -90,4 +100,9 @@ else
   echo "Unrecognised response ($optionSelected) - please try again..."
   sleep 5
   exit 1
+fi
+
+if [[ -d "$scriptPath/logs" ]]; then
+  tar -cvzf $scriptPath/logs/logs.tgz $scriptPath/logs/*.txt
+  rm $scriptPath/logs/*.txt
 fi

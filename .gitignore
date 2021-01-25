@@ -13,3 +13,4 @@ namespace.yaml
 **/*.trx 
 #ignore logs
 src/scripts/*/logs/*.txt
+src/scripts/*/logs/*.tgz
