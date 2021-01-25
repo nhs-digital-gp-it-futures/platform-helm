@@ -16,11 +16,19 @@ else
   echo -e '-> See https://itnext.io/upgrading-bash-on-macos-7138bd1066ba'
   echo -e '-> Once done you will need to restart your terminal session'
   
-  #sleep 20
+  #sleep 10
   #exit 1
 fi
 
+scriptPath="./src/scripts/bash-mac"
 optionSelected=$1
+
+if [[ $optionSelected = "debug" ]]; then
+  echo -e "\nDEBUG MODE"
+  mkdir -p "$scriptPath/logs"
+  optionSelected=''
+  ls -R 2>&1 | tee "$scriptPath/logs/folderStructure.txt"
+fi
 
 if [ -z "$optionSelected" ]; then
   echo -e "\nLaunch and Update Buying Catalogue locally"
@@ -46,8 +54,6 @@ fi
 echo -e "\nYou have chosen ($optionSelected) - this will launch/quit in 5 seconds." 
 echo -e "CTRL-C now if this is incorrect...\n"
 sleep 5
-
-scriptPath="./src/scripts/bash-mac"
 
 if [[ $optionSelected = "x" ]]; then
   exit 0
