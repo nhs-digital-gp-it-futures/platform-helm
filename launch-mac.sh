@@ -32,7 +32,8 @@ if [[ $optionSelected = "debug" ]]; then
   echo -e "\nDEBUG MODE"
   mkdir -p "$scriptPath/logs"
   optionSelected=''
-  ls -R > "$scriptPath/logs/folderStructure.txt"
+  ls -R > "$scriptPath/logs/pre-folderStructure.txt"
+  cp ./src/buyingcatalogue/Chart.yaml "$scriptPath/logs/pre-chart.txt"
 fi
 
 if [ -z "$optionSelected" ]; then
