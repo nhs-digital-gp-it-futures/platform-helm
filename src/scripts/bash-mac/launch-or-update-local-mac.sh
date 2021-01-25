@@ -1,5 +1,7 @@
 #!/usr/local/bin/bash
 
+echo $BASH_VERSION
+
 function displayHelp {
   printf "usage: ./launch-or-update-local.sh [OPTIONS]
           -h, --help
@@ -105,12 +107,14 @@ if [[ "$useRemote" != "false" ]]; then
   helm dependency update $chart
 fi
 
-if [ ! -d "$chart/templates/allure" ] || [ ! -d "$chart/templates/azurite" ] || [ ! -d "$chart/templates/db" ] || [ ! -d "$chart/templates/redis-commander" ]; then
-  echo "Error: ./$chart/Templates is missing one or more core folders (allure, azurite, db or redis-commander)."
-fi  
+# if [ ! -d "$chart/templates/allure" ] || [ ! -d "$chart/templates/azurite" ] || [ ! -d "$chart/templates/db" ] || [ ! -d "$chart/templates/redis-commander" ]; then
+#   echo "Error: ./$chart/Templates is missing one or more core folders (allure, azurite, db or redis-commander)."
+# fi  
+
+echo "helm upgrade bc $chart -n buyingcatalogue -i -f environments/local-docker.yaml -f local-overrides.yaml $@"
 
 if [[ "$OSTYPE" == "darwin"* ]]; then 
-  helm upgrade bc $chart -n buyingcatalogue -i -f environments/local-docker.yaml -f environments/local-docker-mac.yaml -f local-overrides.yaml $@
+  helm upgrade bc $chart -n buyingcatalogue -i -f environments/local-docker.yaml -f environments/local-docker-mac.yaml -f local-overrides.yaml #$@
 else
-  helm upgrade bc $chart -n buyingcatalogue -i -f environments/local-docker.yaml -f local-overrides.yaml $@
+  helm upgrade bc $chart -n buyingcatalogue -i -f environments/local-docker.yaml -f local-overrides.yaml #$@
 fi

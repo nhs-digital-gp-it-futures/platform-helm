@@ -5,7 +5,7 @@ os=$(uname -s)
 if [[ "$os" != "Darwin" ]]; then 
   >&2 echo -e "Script is not running on a mac!\n"
   sleep 2
-  exit 1
+  #exit 1
 fi
 
 if [ -f "/usr/local/bin/bash" ]; then
@@ -16,8 +16,8 @@ else
   echo -e '-> See https://itnext.io/upgrading-bash-on-macos-7138bd1066ba'
   echo -e '-> Once done you will need to restart your terminal session'
   
-  sleep 20
-  exit 1
+  #sleep 20
+  #exit 1
 fi
 
 optionSelected=$1
@@ -47,31 +47,33 @@ echo -e "\nYou have chosen ($optionSelected) - this will launch/quit in 5 second
 echo -e "CTRL-C now if this is incorrect...\n"
 sleep 5
 
+scriptPath="./src/scripts/bash-mac"
+
 if [[ $optionSelected = "x" ]]; then
   exit 0
 elif [[ $optionSelected = "1" ]]; then
   echo -e "<---------STARTING SCRIPT---------->\n"
-  source ./src/scripts/bash-mac/launch-or-update-local-mac.sh -l false
+  source $scriptPath/launch-or-update-local-mac.sh -l false 2>&1 | tee "$scriptPath/logs/$optionSelected-Outputlogs.txt"
 elif [[ $optionSelected = "2" ]]; then
   echo -e "<---------STARTING SCRIPT---------->\n"
-  source ./src/scripts/bash-mac/launch-or-update-local-mac.sh
+  source $scriptPath/launch-or-update-local-mac.sh 2>&1 | tee "$scriptPath/logs/$optionSelected-Outputlogs.txt"
 elif [[ $optionSelected = "3" ]]; then
   echo -e "<---------STARTING SCRIPT---------->\n"
-  source ./src/scripts/bash-mac/update-chart-versions-mac.sh
+  source $scriptPath/update-chart-versions-mac.sh 2>&1 | tee "$scriptPath/logs/$optionSelected-Outputlogs.txt"
 elif [[ $optionSelected = "4" ]]; then
   echo -e "<---------STARTING SCRIPT---------->\n"
-  source ./src/scripts/bash-mac/update-chart-versions-mac.sh -v development
+  source $scriptPath/update-chart-versions-mac.sh -v development 2>&1 | tee "$scriptPath/logs/$optionSelected-Outputlogs.txt"
 elif [[ $optionSelected = "5" ]]; then
   kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/v2.0.0/aio/deploy/recommended.yaml
   sleep 10
   echo -e "<---------STARTING SCRIPT---------->\n"
-  source ./src/scripts/bash-mac/start-dashboard-proxy-mac.sh
+  source $scriptPath/start-dashboard-proxy-mac.sh 2>&1 | tee "$scriptPath/logs/$optionSelected-Outputlogs.txt"
 elif [[ $optionSelected = "6" ]]; then
   echo -e "<---------STARTING SCRIPT---------->\n"
-  source ./src/scripts/bash-mac/start-dashboard-proxy-mac.sh
+  source $scriptPath/start-dashboard-proxy-mac.sh 2>&1 | tee "$scriptPath/logs/$optionSelected-Outputlogs.txt"
 elif [[ $optionSelected = "7" ]]; then
   echo -e "<---------STARTING SCRIPT---------->\n"
-  source ./src/scripts/bash-mac/tear-down-local-mac.sh
+  source $scriptPath/tear-down-local-mac.sh 2>&1 | tee "$scriptPath/logs/$optionSelected-Outputlogs.txt"
 else
   echo "Unrecognised response ($optionSelected) - please try again..."
   sleep 5

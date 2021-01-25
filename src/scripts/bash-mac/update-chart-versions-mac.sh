@@ -1,5 +1,7 @@
 #!/usr/local/bin/bash
 
+echo $BASH_VERSION
+
 function displayHelp {
   printf "usage: ./update-chart-versions.sh [OPTIONS]
           -h, --help

@@ -1,5 +1,7 @@
 #!/usr/local/bin/bash
 
+echo $BASH_VERSION
+
 echo "Starting dashboard proxy"
 
 TOKEN=`kubectl -n kube-system describe secret default | grep token: | awk '{print $2}'`
