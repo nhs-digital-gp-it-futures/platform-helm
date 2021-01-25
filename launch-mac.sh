@@ -12,16 +12,6 @@ if [[ "$os" != "Darwin" ]]; then
   exit 1
 fi
 
-if ! [ -d "/usr/local/opt/gnu-getopt/bin" ]; then
-  echo 'Error: gnu-getopt is not installed.' >&2
-  echo 'Install gnu-getopt via brew: brew install gnu-getopt'
-  echo 'Ensure after installing you export the PATH variable:' 
-  echo 'export PATH="$(brew --prefix gnu-getopt)/bin:$PATH"'
-  echo 'and then restart your terminal to apply it'
-  sleep 10
-  exit 1
-fi
-
 if [ -f "$bashPath" ]; then
   echo -e "Correct Bash version detected\n"
 else
@@ -66,6 +56,8 @@ if [ -z "$optionSelected" ]; then
 
   read -p "Select Option from choices above: " optionSelected
 fi
+
+$bashPath $scriptPath/check-script-mac.sh 2>&1 | tee "$scriptPath/logs/check-script.txt"
 
 echo -e "\nYou have chosen ($optionSelected) - this will launch/quit in 5 seconds." 
 echo -e "CTRL-C now if this is incorrect...\n"
