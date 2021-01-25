@@ -32,38 +32,40 @@ write-output "`nYou have chosen ($optionSelected) - this will launch/quit in 5 s
 write-output "CTRL-C now if this is incorrect...`n"
 start-sleep 5
 
+$scriptPath=".\src\scripts\pscore"
+
 if ($optionSelected -eq "x"){
   exit 0
 }
 elseif ($optionSelected -eq "1"){
   write-output "<---------STARTING SCRIPT---------->`n"
-  . ".\src\scripts\pscore\launch-or-update-local.ps1" -l $false
+  . "$scriptPath\launch-or-update-local.ps1" -l $false | Tee-Object -file "$scriptPath\logs\$optionSelected-Outputlogs.txt"
 }
 elseif ($optionSelected -eq "2"){
   write-output "<---------STARTING SCRIPT---------->`n"
-  . ".\src\scripts\pscore\launch-or-update-local.ps1"
+  . "$scriptPath\launch-or-update-local.ps1" | Tee-Object -file "$scriptPath\logs\$optionSelected-Outputlogs.txt"
 }
 elseif ($optionSelected -eq "3"){
   write-output "<---------STARTING SCRIPT---------->`n"
-  . ".\src\scripts\pscore\update-chart-versions.ps1"
+  . "$scriptPath\update-chart-versions.ps1" | Tee-Object -file "$scriptPath\logs\$optionSelected-Outputlogs.txt"
 }
 elseif ($optionSelected -eq "4"){
   write-output "<---------STARTING SCRIPT---------->`n"
-  . ".\src\scripts\pscore\update-chart-versions.ps1" -v development 
+  . "$scriptPath\update-chart-versions.ps1" -v development | Tee-Object -file "$scriptPath\logs\$optionSelected-Outputlogs.txt"
 }
 elseif ($optionSelected -eq "5"){
   kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/v2.0.0/aio/deploy/recommended.yaml
   start-sleep 10
   write-output "<---------STARTING SCRIPT---------->`n"
-  . ".\src\scripts\pscore\start-dashboard-proxy.ps1"
+  . "$scriptPath\start-dashboard-proxy.ps1" | Tee-Object -file "$scriptPath\logs\$optionSelected-Outputlogs.txt"
 }
 elseif ($optionSelected -eq "6"){
   write-output "<---------STARTING SCRIPT---------->`n"   
-  . ".\src\scripts\pscore\start-dashboard-proxy.ps1"
+  . "$scriptPath\start-dashboard-proxy.ps1" | Tee-Object -file "$scriptPath\logs\$optionSelected-Outputlogs.txt"
 }
 elseif ($optionSelected -eq "7"){
   write-output "<---------STARTING SCRIPT---------->`n"
-  . ".\src\scripts\pscore\tear-down-local.ps1"
+  . "$scriptPath\tear-down-local.ps1" | Tee-Object -file "$scriptPath\logs\$optionSelected-Outputlogs.txt"
 }
 else
 {
