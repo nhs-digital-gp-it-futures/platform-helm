@@ -1,10 +1,3 @@
-# $os=$PSVersionTable | select-object -expandproperty PSEdition -ErrorAction SilentlyContinue
-
-# if ($os -ne "Core"){
-#     write-output "Script is not running in PowerShell Core!"
-#     exit 1
-# }
-
 $optionSelected=$args[0]
 
 If (!($optionSelected)){

@@ -115,7 +115,9 @@ jobs:
     condition: and(succeeded(), ne(variables['Build.SourceBranchName'], 'merge'))
 
   - bash: |
-        prBranch=echo "$(System.PullRequest.SourceBranch)"" | sed 's!feature/!!g'
+        echo "Branch Name is: $(System.PullRequest.SourceBranch)"
+        prBranch=echo "$(System.PullRequest.SourceBranch)" | sed 's!feature/!!g'
+        echo "PR Name is: $prBranch"
         echo "##vso[task.logissue type=warning]The PR Environment URL will be: https://bc-$prBranch.dev.buyingcatalogue.digital.nhs.uk"
     name: environmentPRURL
     displayName: Calculate PR Environment URL

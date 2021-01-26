@@ -249,4 +249,3 @@ find ./$chartDirectory/ -name "Chart-*.yaml" -type f -mtime +3 -exec rm -f {} \;
 
 # Remove Temp Chart File
 rm -f $pathToTempChart
-

@@ -21,5 +21,3 @@ else
     echo 'No Issues found'
   fi
 fi
-
-
