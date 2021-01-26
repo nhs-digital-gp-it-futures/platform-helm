@@ -255,6 +255,15 @@ jobs:
       OverWrite: true
     displayName: Copy scripts
 
+  - task: CopyFiles@2
+    inputs:
+      SourceFolder: './src/scripts/bash-nix'
+      Contents: '*.sh'
+      TargetFolder: '$(build.artifactStagingDirectory)'
+      CleanTargetFolder: false
+      OverWrite: true
+    displayName: Copy scripts nix
+
   - publish: $(build.artifactStagingDirectory)
     artifact: build-artifact 
 
@@ -391,7 +400,7 @@ jobs:
           redisHost=$(az redis show --resource-group gpitfutures-dev-core-rg-redis --name gpitfutures-dev-core-redis --query hostName -o tsv)
           redisPass=$(az redis list-keys --resource-group gpitfutures-dev-core-rg-redis --name gpitfutures-dev-core-redis --query primaryKey -o tsv)
 
-          ./launch-or-update-azure.sh \
+          ./src/scripts/bash-nix/launch-or-update-azure.sh \
           -c remote \
           -n $(namespace) \
           -d gpitfutures-development-sql-pri.database.windows.net \
