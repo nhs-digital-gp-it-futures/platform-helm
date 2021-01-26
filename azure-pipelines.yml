@@ -108,9 +108,20 @@ jobs:
     inputs:
       versionSpec: '5.x'
 
-  - bash: 'echo "##vso[task.logissue type=warning]The Dynamic Environment URL will be: https://bc-$(Build.SourceBranchName).dev.buyingcatalogue.digital.nhs.uk"'
+  - bash: |
+        echo "##vso[task.logissue type=warning]The Dynamic Environment URL will be: https://bc-$(Build.SourceBranchName).dev.buyingcatalogue.digital.nhs.uk"
     name: environmentURL
     displayName: Calculate Environment URL
+    condition: and(succeeded(), ne(variables['Build.SourceBranchName'], 'merge'))
+
+  - bash: |
+        echo "Branch Name is: $(System.PullRequest.SourceBranch)"
+        prBranch=$(echo "$(System.PullRequest.SourceBranch)" | sed 's!feature/!!g')
+        echo "PR Name is: $prBranch"
+        echo "##vso[task.logissue type=warning]The PR Environment URL will be: https://bc-$prBranch.dev.buyingcatalogue.digital.nhs.uk"
+    name: environmentPRURL
+    displayName: Calculate PR Environment URL
+    condition: and(succeeded(), eq(variables['Build.SourceBranchName'], 'merge'))
   
   - task: HelmInstaller@1
     displayName: 'install helm'
@@ -245,6 +256,15 @@ jobs:
       CleanTargetFolder: false
       OverWrite: true
     displayName: Copy scripts
+
+  - task: CopyFiles@2
+    inputs:
+      SourceFolder: './src/scripts/bash-nix'
+      Contents: '*.sh'
+      TargetFolder: '$(build.artifactStagingDirectory)'
+      CleanTargetFolder: false
+      OverWrite: true
+    displayName: Copy scripts nix
 
   - publish: $(build.artifactStagingDirectory)
     artifact: build-artifact 
@@ -382,7 +402,7 @@ jobs:
           redisHost=$(az redis show --resource-group gpitfutures-dev-core-rg-redis --name gpitfutures-dev-core-redis --query hostName -o tsv)
           redisPass=$(az redis list-keys --resource-group gpitfutures-dev-core-rg-redis --name gpitfutures-dev-core-redis --query primaryKey -o tsv)
 
-          ./launch-or-update-azure.sh \
+          ./src/scripts/bash-nix/launch-or-update-azure.sh \
           -c remote \
           -n $(namespace) \
           -d gpitfutures-development-sql-pri.database.windows.net \

@@ -11,3 +11,6 @@ local-overrides.yaml
 namespace.yaml
 #ignore results
 **/*.trx 
+#ignore logs
+src/scripts/*/logs/*.txt
+src/scripts/*/logs/*.tgz
