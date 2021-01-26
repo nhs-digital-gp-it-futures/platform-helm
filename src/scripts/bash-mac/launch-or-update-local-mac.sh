@@ -95,10 +95,10 @@ if [[ "$useRemote" != "false" ]]; then
   if [[ "$updateCharts" != "false" ]]; then
     if [[ "$latest" != "false" ]]; then
       echo -e "Getting Latest Chart Versions... \n"
-      ./update-chart-versions.sh -v development
+      ./src/scripts/bash-mac/update-chart-versions-mac.sh -v development
     else
       echo -e "Getting Master Chart Versions... \n"
-      ./update-chart-versions.sh -v master
+      ./src/scripts/bash-mac/update-chart-versions-mac.sh -v master
     fi 
   fi
 
