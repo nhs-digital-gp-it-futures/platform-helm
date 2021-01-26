@@ -116,7 +116,7 @@ jobs:
 
   - bash: |
         echo "Branch Name is: $(System.PullRequest.SourceBranch)"
-        prBranch=echo "$(System.PullRequest.SourceBranch)" | sed 's!feature/!!g'
+        prBranch=$(echo "$(System.PullRequest.SourceBranch)" | sed 's!feature/!!g')
         echo "PR Name is: $prBranch"
         echo "##vso[task.logissue type=warning]The PR Environment URL will be: https://bc-$prBranch.dev.buyingcatalogue.digital.nhs.uk"
     name: environmentPRURL
