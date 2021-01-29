@@ -2,7 +2,7 @@
 
 Depending on your machine setup please choose the most appropriate Installation Method from below
 
-Please the relevant option:
+Please see the relevant option:
 - [Windows Local](#windows-installation)
 - [Windows Subsystem for Linux (WSL)](#wsl-installation)
 - [Mac Local](#mac-installation)
