@@ -6,9 +6,11 @@ When using Rancher, the recommended certificate option is to use Rancher generat
 In [step 6](https://rancher.com/docs/rancher/v2.x/en/installation/k8s-install/helm-rancher/#6-install-rancher-with-helm-and-your-chosen-certificate-option) The Hostname for Rancher should be set to `hostname=rancher.localhost`, as shown in the below script
 
 ```
-helm install rancher rancher-latest/rancher \
-  --namespace cattle-system \
-  --set hostname=rancher.localhost
+# Windows: 
+helm install rancher rancher-stable/rancher --namespace cattle-system --set hostname=rancher.localhost
+
+# Mac
+helm install rancher rancher-stable/rancher --namespace cattle-system --set hostname=<TBC>
 ```
 
 This will open Rancher on https://rancher.localhost when all steps have been completed.

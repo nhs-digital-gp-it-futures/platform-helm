@@ -2,9 +2,12 @@
 
 This process is designed to easily allow a developer to spin up the current environment, and easily work on component(s), while having the rest of the system in place.
 
+Note: You will need Admin rights on your laptop to set this up. If you do not have access this will need to be requested from the supplier of your laptop.
+
 ## System Setup
 
-Instructions expect you to be in the local-helm directory of the platform repository.
+Instructions expect you to be in the local-helm directory of the platform repository. To do this you will need to clone the repository locally and browse to the platform-helm folder.
+
 The following steps are needed to be able to run the system successfully:
 
 ### Setup Kubernetes
@@ -26,6 +29,8 @@ helm install bc ingress-nginx/ingress-nginx
 ```
 
 ### Add Namespace
+
+If this is not initial build, please ensure you are pointing at your local Kubernetes desktop version.
 
 Create the buying catalogue namespace - `kubectl apply -f environments/local-namespace.yml`
 

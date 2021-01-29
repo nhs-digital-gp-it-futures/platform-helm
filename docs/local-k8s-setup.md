@@ -1,4 +1,11 @@
+[[_TOC_]]
+
+# Installation
+
 Depending on your machine setup please choose the most appropriate Installation Method from below
+
+Please the relevant option:
+[Windows Local](run-local.md)
 
 ## Windows Installation
 
@@ -24,6 +31,8 @@ NAME             STATUS   ROLES    AGE    VERSION
 docker-desktop   Ready    master   1m     v1.14.3
 ```
 
+NOTE: This is everything needed for the K8s Windows installation, [please browse back to the previous guide](run-local.md)
+
 ## WSL Installation
 
 From the root of the repository run the `wsl-setup.sh` script located in 'docs/scripts' as su
@@ -42,6 +51,9 @@ If the response looks similar to this, you are good to go
 NAME             STATUS   ROLES    AGE    VERSION
 docker-desktop   Ready    master   1m     v1.14.3
 ```
+
+NOTE: This is everything needed for the K8s Windows WSL installation, [please browse back to the previous guide](run-local.md)
+
 ## Mac Installation
 
 ### Prerequisites
@@ -65,6 +77,8 @@ If the response looks similar to this you are good to go
 NAME             STATUS   ROLES    AGE    VERSION
 docker-desktop   Ready    master   1m     v1.14.3
 ```
+
+NOTE: This is everything needed for the K8s Mac installation, [please browse back to the previous guide](run-local.md)
 
 ## Linux Installation
 To set up, please follow [this](https://kubernetes.io/docs/tasks/tools/install-minikube) tutorial
