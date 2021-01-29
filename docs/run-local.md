@@ -4,6 +4,11 @@ This process is designed to easily allow a developer to spin up the current envi
 
 Note: You will need Admin rights on your laptop to set this up. If you do not have access this will need to be requested from the supplier of your laptop.
 
+Please ensure you set your Execution Policy to Bypass:
+```
+set-executionpolicy bypass
+```
+
 ## System Setup
 
 Instructions expect you to be in the local-helm directory of the platform repository. To do this you will need to clone the repository locally and browse to the platform-helm folder.

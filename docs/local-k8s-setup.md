@@ -3,10 +3,10 @@
 Depending on your machine setup please choose the most appropriate Installation Method from below
 
 Please the relevant option:
-[Windows Local](#windows-installation)
-[Windows Subsystem for Linux (WSL)](#wsl-installation)
-[Mac Local](#mac-installation)
-[Linux Local](#linux-installation)
+- [Windows Local](#windows-installation)
+- [Windows Subsystem for Linux (WSL)](#wsl-installation)
+- [Mac Local](#mac-installation)
+- [Linux Local](#linux-installation)
 
 ## Windows Installation
 
