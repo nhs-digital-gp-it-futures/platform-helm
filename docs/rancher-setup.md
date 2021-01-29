@@ -1,21 +1,77 @@
 # Rancher Setup
 
-## Setup instructions modification
-When using Rancher, the recommended certificate option is to use Rancher generated certificates. However, there is a modification to the step in the provided [instructions](https://rancher.com/docs/rancher/v2.x/en/installation/k8s-install/helm-rancher/). 
+## Add the Helm Chart Repository
 
-In [step 6](https://rancher.com/docs/rancher/v2.x/en/installation/k8s-install/helm-rancher/#6-install-rancher-with-helm-and-your-chosen-certificate-option) The Hostname for Rancher should be set to `hostname=rancher.localhost`, as shown in the below script
+Use the below helm repo add command to add the Helm chart repository that contains charts to install Rancher
 
 ```
-helm install rancher rancher-latest/rancher \
-  --namespace cattle-system \
-  --set hostname=rancher.localhost
+helm repo add rancher-latest https://releases.rancher.com/server-charts/latest
 ```
 
-This will open Rancher on https://rancher.localhost when all steps have been completed.
+## Create a Namespace for Rancher
+
+We’ll need to define a Kubernetes namespace where the resources created by the Chart should be installed. This should always be cattle-system:
+
+```
+kubectl create namespace cattle-system
+```
+
+## Install cert-manager
+
+### Install the CustomResourceDefinition resources separately
+
+```
+kubectl apply --validate=false -f https://github.com/jetstack/cert-manager/releases/download/v1.0.4/cert-manager.crds.yaml
+```
+
+### Create the namespace for cert-manager
+
+```
+kubectl create namespace cert-manager
+```
+
+### Add the Jetstack Helm repository
+
+```
+helm repo add jetstack https://charts.jetstack.io
+```
+
+### Update your local Helm chart repository cache
+
+```
+helm repo update
+```
+
+### Install the cert-manager Helm chart
+
+```
+helm install cert-manager jetstack/cert-manager --namespace cert-manager --version v1.0.4
+```
+
+Once you’ve installed cert-manager, you can verify it is deployed correctly by checking the cert-manager namespace for running pods:
+```
+kubectl get pods --namespace cert-manager
+```
+When each of the pods returned have a status of `Running`
+
+## Install Rancher
+
+```
+helm install rancher rancher-stable/rancher --namespace cattle-system --set hostname=rancher.localhost
+```
+
+Wait for Rancher to be rolled out:
+
+```
+kubectl -n cattle-system rollout status deploy/rancher
+```
+
+When the rollout has finished successfully you will be able to navigate to https://rancher.localhost.
 
 ## Setting projects in Rancher
 
 Rancher groups namespaces under Projects, so that linked pieces of work can be grouped easily. To create a new project:
+
 1. Select `Projects/Namespaces` from the navbar
 2. Click `Add Project` in the top right
 3. Name your project (i.e. `BuyingCatalogue`)
