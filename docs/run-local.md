@@ -35,7 +35,7 @@ helm install bc ingress-nginx/ingress-nginx
 
 ### Add Namespace
 
-If this is not initial build, please ensure you are pointing at your local Kubernetes desktop version.
+If this is not the initial build, please ensure you are pointing at your local Kubernetes desktop version.
 
 Create the buying catalogue namespace - `kubectl apply -f environments/local-namespace.yml`
 
