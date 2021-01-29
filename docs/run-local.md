@@ -62,7 +62,10 @@ helm repo add gpitfuturesdevacr https://gpitfuturesdevacr.azurecr.io/helm/v1/rep
 
 ## Install Dependencies
 
-The umbrella chart depends on some standard charts. These need to be added by running `helm dependency update src/buyingcatalogue`.
+The umbrella chart depends on some standard charts. These need to be added by running 
+```
+helm dependency update src/buyingcatalogue
+```
 
 ## Launching, Updating the Environment
 
