@@ -27,6 +27,8 @@ start-sleep 5
 
 $scriptPath=".\src\scripts\pscore"
 
+New-Item -Path "$scriptPath\" -Name "logs" -ItemType "directory" -ErrorAction SilentlyContinue
+
 if ($optionSelected -eq "x"){
   exit 0
 }

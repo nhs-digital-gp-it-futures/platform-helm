@@ -55,8 +55,9 @@ You may wish to run Rancher rather than the dashboard. Rancher provide a step by
 ## Add Dependencies
 
 In order to run locally, a dependancy to the ACR must be added to Helm. This can be done using the below command (replace `$(gpitfuturesdevacr-pass)` with the password from azure portal you obtained in [k8s-private-registry.md](k8s-private-registry.md))
+
 ```
-helm repo add gpitfuturesdevacr https://gpitfuturesdevacr.azurecr.io/helm/v1/repo --username gpitfuturesdevacr --password $(gpitfuturesdevacr-pass)
+helm repo add gpitfuturesdevacr https://gpitfuturesdevacr.azurecr.io/helm/v1/repo --username gpitfuturesdevacr --password <password>
 ```
 
 ## Install Dependencies
