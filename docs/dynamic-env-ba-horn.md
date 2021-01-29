@@ -7,6 +7,7 @@
 ## Steps
 
 **Note** The steps below demonstrate one way of creating a dynamic env. for a BA horn, it is also possible to create a dynamic environment using the [launch script](docs/run-azure.md#launch-from-script).
+
 1) Checkout latest master branch the  [plaform-helm repository](https://github.com/nhs-digital-gp-it-futures/platform-helm)
 
 2) Create a new branch, eg: "feature/ba-horn-story-x"

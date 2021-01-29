@@ -5,6 +5,7 @@ This process is designed to easily allow a developer to spin up the current envi
 Note: You will need Admin rights on your laptop to set this up. If you do not have access this will need to be requested from the supplier of your laptop.
 
 Please ensure you set your Execution Policy to Bypass:
+
 ```
 set-executionpolicy bypass
 ```
@@ -66,7 +67,7 @@ The umbrella chart depends on some standard charts. These need to be added by ru
 
 In order to launch or update the system to the latest built images or chosen config, simply run the appropriate launch script. It will run until torn down, even being restarted automatically once kubernetes is running again after a system restart.
 
-#### Bash
+### Bash
 
 ```bash
 ./launch-or-update-local.sh
@@ -76,7 +77,7 @@ In order to launch or update the system to the latest built images or chosen con
 ./launch-or-update-local.sh -r false #(or --useRemote false)
 ```
 
-#### PS
+### PS
 
 ```Powershell
 ./launch-or-update-local.ps1
@@ -90,7 +91,7 @@ The script will start [all services available on these ports](../README.md#confi
 
 Ingress is also set up, so the front ends are exposed on localhost, as they would be when running in production.
 
-### Overrides
+## Overrides
 
 Overrides in [local-overrides.yaml](../local-overrides.yaml) can be set to choose whether to run a component in Kubernetes, or to consider it as running on the developers machine. When a service is disabled, anything that uses that service routes out to the developers machine, using `host.docker.internal` or `docker.for.mac.localhost` for mac.
 
@@ -125,7 +126,7 @@ Using ISAPI as an example, within this file, look for the section with the line:
 The `version` will need to be changed to `~0.1.0` and the `repository` value will need to be altered to use a file.
 
 Here is an example of the final settings for ISAPI with these changes:
- 
+
 ```yaml
 - name: isapi
   condition: isapi.enabled
@@ -155,13 +156,13 @@ Now when the local environment is launched it will contain your new version of a
 
 In order to tear down the system, simply run the appropriate tear down script.
 
-#### Bash
+### Bash
 
 ```bash
 .\tear-down-local.sh
 ```
 
-#### PS
+### PS
 
 ```Powershell
 .\tear-down-local.ps1

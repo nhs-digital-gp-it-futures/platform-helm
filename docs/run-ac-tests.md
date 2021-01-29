@@ -27,7 +27,7 @@ pb-ac-tests:
 
 8) Run `launch-or-update-local.sh|ps1`
 
-9) Open Allure (https://host.docker.internal/allure-docker-service/projects/default/reports/latest/index.html on Windows, https://docker.for.mac.localhost/allure-docker-service/projects/default/reports/latest/index.html on Mac)
+9) Open Allure (<https://host.docker.internal/allure-docker-service/projects/default/reports/latest/index.html> on Windows, <https://docker.for.mac.localhost/allure-docker-service/projects/default/reports/latest/index.html> on Mac)
 
 10) When all results are in, navigate to `/selenium-grid` and run `tear-down-selenium-grid.sh|ps1`
 

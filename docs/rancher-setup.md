@@ -1,6 +1,7 @@
 # Rancher Setup
 
 ## Add the Helm Chart Repository
+
 Use the below helm repo add command to add the Helm chart repository that contains charts to install Rancher
 
 ```
@@ -8,6 +9,7 @@ helm repo add rancher-latest https://releases.rancher.com/server-charts/latest
 ```
 
 ## Create a Namespace for Rancher
+
 We’ll need to define a Kubernetes namespace where the resources created by the Chart should be installed. This should always be cattle-system:
 
 ```
@@ -17,26 +19,31 @@ kubectl create namespace cattle-system
 ## Install cert-manager
 
 ### Install the CustomResourceDefinition resources separately
+
 ```
 kubectl apply --validate=false -f https://github.com/jetstack/cert-manager/releases/download/v1.0.4/cert-manager.crds.yaml
 ```
 
 ### Create the namespace for cert-manager
+
 ```
 kubectl create namespace cert-manager
 ```
 
 ### Add the Jetstack Helm repository
+
 ```
 helm repo add jetstack https://charts.jetstack.io
 ```
 
 ### Update your local Helm chart repository cache
+
 ```
 helm repo update
 ```
 
 ### Install the cert-manager Helm chart
+
 ```
 helm install cert-manager jetstack/cert-manager --namespace cert-manager --version v1.0.4
 ```
@@ -48,6 +55,7 @@ kubectl get pods --namespace cert-manager
 When each of the pods returned have a status of `Running`
 
 ## Install Rancher
+
 ```
 helm install rancher rancher-stable/rancher --namespace cattle-system --set hostname=rancher.localhost
 ```
@@ -63,6 +71,7 @@ When the rollout has finished successfully you will be able to navigate to https
 ## Setting projects in Rancher
 
 Rancher groups namespaces under Projects, so that linked pieces of work can be grouped easily. To create a new project:
+
 1. Select `Projects/Namespaces` from the navbar
 2. Click `Add Project` in the top right
 3. Name your project (i.e. `BuyingCatalogue`)

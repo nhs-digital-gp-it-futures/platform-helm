@@ -6,6 +6,7 @@ The build pipeline for this repository is set up so that each branch publishes t
 Resources on the cluster are limited, so please try not to create too many environments, and remove them once finished.
 
 ## Prerequisites
+
 - [Azure CLI](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli?view=azure-cli-latest) installed
 - have kubernetes cli installed - [install it](local-k8s-setup.md)
 
@@ -53,7 +54,7 @@ The deployment is also hooked up to the PR process, which will create another en
 *****NOTE*****
 In order for the script to also clear the databases and storage containers, you'll need to be connected to the VPN
 
-Run the tear down script 
+Run the tear down script:
 
 `tear-down-azure.sh -n <namespace> -a '<blob store account connection string>'`
 
