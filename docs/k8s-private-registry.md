@@ -7,7 +7,7 @@ Eventually, a service principle will be set up. In the interim, the best approac
 You will need to look in the azure portal https://portal.azure.com
 Log in using your hscic.gov.uk email address.
 
-Go to: [All services > Key Vaults > gpitfutures-dev-acr > Secrets > gpitfuturesdevacr-pass](https://portal.azure.com/#@HSCIC365.onmicrosoft.com/asset/Microsoft_Azure_KeyVault/Secret/https://gpitfutures-dev-kv.vault.azure.net/secrets/gpitfuturesdevacr-pass/edc84d3ba0f543d685b7ed14fb73382f) > Select and then next to 'Secret Value' click Copy to Clipboard.
+Go to: [All services > Key Vaults > gpitfutures-dev-kv > Secrets > gpitfuturesdevacr-pass](https://portal.azure.com/#@HSCIC365.onmicrosoft.com/asset/Microsoft_Azure_KeyVault/Secret/https://gpitfutures-dev-kv.vault.azure.net/secrets/gpitfuturesdevacr-pass/edc84d3ba0f543d685b7ed14fb73382f) > Select and then next to 'Secret Value' click Copy to Clipboard.
 
 One you have this password, run this snippet, replacing values in '<>'
 
