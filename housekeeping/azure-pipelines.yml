@@ -113,15 +113,14 @@ jobs:
     - checkout: public-browse
     - checkout: PublicBrowseAcceptanceTests
 
-        - task: AzureCLI@2
+    - task: AzureCLI@2
       name: disableEnhancedAKSFirewall
       displayName: Disable Enhanced AKS Firewall Restrictions
       inputs:
         azureSubscription: 'NHSAPP-BuyingCatalogue (Non-Prod)'
         scriptType: 'bash'
         scriptLocation: 'inlineScript'
-        inlineScript: |
-            az aks update -n gpitfutures-development-aks -g gpitfutures-development-rg-aks --api-server-authorized-ip-ranges "" > /dev/null
+        inlineScript: 'az aks update -n gpitfutures-development-aks -g gpitfutures-development-rg-aks --api-server-authorized-ip-ranges "" > /dev/null'
 
     - task: AzureCLI@2
       inputs:
