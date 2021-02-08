@@ -269,9 +269,8 @@ jobs:
         scriptLocation: 'inlineScript'
         inlineScript: |        
            FWStatus=$(az aks show -n gpitfutures-development-aks -g gpitfutures-development-rg-aks --query apiServerAccessProfile.authorizedIpRanges)
-           if [ -n ${FWStatus} ]; then
-           'az aks update -n gpitfutures-development-aks -g gpitfutures-development-rg-aks --api-server-authorized-ip-ranges "" > /dev/null;''
-           'az aks wait -n gpitfutures-development-aks -g gpitfutures-development-rg-aks --updated'; else  echo "AKS FW is off"; fi
+           if [ -n ${FWStatus} ]; then 
+           ping -c 60; else  echo "AKS FW is off"; fi 
 
     - bash: |
           cd selenium-grid 
