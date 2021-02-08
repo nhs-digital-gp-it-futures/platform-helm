@@ -260,7 +260,10 @@ jobs:
       displayName: Update Dependencies for Chart
 
     - bash: |
+           cd housekeeping
            ./aksfwtest.sh
+      name: aksfwcheck
+      displayName: aks fw status check
 
     - bash: |
           cd selenium-grid 
