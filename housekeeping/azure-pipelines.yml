@@ -261,6 +261,7 @@ jobs:
 
     - bash: |
            cd housekeeping
+           chmod 777 aksfwtest.sh
            ./aksfwtest.sh
       name: aksfwcheck
       displayName: aks fw status check
