@@ -266,8 +266,7 @@ jobs:
         azureSubscription: 'NHSAPP-BuyingCatalogue (Non-Prod)'
         scriptType: 'bash'
         scriptLocation: 'inlineScript'
-        inlineScript: |
-      
+        inlineScript:       
            FWStatus=$(az aks show -n gpitfutures-development-aks -g gpitfutures-development-rg-aks --query apiServerAccessProfile.authorizedIpRanges)
            if [${FWStatus} -nt ""]; then echo "running"
 
