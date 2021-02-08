@@ -267,9 +267,9 @@ jobs:
         scriptType: 'bash'
         scriptLocation: 'inlineScript'
         inlineScript: |        
-         FWStatus=$(az aks show -n gpitfutures-development-aks -g gpitfutures-development-rg-aks --query apiServerAccessProfile.authorizedIpRanges)
-         if [ ${FWStatus} != ""]; then 
-         echo "AKS FW is Running" else  echo "AKS FW is off" 
+           FWStatus=$(az aks show -n gpitfutures-development-aks -g gpitfutures-development-rg-aks --query apiServerAccessProfile.authorizedIpRanges)
+           if [ -n ${FWStatus} ]; then 
+           echo "AKS FW is Running"; else  echo "AKS FW is off"; fi
 
     - bash: |
           cd selenium-grid 
