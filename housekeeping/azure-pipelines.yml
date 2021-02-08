@@ -259,6 +259,18 @@ jobs:
       name: updateDependencies
       displayName: Update Dependencies for Chart
 
+    - task: AzureCLI@2
+      name: checkAksFWStatus
+      displayName: Check AKS FW status
+      inputs:
+        azureSubscription: 'NHSAPP-BuyingCatalogue (Non-Prod)'
+        scriptType: 'bash'
+        scriptLocation: 'inlineScript'
+        inlineScript: |
+      
+           FWStatus=$(az aks show -n gpitfutures-development-aks -g gpitfutures-development-rg-aks --query apiServerAccessProfile.authorizedIpRanges)
+           if [${FWStatus} -nt ""]; then echo "running"
+
     - bash: |
           cd selenium-grid 
           ./launch-selenium-grid.sh --add "$(namespace).dev.buyingcatalogue.digital.nhs.uk"
