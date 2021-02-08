@@ -259,12 +259,17 @@ jobs:
       name: updateDependencies
       displayName: Update Dependencies for Chart
 
-    - bash: |
-           cd housekeeping
-           chmod 777 aksfwtest.sh
-           ./aksfwtest.sh
-      name: aksfwcheck
-      displayName: aks fw status check
+    - task: AzureCLI@2
+      name: AKSFWCHK
+      displayName: AKS FW status checker
+      inputs:
+        azureSubscription: 'NHSAPP-BuyingCatalogue (Non-Prod)'
+        scriptType: 'bash'
+        scriptLocation: 'inlineScript'
+        inlineScript: |        
+         FWStatus=$(az aks show -n gpitfutures-development-aks -g gpitfutures-development-rg-aks --query apiServerAccessProfile.authorizedIpRanges)
+         if [ ${FWStatus} != ""]; then 
+         echo "AKS FW is Running" else  echo "AKS FW is off" 
 
     - bash: |
           cd selenium-grid 
