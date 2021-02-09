@@ -278,7 +278,7 @@ jobs:
           do
           az aks update -n gpitfutures-development-aks -g gpitfutures-development-rg-aks --api-server-authorized-ip-ranges "" > /dev/null
           echo "disabling AKS Firewall"
-          sleep 2m
+          sleep 30
           done 
 
     - bash: |
