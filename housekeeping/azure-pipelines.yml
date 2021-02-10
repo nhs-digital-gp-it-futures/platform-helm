@@ -120,10 +120,8 @@ jobs:
         azureSubscription: 'NHSAPP-BuyingCatalogue (Non-Prod)'
         scriptType: 'bash'
         scriptLocation: 'inlineScript'
-        inlineScript: | 
-                        'az aks update -n gpitfutures-development-aks -g gpitfutures-development-rg-aks --api-server-authorized-ip-ranges "" > /dev/null'
-                         az aks wait -n gpitfutures-development-aks -g gpitfutures-development-rg-aks --updated
-                        
+        inlineScript: az aks update -n gpitfutures-development-aks -g gpitfutures-development-rg-aks --api-server-authorized-ip-ranges "" > /dev/null
+                       
 
     - task: AzureCLI@2
       inputs:
@@ -271,15 +269,16 @@ jobs:
         scriptLocation: 'inlineScript'
         inlineScript: |        
           FWStatus=$(az aks show -n gpitfutures-development-aks -g gpitfutures-development-rg-aks --query apiServerAccessProfile.authorizedIpRanges)
-          if [ -n ${FWStatus} ]; then 
+          if [[ -n "$FWStatus" ]]; then
           echo "AKS FW is on"; else echo "AKS FW is off"; fi
 
-          while [ -n ${FWStatus} ]
+          while [ -n "$FWStatus" ]
           do
-          az aks update -n gpitfutures-development-aks -g gpitfutures-development-rg-aks --api-server-authorized-ip-ranges "" > /dev/null
-          echo "disabling AKS Firewall"
-          sleep 30
-          done 
+          echo "disabling AKS Firewall";
+          az aks update -n gpitfutures-development-aks -g gpitfutures-development-rg-aks --api-server-authorized-ip-ranges "" > /dev/null;
+          az aks wait -n gpitfutures-development-aks -g gpitfutures-development-rg-aks --updated;
+          break;
+          done
 
     - bash: |
           cd selenium-grid 
