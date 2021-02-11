@@ -3,6 +3,7 @@
 src/buyingcatalogue/charts/*.tgz 
 #Local overrides git ignored, so people can change them without risk of committing
 local-overrides.yaml
+.vs*
 #ignore chart lock file
 **/Chart.lock 
 #ignore chart lock file
