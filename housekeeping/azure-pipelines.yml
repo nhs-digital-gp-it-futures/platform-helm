@@ -259,23 +259,7 @@ jobs:
       name: updateDependencies
       displayName: Update Dependencies for Chart
 
-    - task: AzureCLI@2
-      name: TESTENABLEFWTASK
-      displayName: TEST ENABLE FW TASK
-      inputs:
-        azureSubscription: 'NHSAPP-BuyingCatalogue (Non-Prod)'
-        scriptType: 'bash'
-        scriptLocation: 'inlineScript'
-        inlineScript: |
-            # Ensure previous task has finished
-            ping -c 240 127.0.0.1
-
-            ipRange=$(az keyvault secret show --vault-name gpitfutures-dev-core-kv --name "gpitdevbjssvpn" --query value -o tsv)
-            az aks update -n gpitfutures-development-aks -g gpitfutures-development-rg-aks --api-server-authorized-ip-ranges "$ipRange" > /dev/null
-
-            # Wait to ensure it has applied
-            ping -c 60 127.0.0.1
-
+    
     - task: AzureCLI@2
       name: AKSFWCHK
       displayName: AKS FW status checker
