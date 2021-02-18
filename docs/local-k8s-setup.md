@@ -36,6 +36,17 @@ NAME             STATUS   ROLES    AGE    VERSION
 docker-desktop   Ready    master   1m     v1.14.3
 ```
 
+You may also need to review the CPU and Memory allocation for a non-WSL2 Docker Desktop setup. If you are WSL2 then Memory and CPU will be dynamically managed.
+
+Right Click on the Docker Desktop in the Task Bar -> Go to Settings -> Resources -> Advanced (if there is no advanced then you are running WSL2 and can proceed)
+
+Recommended Settings for non-WSL Docker Desktop:
+- CPU: 2-4 CPU Cores (more is better)
+- Memory: 8-16Gb Memory (more is better)
+- Swap: 2-3 Gb (more is better)
+
+Once applied restart Docker Desktop to apply the changes
+
 NOTE: This is everything needed for the K8s Windows installation, [please browse back to the previous guide](run-local.md)
 
 ## WSL Installation

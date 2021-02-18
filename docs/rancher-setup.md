@@ -5,7 +5,7 @@
 Use the below helm repo add command to add the Helm chart repository that contains charts to install Rancher
 
 ```
-helm repo add rancher-latest https://releases.rancher.com/server-charts/latest
+helm repo add rancher-stable https://releases.rancher.com/server-charts/stable
 ```
 
 ## Create a Namespace for Rancher
