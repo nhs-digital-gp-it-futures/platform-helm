@@ -344,7 +344,7 @@ jobs:
 
   - job: enableFirewalls
     displayName: Re-Enable Firewalls
-    dependsOn: queryRepos, deployDevtoDevEnv
+    dependsOn: deployDevtoDevEnv
     condition: and(in(dependencies.queryRepos.result, 'Succeeded', 'Skipped', 'SucceededWithIssues', 'Failed', 'Canceled'), in(dependencies.deployDevtoDevEnv.result, 'Succeeded', 'Skipped', 'SucceededWithIssues', 'Failed', 'Canceled'))
     pool:
       vmImage: 'ubuntu-latest'
