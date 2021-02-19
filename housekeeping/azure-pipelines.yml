@@ -69,12 +69,6 @@ resources:
     name: nhs-digital-gp-it-futures/OrderFormAcceptanceTests
     endpoint: nhs-digital-gp-it-futures
 
-### Auto-included - noted here for completeness
-#  - repository: platform-helm
-#    type: github
-#    name: nhs-digital-gp-it-futures/platform-helm
-#    endpoint: nhs-digital-gp-it-futures
-
   - repository: public-browse
     type: github
     name: nhs-digital-gp-it-futures/public-browse
@@ -84,6 +78,12 @@ resources:
     type: github
     name: nhs-digital-gp-it-futures/PublicBrowseAcceptanceTests
     endpoint: nhs-digital-gp-it-futures
+
+    ### Auto-included - noted here for completeness
+#  - repository: platform-helm
+#    type: github
+#    name: nhs-digital-gp-it-futures/platform-helm
+#    endpoint: nhs-digital-gp-it-futures
 
 jobs:
   - job: queryRepos
@@ -205,8 +205,8 @@ jobs:
       name: housekeepingVols
       displayName: Housekeeping - Clear down Kubernetes Persistent Volumes
 
-  - job: deployACtoDevEnvironment
-    displayName: Deploy and run AC tests to Dev
+  - job: deployDevtoDevEnv
+    displayName: Deploy Development Branch to Dev
     pool:
       vmImage: 'ubuntu-latest'
 
@@ -342,6 +342,14 @@ jobs:
         testRunTitle: 'Acceptance test results (Full Suite)'
         publishRunAttachments: true
 
+  - job: enableFirewalls
+    displayName: Re-Enable Firewalls
+    dependsOn: queryRepos, deployDevtoDevEnv
+    condition: and(in(dependencies.queryRepos.result, 'Succeeded', 'Skipped', 'SucceededWithIssues', 'Failed', 'Canceled'), in(dependencies.deployDevtoDevEnv.result, 'Succeeded', 'Skipped', 'SucceededWithIssues', 'Failed', 'Canceled'))
+    pool:
+      vmImage: 'ubuntu-latest'
+    
+    steps:
     - task: AzureCLI@2
       name: enableEnhancedAKSFirewall
       displayName: Enable Enhanced AKS Firewall Restrictions
