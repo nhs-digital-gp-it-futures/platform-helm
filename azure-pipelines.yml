@@ -295,7 +295,7 @@ jobs:
       scriptType: 'bash'
       scriptLocation: 'inlineScript'
       inlineScript: |
-          az aks update -n gpitfutures-development-aks -g gpitfutures-development-rg-aks --api-server-authorized-ip-ranges "" > /dev/null
+          az aks update -n gpitfutures-development-aks -g gpitfutures-development-rg-aks --api-server-authorized-ip-ranges "" | grep authorizedIpRanges
 
   - bash: './determine-namespace.sh'
     name: DeployVars
@@ -450,7 +450,9 @@ jobs:
       scriptLocation: 'inlineScript'
       inlineScript: |
           ipRange=$(az keyvault secret show --vault-name gpitfutures-dev-core-kv --name "gpitdevbjssvpn" --query value -o tsv)
-          az aks update -n gpitfutures-development-aks -g gpitfutures-development-rg-aks --api-server-authorized-ip-ranges "$ipRange" > /dev/null
+          ipRange+=",$(az keyvault secret show --vault-name gpitfutures-dev-core-kv --name "gpitdevmastekvpn1" --query value -o tsv)"
+          ipRange+=",$(az keyvault secret show --vault-name gpitfutures-dev-core-kv --name "gpitdevmastekvpn2" --query value -o tsv)"
+          az aks update -n gpitfutures-development-aks -g gpitfutures-development-rg-aks --api-server-authorized-ip-ranges "$ipRange" | grep authorizedIpRanges -A 3
 
 - job: cleanUpBranchEnv
   displayName: Clean up Branch Env
@@ -502,7 +504,7 @@ jobs:
       scriptType: 'bash'
       scriptLocation: 'inlineScript'
       inlineScript: |
-          az aks update -n gpitfutures-development-aks -g gpitfutures-development-rg-aks --api-server-authorized-ip-ranges "" > /dev/null
+          az aks update -n gpitfutures-development-aks -g gpitfutures-development-rg-aks --api-server-authorized-ip-ranges "" | grep authorizedIpRanges
 
   - task: AzureCLI@2
     inputs:
@@ -524,4 +526,6 @@ jobs:
       scriptLocation: 'inlineScript'
       inlineScript: |
           ipRange=$(az keyvault secret show --vault-name gpitfutures-dev-core-kv --name "gpitdevbjssvpn" --query value -o tsv)
-          az aks update -n gpitfutures-development-aks -g gpitfutures-development-rg-aks --api-server-authorized-ip-ranges "$ipRange" > /dev/null
+          ipRange+=",$(az keyvault secret show --vault-name gpitfutures-dev-core-kv --name "gpitdevmastekvpn1" --query value -o tsv)"
+          ipRange+=",$(az keyvault secret show --vault-name gpitfutures-dev-core-kv --name "gpitdevmastekvpn2" --query value -o tsv)"
+          az aks update -n gpitfutures-development-aks -g gpitfutures-development-rg-aks --api-server-authorized-ip-ranges "$ipRange" | grep authorizedIpRanges -A 3
