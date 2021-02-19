@@ -138,7 +138,7 @@ jobs:
         azureSubscription: 'NHSAPP-BuyingCatalogue (Non-Prod)'
         scriptType: 'bash'
         scriptLocation: 'inlineScript'
-        inlineScript: az storage account update --resource-group gpitfutures-development-rg-sa --name gpitfuturesdevelopment --default-action Allow > /dev/null
+        inlineScript: az storage account update --resource-group gpitfutures-development-rg-sa --name gpitfuturesdevelopment --default-action Allow | grep defaultAction
 
     - task: AzureCLI@2
       inputs:
@@ -362,4 +362,4 @@ jobs:
         azureSubscription: 'NHSAPP-BuyingCatalogue (Non-Prod)'
         scriptType: 'bash'
         scriptLocation: 'inlineScript'
-        inlineScript: az storage account update --resource-group gpitfutures-development-rg-sa --name gpitfuturesdevelopment --default-action Deny > /dev/null
+        inlineScript: az storage account update --resource-group gpitfutures-development-rg-sa --name gpitfuturesdevelopment --default-action Deny | grep defaultAction
