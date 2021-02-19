@@ -312,7 +312,7 @@ jobs:
               -p $sqlDbAdminPass \
               --base-path "development.dev.buyingcatalogue.digital.nhs.uk" \
               -w true \
-              -s "/p:DatabaseEdition=Standard /p:DatabaseServiceObjective=S0" \
+              -s "/p:DatabaseEdition=Standard /p:DatabaseServiceObjective=S0 /p:BlockOnPossibleDataLoss=True" \
               -a "$saConnectionString" \
               -i "$appgwPip" \
               -r $redisHost \
@@ -345,7 +345,8 @@ jobs:
   - job: enableFirewalls
     displayName: Re-Enable Firewalls
     dependsOn: deployDevtoDevEnv
-    condition: and(in(dependencies.queryRepos.result, 'Succeeded', 'Skipped', 'SucceededWithIssues', 'Failed', 'Canceled'), in(dependencies.deployDevtoDevEnv.result, 'Succeeded', 'Skipped', 'SucceededWithIssues', 'Failed', 'Canceled'))
+    #condition: and(in(dependencies.queryRepos.result, 'Succeeded', 'Skipped', 'SucceededWithIssues', 'Failed', 'Canceled'), in(dependencies.deployDevtoDevEnv.result, 'Succeeded', 'Skipped', 'SucceededWithIssues', 'Failed', 'Canceled'))
+    condition: in(dependencies.deployDevtoDevEnv.result, 'Succeeded', 'Skipped', 'SucceededWithIssues', 'Failed', 'Canceled')
     pool:
       vmImage: 'ubuntu-latest'
     
