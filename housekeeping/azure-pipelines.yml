@@ -342,11 +342,68 @@ jobs:
         testRunTitle: 'Acceptance test results (Full Suite)'
         publishRunAttachments: true
 
+  - job: deployMastertoDevEnv
+    displayName: Deploy Master Branch to Dev
+    dependsOn: deployMastertoDevEnv
+    condition: in(dependencies.deployMastertoDevEnv.result, 'Succeeded', 'Skipped', 'SucceededWithIssues', 'Failed', 'Canceled')
+
+    pool:
+      vmImage: 'ubuntu-latest'
+
+    variables:
+    - group: dev-core-secrets
+    - name: namespace
+      value: "master"
+
+    steps:
+    - task: AzureCLI@2
+      inputs:
+        azureSubscription: 'NHSAPP-BuyingCatalogue (Non-Prod)'
+        scriptType: 'bash'
+        scriptLocation: 'inlineScript'
+        inlineScript: 'az aks get-credentials -n gpitfutures-development-aks -g gpitfutures-development-rg-aks'
+      name: kubectlContextMaster
+      displayName: Get Kubernetes Context
+
+    - task: HelmInstaller@1
+      displayName: 'install helm master'
+      inputs:
+        helmVersionToInstall: 'latest'
+
+    - task: AzureCLI@2
+      name: setupHelmReposMaster
+      displayName: Setup Helm Repos Master
+      inputs:
+        azureSubscription: 'NHSAPP-BuyingCatalogue (Non-Prod)'
+        scriptType: 'bash'
+        scriptLocation: 'inlineScript'
+        inlineScript: |
+            acr="gpitfuturesdevacr"
+
+            acrUsername=$(az acr credential show --name $acr --query username -o tsv)
+            acrPassword=$(az acr credential show --name $acr --query passwords[0].value -o tsv)
+            acrLoginSvr=$(az acr list --query "[?name=='$acr'].loginServer" -o tsv)
+
+            helm repo add $acr https://$acrLoginSvr/helm/v1/repo --username $acrUsername --password $acrPassword
+            helm repo add stable https://charts.helm.sh/stable/
+            helm repo update
+
+    - bash: |
+        ./update-chart-versions.sh -v master
+      name: UpdateVersionsMaster
+      displayName: Grab and update component versions Master
+
+    - bash: |
+        chart="src/buyingcatalogue"
+        helm dependency update $chart
+      name: updateDependenciesMaster
+      displayName: Update Dependencies for Master Chart 
+
   - job: enableFirewalls
     displayName: Re-Enable Firewalls
-    dependsOn: deployDevtoDevEnv
+    dependsOn: deployMastertoDevEnv
     #condition: and(in(dependencies.queryRepos.result, 'Succeeded', 'Skipped', 'SucceededWithIssues', 'Failed', 'Canceled'), in(dependencies.deployDevtoDevEnv.result, 'Succeeded', 'Skipped', 'SucceededWithIssues', 'Failed', 'Canceled'))
-    condition: in(dependencies.deployDevtoDevEnv.result, 'Succeeded', 'Skipped', 'SucceededWithIssues', 'Failed', 'Canceled')
+    condition: in(dependencies.deployMastertoDevEnv.result, 'Succeeded', 'Skipped', 'SucceededWithIssues', 'Failed', 'Canceled')
     pool:
       vmImage: 'ubuntu-latest'
     
