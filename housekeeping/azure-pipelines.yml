@@ -89,7 +89,7 @@ jobs:
   - job: queryRepos
     displayName: Get branches from each repo and clear down resources
     pool:
-      vmImage: 'ubuntu-latest'
+      vmImage: 'Ubuntu-20.04'
 
     variables:
     - name: outDebug
@@ -259,7 +259,6 @@ jobs:
       name: updateDependencies
       displayName: Update Dependencies for Chart
 
-    
     - task: AzureCLI@2
       name: AKSFWCHK
       displayName: AKS FW status checker
@@ -398,6 +397,40 @@ jobs:
         helm dependency update $chart
       name: updateDependenciesMaster
       displayName: Update Dependencies for Master Chart 
+
+    - task: AzureCLI@2
+      inputs:
+        azureSubscription: 'NHSAPP-BuyingCatalogue (Non-Prod)'
+        scriptType: 'bash'
+        scriptLocation: 'inlineScript'
+        inlineScript: |
+            sqlDbAdminUser=$(az sql server list --query "[?name=='gpitfutures-development-sql-pri'].administratorLogin" -o tsv)
+            sqlDbAdminPass=$(az keyvault secret show --vault-name gpit-development-kv --name "gpitdevelopmentsqladminpassword" --query value -o tsv)
+            saConnectionString=$(az storage account show-connection-string --name gpitfuturesdevelopment --resource-group gpitfutures-development-rg-sa --query connectionString -o tsv)
+            appgwPip=$(az network public-ip show --name gpitfutures-development-pip --resource-group gpitfutures-development-rg-appgw --query ipAddress -o tsv)
+            redisHost=$(az redis show --resource-group gpitfutures-dev-core-rg-redis --name gpitfutures-dev-core-redis --query hostName -o tsv)
+            redisPass=$(az redis list-keys --resource-group gpitfutures-dev-core-rg-redis --name gpitfutures-dev-core-redis --query primaryKey -o tsv)
+            
+            ./launch-or-update-azure.sh \
+              -c local-cache \
+              -n master \
+              -d gpitfutures-development-sql-pri.database.windows.net \
+              -u $sqlDbAdminUser \
+              -p $sqlDbAdminPass \
+              --base-path "master.dev.buyingcatalogue.digital.nhs.uk" \
+              -w true \
+              -s "/p:DatabaseEdition=Standard /p:DatabaseServiceObjective=S0 /p:BlockOnPossibleDataLoss=True" \
+              -a "$saConnectionString" \
+              -i "$appgwPip" \
+              -r $redisHost \
+              -q $redisPass \
+              --cookie-secret=$(srt-cookiesecret) \
+              --client-secret=$(srt-clientsecret) \
+              --db-user-pass=$(srt-sqldevdbpass) \
+              -f "azure-dev.yaml" \
+              --helm-upgrade-args "--set pb-ac-tests.testFilter=SmokeTest --set admin-ac-tests.testFilter=SmokeTest --set mp-ac-tests.testFilter=SmokeTest --set of-ac-tests.enabled=true --set of-ac-tests.testFilter=SmokeTest"
+      name: deploySystem
+      displayName: Deploy System
 
   - job: enableFirewalls
     displayName: Re-Enable Firewalls
