@@ -344,8 +344,8 @@ jobs:
 
   - job: deployMastertoDevEnv
     displayName: Deploy Master Branch to Dev
-    dependsOn: deployMastertoDevEnv
-    condition: in(dependencies.deployMastertoDevEnv.result, 'Succeeded', 'Skipped', 'SucceededWithIssues', 'Failed', 'Canceled')
+    dependsOn: deployDevtoDevEnv
+    condition: in(dependencies.deployDevtoDevEnv.result, 'Succeeded', 'Skipped', 'SucceededWithIssues', 'Failed', 'Canceled')
 
     pool:
       vmImage: 'ubuntu-latest'
