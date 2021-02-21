@@ -208,7 +208,7 @@ jobs:
   - job: deployDevtoDevEnv
     displayName: Deploy Development Branch to Dev
     pool:
-      vmImage: 'ubuntu-latest'
+      vmImage: 'Ubuntu-20.04'
 
     variables:
     - group: dev-core-secrets
@@ -338,16 +338,15 @@ jobs:
         testResultsFiles: '**/*.trx' 
         mergeTestResults: true
         failTaskOnFailedTests: false
-        testRunTitle: 'Acceptance test results (Full Suite)'
+        testRunTitle: 'Acceptance test results (Dev Branch)'
         publishRunAttachments: true
 
   - job: deployMastertoDevEnv
     displayName: Deploy Master Branch to Dev
     dependsOn: deployDevtoDevEnv
     condition: in(dependencies.deployDevtoDevEnv.result, 'Succeeded', 'Skipped', 'SucceededWithIssues', 'Failed', 'Canceled')
-
     pool:
-      vmImage: 'ubuntu-latest'
+      vmImage: 'Ubuntu-20.04'
 
     variables:
     - group: dev-core-secrets
@@ -398,6 +397,17 @@ jobs:
       name: updateDependenciesMaster
       displayName: Update Dependencies for Master Chart 
 
+    - bash: |
+        cd selenium-grid 
+        ./launch-selenium-grid.sh --add "$(namespace).dev.buyingcatalogue.digital.nhs.uk"
+      name: setupSeleniumGridMaster
+      displayName: Setup Selenium Grid Master
+
+    - bash: |
+          ping -c 30 127.0.0.1
+      name: delayNextStepMaster
+      displayName: Delay Next Step Master
+
     - task: AzureCLI@2
       inputs:
         azureSubscription: 'NHSAPP-BuyingCatalogue (Non-Prod)'
@@ -432,13 +442,30 @@ jobs:
       name: deploySystem
       displayName: Deploy System
 
+    - bash: |
+          ping -c 300 127.0.0.1
+          name: delayNextStep5m
+      displayName: Delay Next Step again (5 mins)
+
+    - bash: './get-test-results.sh -n $(namespace)'
+      displayName: Grab test results Master
+
+    - task: PublishTestResults@2
+      inputs:
+        testResultsFormat: 'VSTest'
+        testResultsFiles: '**/*.trx' 
+        mergeTestResults: true
+        failTaskOnFailedTests: false
+        testRunTitle: 'Acceptance test results (Master Branch)'
+        publishRunAttachments: true
+
   - job: enableFirewalls
     displayName: Re-Enable Firewalls
     dependsOn: deployMastertoDevEnv
     #condition: and(in(dependencies.queryRepos.result, 'Succeeded', 'Skipped', 'SucceededWithIssues', 'Failed', 'Canceled'), in(dependencies.deployDevtoDevEnv.result, 'Succeeded', 'Skipped', 'SucceededWithIssues', 'Failed', 'Canceled'))
     condition: in(dependencies.deployMastertoDevEnv.result, 'Succeeded', 'Skipped', 'SucceededWithIssues', 'Failed', 'Canceled')
     pool:
-      vmImage: 'ubuntu-latest'
+      vmImage: 'Ubuntu-20.04'
     
     steps:
     - task: AzureCLI@2
