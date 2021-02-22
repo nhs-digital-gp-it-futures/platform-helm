@@ -21,14 +21,13 @@ Resources on the cluster are limited, so please try not to create too many envir
 - [Azure CLI](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli?view=azure-cli-latest) installed
 - have kubernetes cli installed - [install it](local-k8s-setup.md)
 
-In Addition, 
-**you will need to be connected to your Corporate VPN solution**
+**In Addition, you will need to be connected to your Corporate VPN solution**
 
 ## Kubernetes Dashboard in Dev
 
 To view the kubernetes dashboard in dev, run the snippet below 
 
-```PS
+```Powershell
 az login # Only needed once per day
 
 az account set --subscription "GP IT Futures Buying Catalogue"
@@ -37,6 +36,7 @@ az aks browse --name gpitfutures-development-aks -g gpitfutures-development-rg-a
 ```
 
 Note: Best accesssed in Firefox
+
 Note: In the event of issues accessing 127.0.0.1 (in Chromium Browsers) '(NET::ERR_CERT_INVALID)' that CANNOT be overriden, a [setting can be changed here to allow access - chrome://flags/#allow-insecure-localhost](chrome://flags/#allow-insecure-localhost)
 
 ## Creating and Viewing an environment
@@ -53,13 +53,14 @@ The pipeline will start creating an environment. Progress can be viewed here: [n
 
 Once the environment is created, you'll see a warning on the script spelling out your environment name:
 
-- Warning: "The Dynamic Environment URL will be: https://bc-<ticket>-<branch-name>.dev.buyingcatalogue.digital.nhs.uk
+- Warning: "The Dynamic Environment URL will be: https://bc-ticket-branch-name.dev.buyingcatalogue.digital.nhs.uk
 
 ## PR Process
 
 The deployment is also hooked up to the PR process, which will create another environment, currently called `merge-<pull request number>`. This is subject to change, but allows the checks that run against the PR to fully create the environment, and validate the deployment. It is intended this will also run the acceptance tests, allowing feedback on issues across the entire system. This means there will be two environments per PR, one for the branch, and one for the PR.
 
 ## Environment Removal
+
 **IT IS IMPORTANT TO CLEAR DOWN ANY CREATED ENVIRONMENTS**
 
 ### Housekeeping Teardown
@@ -70,7 +71,7 @@ To utilise this cleardown method all you need to do is remove the branch associa
 
 ### Manual Teardown
 
-*****NOTE*****
+***NOTE***
 In order for the script to also clear the databases and storage containers, you'll need to be connected to the VPN
 
 Run the tear down script:
