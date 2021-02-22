@@ -323,7 +323,7 @@ jobs:
 
   - job: deployDevtoDevEnv
     dependsOn: deployMastertoDevEnv
-    condition: in(dependencies.deployMastertoDevEnv.result, 'Succeeded', 'Skipped', 'SucceededWithIssues', 'Failed', 'Canceled')
+    condition: in(dependencies.deployMastertoDevEnv.result, 'Succeeded', 'SucceededWithIssues', 'Failed')
     displayName: Deploy Development Branch to Dev
     pool:
       vmImage: 'Ubuntu-20.04'
@@ -466,9 +466,11 @@ jobs:
 
   - job: enableFirewalls
     displayName: Re-Enable Firewalls
-    dependsOn: deployDevtoDevEnv
-    #condition: and(in(dependencies.queryRepos.result, 'Succeeded', 'Skipped', 'SucceededWithIssues', 'Failed', 'Canceled'), in(dependencies.deployDevtoDevEnv.result, 'Succeeded', 'Skipped', 'SucceededWithIssues', 'Failed', 'Canceled'))
-    condition: in(dependencies.deployDevtoDevEnv.result, 'Succeeded', 'Skipped', 'SucceededWithIssues', 'Failed', 'Canceled')
+    dependsOn: 
+    - queryRepos
+    - deployMastertoDevEnv
+    - deployDevtoDevEnv
+    condition: and(in(dependencies.deployMastertoDevEnv.result, 'Succeeded', 'Skipped', 'SucceededWithIssues', 'Failed', 'Canceled'), in(dependencies.deployDevtoDevEnv.result, 'Succeeded', 'Skipped', 'SucceededWithIssues', 'Failed', 'Canceled'))
     pool:
       vmImage: 'Ubuntu-20.04'
     
