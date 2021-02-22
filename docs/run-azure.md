@@ -1,4 +1,13 @@
-[[_TOC_]]
+# Table of Contents
+- [Running in Azure](#Running-in-Azure)
+  * [Prerequisites](#Prerequisites)
+  * [Kubernetes Dashboard in Dev](#Kubernetes-Dashboard-in-Dev)
+  * [Creating and Viewing an environment](#Creating-and-Viewing-an-environment)
+  * [PR Process](#PR-Process)
+  * [Environment Removal](#Environment-Removal)
+    + [Housekeeping Teardown](#Housekeeping-Teardown)
+    + [Manual Teardown](#Manual-Teardown)
+  * [Launch from script - Advanced Environment Creation](#Launch-from-script---Advanced-Environment-Creation)
 
 # Running in Azure
 
@@ -15,7 +24,7 @@ Resources on the cluster are limited, so please try not to create too many envir
 In Addition, 
 **you will need to be connected to your Corporate VPN solution**
 
-## Viewing the Kubernetes Dashboard for the Dev environment
+## Kubernetes Dashboard in Dev
 
 To view the kubernetes dashboard in dev, run the snippet below 
 
@@ -30,7 +39,7 @@ az aks browse --name gpitfutures-development-aks -g gpitfutures-development-rg-a
 Note: Best accesssed in Firefox
 Note: In the event of issues accessing 127.0.0.1 (in Chromium Browsers) '(NET::ERR_CERT_INVALID)' that CANNOT be overriden, a [setting can be changed here to allow access - chrome://flags/#allow-insecure-localhost](chrome://flags/#allow-insecure-localhost)
 
-## Creating & Viewing an environment
+## Creating and Viewing an environment
 
 Create a branch & push it
 
@@ -70,7 +79,7 @@ Run the tear down script:
 
 you can get the connection string from the [azure portal](https://portal.azure.com/#@HSCIC365.onmicrosoft.com/resource/subscriptions/7b12a8a2-f06f-456f-b6f9-aa2d92e0b2ec/resourceGroups/gpitfutures-development-rg-sa/providers/Microsoft.Storage/storageAccounts/gpitfuturesdevelopment/keys)
 
-## Launch from script (Advanced Environment Creation)
+## Launch from script - Advanced Environment Creation
 
 There is a helper script that allows the direct creation of an environment in azure, mimicking the build process. To use:
 
