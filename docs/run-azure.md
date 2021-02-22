@@ -30,6 +30,8 @@ To view the kubernetes dashboard in dev, run the snippet below
 ```Powershell
 az login # Only needed once per day
 
+# This will launch a browser - please authenticate with your SHORTCODE based NHS account
+
 az account set --subscription "GP IT Futures Buying Catalogue"
 az aks get-credentials --name gpitfutures-development-aks -g gpitfutures-development-rg-aks --admin
 az aks browse --name gpitfutures-development-aks -g gpitfutures-development-rg-aks
