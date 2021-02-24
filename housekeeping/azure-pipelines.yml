@@ -231,6 +231,26 @@ jobs:
         helmVersionToInstall: 'latest'
 
     - task: AzureCLI@2
+      name: aksFWCheck
+      displayName: AKS FW status checker Master
+      inputs:
+        azureSubscription: 'NHSAPP-BuyingCatalogue (Non-Prod)'
+        scriptType: 'bash'
+        scriptLocation: 'inlineScript'
+        inlineScript: |        
+            FWStatus=$(az aks show -n gpitfutures-development-aks -g gpitfutures-development-rg-aks --query apiServerAccessProfile.authorizedIpRanges)
+            if [[ -n "$FWStatus" ]]; then
+            echo "AKS FW is on"; else echo "AKS FW is off"; fi
+
+            while [ -n "$FWStatus" ]
+            do
+            echo "disabling AKS Firewall";
+            az aks update -n gpitfutures-development-aks -g gpitfutures-development-rg-aks --api-server-authorized-ip-ranges "" | grep authorizedIpRanges;
+            az aks wait -n gpitfutures-development-aks -g gpitfutures-development-rg-aks --updated;
+            break;
+            done
+
+    - task: AzureCLI@2
       name: setupHelmReposMaster
       displayName: Setup Helm Repos Master
       inputs:
@@ -406,7 +426,7 @@ jobs:
     - bash: |
         ping -c 30 127.0.0.1
       name: delayNextStep
-      displayName: Delay Next Step
+      displayName: Delay Next Step (30s)
 
     - task: AzureCLI@2
       inputs:
@@ -463,6 +483,17 @@ jobs:
         helm delete "sel-grid" -n selenium-grid
       name: tearDownSeleniumGrid
       displayName: Tear Down Selenium Grid
+
+    - bash: |
+        ping -c 30 127.0.0.1
+      name: completeUninstall
+      displayName: Complete uninstall (30s)
+
+    - bash: |
+        cd selenium-grid 
+        ./launch-selenium-grid.sh --add "development.dev.buyingcatalogue.digital.nhs.uk"
+      name: installFreshSelniumGrid
+      displayName: Install Fresh Selnium Grid
 
   - job: enableFirewalls
     displayName: Re-Enable Firewalls
