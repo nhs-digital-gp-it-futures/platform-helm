@@ -1,5 +1,5 @@
 # Table of Contents
-- [Running in Azure](#Running-in-Azure)
+- [Simple Deployment to Azure](#Simple-Deployment-to-Azure)
   * [Prerequisites](#Prerequisites)
   * [Kubernetes Dashboard in Dev](#Kubernetes-Dashboard-in-Dev)
   * [Creating and Viewing an environment](#Creating-and-Viewing-an-environment)
@@ -9,14 +9,51 @@
     + [Manual Teardown](#Manual-Teardown)
   * [Launch from script - Advanced Environment Creation](#Launch-from-script---Advanced-Environment-Creation)
 
-# Running in Azure
+# Simple Deployment to Azure
 
 The build pipeline for this repository is set up so that each branch publishes to its own namespace in the dev environment, which is then available when pushed.
 
 *****WARNING*****
-Resources on the cluster are limited, so please try not to create too many environments, and remove them once finished.
+Resources on the cluster are limited, so please try not to create too many environments, and remove them once finished (see [Environment Removal](#Environment-Removal))
 
 ## Prerequisites
+
+- Pull (locally) the latest copy of the [Platform Helm Repository](https://github.com/nhs-digital-gp-it-futures/platform-helm)
+
+## Creating an Environment
+
+Create a branch & push it
+
+```bash
+git checkout -b feature/<story-id>-<my-feature> # e.g. git checkout -b feature/12345-dummy-branch
+```
+Then run Either: .\update-chart-versions.ps1 -v development OR .\update-chart-versions.ps1 -v master
+
+```bash
+git push
+```
+## Viewing Development
+
+The action of pushing a branch to Platform Helm is that the [Platform Helm Pipeline](https://buyingcatalog.visualstudio.com/Buying%20Catalogue/_build?definitionId=75&_a=summary) will run and create an environment for you on the Development Kubernetes Cluster in Azure.
+
+## Viewing Environemnt
+
+The URL will be displayed during the deployment, but will be something like:
+
+```bash
+URL: https://bc-<story-id>-<my-feature>.dev.buyingcatalogue.digital.nhs.uk # eg. https://bc-feature-12345-dummy-branch.dev.buyingcatalogue.digital.nhs.uk
+```
+
+## Destroy Branch
+
+Switch to Master Branch and destroy remote branch
+```bash
+git checkout master
+git branch -D feature/<story-id>-<my-feature>
+git push origin --delete feature/<story-id>-<my-feature>
+```
+
+## Prerequisites - Advanced
 
 - [Azure CLI](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli?view=azure-cli-latest) installed
 - have kubernetes cli installed - [install it](local-k8s-setup.md)
