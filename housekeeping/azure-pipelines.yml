@@ -206,6 +206,8 @@ jobs:
       displayName: Housekeeping - Clear down Kubernetes Persistent Volumes
 
   - job: deployMastertoDevEnv
+    dependsOn: queryRepos
+    condition: in(dependencies.queryRepos.result, 'Succeeded', 'SucceededWithIssues', 'Failed')
     displayName: Deploy Master Branch to Dev
     pool:
       vmImage: 'Ubuntu-20.04'
@@ -278,6 +280,12 @@ jobs:
         helm dependency update $chart
       name: updateDependenciesMaster
       displayName: Update Dependencies for Master Chart 
+
+    - bash: |
+        helm delete "sel-grid" -n selenium-grid
+        ping -c 30 127.0.0.1
+      name: tearDownSeleniumGridMaster
+      displayName: Tear Down Selenium Grid Master
 
     - bash: |
         cd selenium-grid 
@@ -416,7 +424,13 @@ jobs:
           az aks wait -n gpitfutures-development-aks -g gpitfutures-development-rg-aks --updated;
           break;
           done
-
+      
+    - bash: |
+          helm delete "sel-grid" -n selenium-grid
+          ping -c 30 127.0.0.1
+      name: tearDownSeleniumGridDev
+      displayName: Tear Down Selenium Grid
+  
     - bash: |
           cd selenium-grid 
           ./launch-selenium-grid.sh --add "$(namespace).dev.buyingcatalogue.digital.nhs.uk"
@@ -478,22 +492,6 @@ jobs:
         failTaskOnFailedTests: false
         testRunTitle: 'Acceptance test results (Dev Branch)'
         publishRunAttachments: true
-
-    - bash: |
-        helm delete "sel-grid" -n selenium-grid
-      name: tearDownSeleniumGrid
-      displayName: Tear Down Selenium Grid
-
-    - bash: |
-        ping -c 30 127.0.0.1
-      name: completeUninstall
-      displayName: Complete uninstall (30s)
-
-    - bash: |
-        cd selenium-grid 
-        ./launch-selenium-grid.sh --add "development.dev.buyingcatalogue.digital.nhs.uk"
-      name: installFreshSelniumGrid
-      displayName: Install Fresh Selnium Grid
 
   - job: enableFirewalls
     displayName: Re-Enable Firewalls
