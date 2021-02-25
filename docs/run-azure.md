@@ -1,5 +1,7 @@
 # Table of Contents
 - [View Kubernetes Dashboard in Dev](#View-Kubernetes-Dashboard-in-Dev)
+  * [Prerequisites - Dashboard](#Prerequisites---Dashboard)
+  * [Dashboard Access](#Dashboard-Access)
 - [Simple Deployment to Azure](#Simple-Deployment-to-Azure)
   * [Prerequisites](#Prerequisites)
   * [Creating an Environment](#Creating-an-Environment)
@@ -16,6 +18,14 @@
 - [Launch from script - Advanced Environment Creation](#Launch-from-script---Advanced-Environment-Creation)
 
 # Kubernetes Dashboard in Dev
+
+## Prerequisites - Dashboard
+
+- Have Azure Cli installed - [install link](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli)
+
+**In Addition, you will need to be connected to your Corporate VPN solution**
+
+## Dashboard Access
 
 To view the kubernetes dashboard in dev, run the snippet below 
 
