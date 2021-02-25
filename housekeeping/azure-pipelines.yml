@@ -242,15 +242,13 @@ jobs:
         inlineScript: |        
             FWStatus=$(az aks show -n gpitfutures-development-aks -g gpitfutures-development-rg-aks --query apiServerAccessProfile.authorizedIpRanges)
             if [[ -n "$FWStatus" ]]; then
-            echo "AKS FW is on"; else echo "AKS FW is off"; fi
-
-            while [ -n "$FWStatus" ]
-            do
-            echo "disabling AKS Firewall";
-            az aks update -n gpitfutures-development-aks -g gpitfutures-development-rg-aks --api-server-authorized-ip-ranges "" | grep authorizedIpRanges;
-            az aks wait -n gpitfutures-development-aks -g gpitfutures-development-rg-aks --updated;
-            break;
-            done
+              echo "AKS FW is on"; 
+              az aks update -n gpitfutures-development-aks -g gpitfutures-development-rg-aks --api-server-authorized-ip-ranges "" | grep authorizedIpRanges;
+              az aks wait -n gpitfutures-development-aks -g gpitfutures-development-rg-aks --updated;
+              ping -c 30 127.0.0.1
+            else 
+              echo "AKS FW is off"; 
+            fi
 
     - task: AzureCLI@2
       name: setupHelmReposMaster
@@ -413,17 +411,15 @@ jobs:
         scriptType: 'bash'
         scriptLocation: 'inlineScript'
         inlineScript: |        
-          FWStatus=$(az aks show -n gpitfutures-development-aks -g gpitfutures-development-rg-aks --query apiServerAccessProfile.authorizedIpRanges)
-          if [[ -n "$FWStatus" ]]; then
-          echo "AKS FW is on"; else echo "AKS FW is off"; fi
-
-          while [ -n "$FWStatus" ]
-          do
-          echo "disabling AKS Firewall";
-          az aks update -n gpitfutures-development-aks -g gpitfutures-development-rg-aks --api-server-authorized-ip-ranges "" | grep authorizedIpRanges;
-          az aks wait -n gpitfutures-development-aks -g gpitfutures-development-rg-aks --updated;
-          break;
-          done
+            FWStatus=$(az aks show -n gpitfutures-development-aks -g gpitfutures-development-rg-aks --query apiServerAccessProfile.authorizedIpRanges)
+            if [[ -n "$FWStatus" ]]; then
+              echo "AKS FW is on"; 
+              az aks update -n gpitfutures-development-aks -g gpitfutures-development-rg-aks --api-server-authorized-ip-ranges "" | grep authorizedIpRanges;
+              az aks wait -n gpitfutures-development-aks -g gpitfutures-development-rg-aks --updated;
+              ping -c 30 127.0.0.1
+            else 
+              echo "AKS FW is off"; 
+            fi
       
     - bash: |
           helm delete "sel-grid" -n selenium-grid
