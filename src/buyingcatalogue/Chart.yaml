@@ -41,11 +41,11 @@ dependencies:
   repository: "@gpitfuturesdevacr"
 - name: isapi
   condition: isapi.enabled
-  version: 2.0.6
+  version: 2.0.11
   repository: "@gpitfuturesdevacr"
 - name: isapi-db-deploy
   condition: isapi-db-deploy.enabled
-  version: 2.0.6
+  version: 2.0.11
   repository: "@gpitfuturesdevacr"
 - name: oapi
   condition: oapi.enabled
