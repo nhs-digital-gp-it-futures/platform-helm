@@ -206,6 +206,8 @@ jobs:
       displayName: Housekeeping - Clear down Kubernetes Persistent Volumes
 
   - job: deployMastertoDevEnv
+    dependsOn: queryRepos
+    condition: in(dependencies.queryRepos.result, 'Succeeded', 'SucceededWithIssues', 'Failed')
     displayName: Deploy Master Branch to Dev
     pool:
       vmImage: 'Ubuntu-20.04'
@@ -229,6 +231,24 @@ jobs:
       displayName: 'install helm master'
       inputs:
         helmVersionToInstall: 'latest'
+
+    - task: AzureCLI@2
+      name: aksFWCheck
+      displayName: AKS FW status checker Master
+      inputs:
+        azureSubscription: 'NHSAPP-BuyingCatalogue (Non-Prod)'
+        scriptType: 'bash'
+        scriptLocation: 'inlineScript'
+        inlineScript: |        
+            FWStatus=$(az aks show -n gpitfutures-development-aks -g gpitfutures-development-rg-aks --query apiServerAccessProfile.authorizedIpRanges)
+            if [[ -n "$FWStatus" ]]; then
+              echo "AKS FW is on"; 
+              az aks update -n gpitfutures-development-aks -g gpitfutures-development-rg-aks --api-server-authorized-ip-ranges "" | grep authorizedIpRanges;
+              az aks wait -n gpitfutures-development-aks -g gpitfutures-development-rg-aks --updated;
+              ping -c 30 127.0.0.1
+            else 
+              echo "AKS FW is off"; 
+            fi
 
     - task: AzureCLI@2
       name: setupHelmReposMaster
@@ -259,6 +279,22 @@ jobs:
       name: updateDependenciesMaster
       displayName: Update Dependencies for Master Chart 
 
+    - bash: |
+        helm delete "sel-grid" -n selenium-grid
+        ping -c 30 127.0.0.1
+      name: tearDownSeleniumGridMaster
+      displayName: Tear Down Selenium Grid Master
+
+    - bash: | 
+        kubectl delete namespace master
+      name: tearDownMasterDev
+      displayName: Tear Down Master Namespace
+
+    - task: DeleteFiles@1
+      displayName: 'Clear down Results Folder for Master'
+      inputs:
+        Contents: '**/*.trx'
+        
     - bash: |
         cd selenium-grid 
         ./launch-selenium-grid.sh --add "$(namespace).dev.buyingcatalogue.digital.nhs.uk"
@@ -309,7 +345,7 @@ jobs:
       name: delayNextStep5m
       displayName: Delay Next Step again (5 mins)
 
-    - bash: './get-test-results.sh -n $(namespace)'
+    - bash: './get-test-results.sh -n master'
       displayName: Grab test results Master
 
     - task: PublishTestResults@2
@@ -385,17 +421,31 @@ jobs:
         scriptType: 'bash'
         scriptLocation: 'inlineScript'
         inlineScript: |        
-          FWStatus=$(az aks show -n gpitfutures-development-aks -g gpitfutures-development-rg-aks --query apiServerAccessProfile.authorizedIpRanges)
-          if [[ -n "$FWStatus" ]]; then
-          echo "AKS FW is on"; else echo "AKS FW is off"; fi
+            FWStatus=$(az aks show -n gpitfutures-development-aks -g gpitfutures-development-rg-aks --query apiServerAccessProfile.authorizedIpRanges)
+            if [[ -n "$FWStatus" ]]; then
+              echo "AKS FW is on"; 
+              az aks update -n gpitfutures-development-aks -g gpitfutures-development-rg-aks --api-server-authorized-ip-ranges "" | grep authorizedIpRanges;
+              az aks wait -n gpitfutures-development-aks -g gpitfutures-development-rg-aks --updated;
+              ping -c 30 127.0.0.1
+            else 
+              echo "AKS FW is off"; 
+            fi
+      
+    - bash: |
+          helm delete "sel-grid" -n selenium-grid
+          ping -c 30 127.0.0.1
+      name: tearDownSeleniumGridDev
+      displayName: Tear Down Selenium Grid
 
-          while [ -n "$FWStatus" ]
-          do
-          echo "disabling AKS Firewall";
-          az aks update -n gpitfutures-development-aks -g gpitfutures-development-rg-aks --api-server-authorized-ip-ranges "" | grep authorizedIpRanges;
-          az aks wait -n gpitfutures-development-aks -g gpitfutures-development-rg-aks --updated;
-          break;
-          done
+    - bash: | 
+        kubectl delete namespace development
+      name: tearDowDevelopmentDev
+      displayName: Tear Down Development Namespace
+
+    - task: DeleteFiles@1
+      displayName: 'Clear down Results Folder for Development'
+      inputs:
+        Contents: '**/*.trx'
 
     - bash: |
           cd selenium-grid 
@@ -406,7 +456,7 @@ jobs:
     - bash: |
         ping -c 30 127.0.0.1
       name: delayNextStep
-      displayName: Delay Next Step
+      displayName: Delay Next Step (30s)
 
     - task: AzureCLI@2
       inputs:
@@ -447,7 +497,7 @@ jobs:
       name: delayNextStep30m
       displayName: Delay Next Step again (30 mins)
 
-    - bash: './get-test-results.sh -n $(namespace)'
+    - bash: './get-test-results.sh -n development'
       displayName: Grab test results
 
     - task: PublishTestResults@2
@@ -458,11 +508,6 @@ jobs:
         failTaskOnFailedTests: false
         testRunTitle: 'Acceptance test results (Dev Branch)'
         publishRunAttachments: true
-
-    - bash: |
-        helm delete "sel-grid" -n selenium-grid
-      name: tearDownSeleniumGrid
-      displayName: Tear Down Selenium Grid
 
   - job: enableFirewalls
     displayName: Re-Enable Firewalls
