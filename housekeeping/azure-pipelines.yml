@@ -285,6 +285,16 @@ jobs:
       name: tearDownSeleniumGridMaster
       displayName: Tear Down Selenium Grid Master
 
+    - bash: | 
+        kubectl delete namespace master
+      name: tearDownMasterDev
+      displayName: Tear Down Master Namespace
+
+    - task: DeleteFiles@1
+      displayName: 'Clear down Results Folder for Master'
+      inputs:
+        Contents: '**/*.trx'
+        
     - bash: |
         cd selenium-grid 
         ./launch-selenium-grid.sh --add "$(namespace).dev.buyingcatalogue.digital.nhs.uk"
@@ -335,7 +345,7 @@ jobs:
       name: delayNextStep5m
       displayName: Delay Next Step again (5 mins)
 
-    - bash: './get-test-results.sh -n $(namespace)'
+    - bash: './get-test-results.sh -n master'
       displayName: Grab test results Master
 
     - task: PublishTestResults@2
@@ -426,7 +436,17 @@ jobs:
           ping -c 30 127.0.0.1
       name: tearDownSeleniumGridDev
       displayName: Tear Down Selenium Grid
-  
+
+    - bash: | 
+        kubectl delete namespace development
+      name: tearDowDevelopmentDev
+      displayName: Tear Down Development Namespace
+
+    - task: DeleteFiles@1
+      displayName: 'Clear down Results Folder for Development'
+      inputs:
+        Contents: '**/*.trx'
+
     - bash: |
           cd selenium-grid 
           ./launch-selenium-grid.sh --add "$(namespace).dev.buyingcatalogue.digital.nhs.uk"
@@ -477,7 +497,7 @@ jobs:
       name: delayNextStep30m
       displayName: Delay Next Step again (30 mins)
 
-    - bash: './get-test-results.sh -n $(namespace)'
+    - bash: './get-test-results.sh -n development'
       displayName: Grab test results
 
     - task: PublishTestResults@2
