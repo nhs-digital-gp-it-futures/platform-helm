@@ -1,24 +1,48 @@
 # Table of Contents
+- [View Kubernetes Dashboard in Dev](#View-Kubernetes-Dashboard-in-Dev)
 - [Simple Deployment to Azure](#Simple-Deployment-to-Azure)
   * [Prerequisites](#Prerequisites)
-  * [Kubernetes Dashboard in Dev](#Kubernetes-Dashboard-in-Dev)
+  * [Creating an Environment](#Creating-an-Environment)
+  * [Viewing Deployment](#Viewing-Deployment)
+  * [Browsing Dynamic Environment](#Browsing-Dynamic-Environment)
+  * [Destroy Branch](#Destroy-Branch)
+- [Advanced Deployment to Azure](#Advanced-Deployment-to-Azure)
+  * [Prerequisites - Advanced](#Prerequisites---Advanced)
   * [Creating and Viewing an environment](#Creating-and-Viewing-an-environment)
   * [PR Process](#PR-Process)
   * [Environment Removal](#Environment-Removal)
     + [Housekeeping Teardown](#Housekeeping-Teardown)
     + [Manual Teardown](#Manual-Teardown)
-  * [Launch from script - Advanced Environment Creation](#Launch-from-script---Advanced-Environment-Creation)
+- [Launch from script - Advanced Environment Creation](#Launch-from-script---Advanced-Environment-Creation)
+
+# Kubernetes Dashboard in Dev
+
+To view the kubernetes dashboard in dev, run the snippet below 
+
+```Powershell
+az login # Only needed once per day
+
+# This will launch a browser - please authenticate with your SHORTCODE based NHS account
+
+az account set --subscription "GP IT Futures Buying Catalogue"
+az aks get-credentials --name gpitfutures-development-aks -g gpitfutures-development-rg-aks --admin
+az aks browse --name gpitfutures-development-aks -g gpitfutures-development-rg-aks
+```
+Note: Best accesssed in Firefox
+
+Note: In the event of issues accessing 127.0.0.1 (in Chromium Browsers) '(NET::ERR_CERT_INVALID)' that CANNOT be overriden, a [setting can be changed here to allow access - chrome://flags/#allow-insecure-localhost](chrome://flags/#allow-insecure-localhost)
 
 # Simple Deployment to Azure
 
 The build pipeline for this repository is set up so that each branch publishes to its own namespace in the dev environment, which is then available when pushed.
 
 *****WARNING*****
-Resources on the cluster are limited, so please try not to create too many environments, and remove them once finished (see [Environment Removal](#Environment-Removal))
+Resources on the cluster are limited, so please try not to create too many environments, and remove them once finished (see [Destroy Branch](#Destroy-Branch))
 
 ## Prerequisites
 
 - Pull (locally) the latest copy of the [Platform Helm Repository](https://github.com/nhs-digital-gp-it-futures/platform-helm)
+- You will need to be connected to your Corporate VPN solution
 
 ## Creating an Environment
 
@@ -32,11 +56,11 @@ Then run Either: .\update-chart-versions.ps1 -v development OR .\update-chart-ve
 ```bash
 git push
 ```
-## Viewing Development
+## Viewing Deployment
 
 The action of pushing a branch to Platform Helm is that the [Platform Helm Pipeline](https://buyingcatalog.visualstudio.com/Buying%20Catalogue/_build?definitionId=75&_a=summary) will run and create an environment for you on the Development Kubernetes Cluster in Azure.
 
-## Viewing Environemnt
+## Browsing Dynamic Environment
 
 The URL will be displayed during the deployment, but will be something like:
 
@@ -52,6 +76,7 @@ git checkout master
 git branch -D feature/<story-id>-<my-feature>
 git push origin --delete feature/<story-id>-<my-feature>
 ```
+# Advanced Deployment to Azure
 
 ## Prerequisites - Advanced
 
@@ -59,24 +84,6 @@ git push origin --delete feature/<story-id>-<my-feature>
 - have kubernetes cli installed - [install it](local-k8s-setup.md)
 
 **In Addition, you will need to be connected to your Corporate VPN solution**
-
-## Kubernetes Dashboard in Dev
-
-To view the kubernetes dashboard in dev, run the snippet below 
-
-```Powershell
-az login # Only needed once per day
-
-# This will launch a browser - please authenticate with your SHORTCODE based NHS account
-
-az account set --subscription "GP IT Futures Buying Catalogue"
-az aks get-credentials --name gpitfutures-development-aks -g gpitfutures-development-rg-aks --admin
-az aks browse --name gpitfutures-development-aks -g gpitfutures-development-rg-aks
-```
-
-Note: Best accesssed in Firefox
-
-Note: In the event of issues accessing 127.0.0.1 (in Chromium Browsers) '(NET::ERR_CERT_INVALID)' that CANNOT be overriden, a [setting can be changed here to allow access - chrome://flags/#allow-insecure-localhost](chrome://flags/#allow-insecure-localhost)
 
 ## Creating and Viewing an environment
 
@@ -119,7 +126,7 @@ Run the tear down script:
 
 you can get the connection string from the [azure portal](https://portal.azure.com/#@HSCIC365.onmicrosoft.com/resource/subscriptions/7b12a8a2-f06f-456f-b6f9-aa2d92e0b2ec/resourceGroups/gpitfutures-development-rg-sa/providers/Microsoft.Storage/storageAccounts/gpitfuturesdevelopment/keys)
 
-## Launch from script - Advanced Environment Creation
+# Launch to Azure script - Advanced Environment Creation
 
 There is a helper script that allows the direct creation of an environment in azure, mimicking the build process. To use:
 
