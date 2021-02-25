@@ -15,9 +15,9 @@
   * [Environment Removal](#Environment-Removal)
     + [Housekeeping Teardown](#Housekeeping-Teardown)
     + [Manual Teardown](#Manual-Teardown)
-- [Launch from script - Advanced Environment Creation](#Launch-from-script---Advanced-Environment-Creation)
+- [Launch to Azure script - Advanced Environment Creation](#Launch-to-Azure-script---Advanced-Environment-Creation)
 
-# Kubernetes Dashboard in Dev
+# View Kubernetes Dashboard in Dev
 
 ## Prerequisites - Dashboard
 
