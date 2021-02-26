@@ -109,12 +109,12 @@ if (($useRemote -ne "false") -and ($r -eq $false))
         if (($latest -ne "false") -and ($l -eq $false))
         {
             write-host "Getting Latest Chart Versions..."
-            invoke-expression -Command "./update-chart-versions.ps1 -chart $chart -v development"
+            invoke-expression -Command "./src/scripts/pscore/update-chart-versions.ps1 -chart $chart -v development"
         }
         else
         {
             write-host "Getting Master Chart Versions..."
-            invoke-expression -Command "./update-chart-versions.ps1 -chart $chart -v master"
+            invoke-expression -Command "./src/scripts/pscore/update-chart-versions.ps1 -chart $chart -v master"
         }
     }
 

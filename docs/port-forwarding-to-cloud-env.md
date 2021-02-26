@@ -12,16 +12,22 @@
 
 2) From the root of the repository:
 
-   bash
+   Bash Unix
 
    ```sh
-   bash port-forward-cloud-services-locally.sh -n <name of the namespace from step 1>
+   bash ./src/scripts/bash-nix/port-forward-cloud-services-locally.sh -n <name of the namespace from step 1>
    ```
 
-   powershell
+   PowerShell
 
    ```powershell
-   .\port-forward-cloud-services-locally.ps1 <name of the namespace from step 1>
+   .\src\scripts\pscore\port-forward-cloud-services-locally.ps1 <name of the namespace from step 1>
+   ```
+
+   Bash Mac
+
+   ```sh
+   bash ./src/scripts/bash-mac/port-forward-cloud-services-locally-mac.sh -n <name of the namespace from step 1>
    ```
 
 You should now be able to access all your services on <http://localhost:{port}> - see [this table](../README.md#configuration-overview) for a map of services and their ports

@@ -54,14 +54,19 @@ elseif ($optionSelected -eq "4") {
 ### Error Checking Firewall Access
 
 if (!(kubectl get namespaces --ignore-not-found=true)) {
-    write-host "Missing Firewall permissions to Kubernetes Infrastructure - please join relevant VPN and try again"
+    write-host "`nERROR: Missing Firewall permissions to Kubernetes Infrastructure - please join relevant VPN and try again"
     exit 1
 }
 
 ### Display releveant Dashboard
 
+$dashboardUrl = "https://localhost:8443/"
+Set-Clipboard -Value $dashboardUrl
+
 write-host "###"
-write-host "### Dashboard Proxy Launched, please browse to https://localhost:8443/ to access it ignoring any certificate errors"
+write-host "### Dashboard Proxy Launched, please browse to $dashboardUrl to access it ignoring any certificate errors"
+write-host "###"
+Write-Host "### Copied '$dashboardUrl' to your clip board"
 write-host "###"
 
 if (kubectl get namespace kubernetes-dashboard --ignore-not-found=true) {

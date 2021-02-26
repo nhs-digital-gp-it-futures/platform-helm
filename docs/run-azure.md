@@ -61,7 +61,8 @@ Create a branch & push it
 ```bash
 git checkout -b feature/<story-id>-<my-feature> # e.g. git checkout -b feature/12345-dummy-branch
 ```
-Then run Either: .\update-chart-versions.ps1 -v development OR .\update-chart-versions.ps1 -v master
+
+Next run launch-helper.ps1 selecting either option 3 or 4
 
 ```bash
 git push

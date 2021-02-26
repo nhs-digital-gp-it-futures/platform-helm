@@ -5,5 +5,5 @@ if ($context -ne "docker-desktop") {
     exit 1
 }
 else {
-    write-host "helm delete bc -n buyingcatalogue"
+    helm delete bc -n buyingcatalogue
 }
