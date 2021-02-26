@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/local/bin/bash
 
 function displayHelp {
   printf "usage: ./port-forward-cloud-services-locally.sh [OPTIONS]

@@ -12,9 +12,10 @@ If (!($optionSelected)){
   write-output "`nDashboards"
   write-output "- 5: Install Local Dashboard"
   write-output "- 6: Start Local Dashboard"
+  write-output "- 7: Start Azure Dashboard"
 
   write-output "`nTear Down Local Environment"
-  write-output "- 7: Tear Down Local Environment`n"
+  write-output "- 0: Tear Down Local Environment`n"
 
   write-output "x: To quit script`n"
 
@@ -59,6 +60,10 @@ elseif ($optionSelected -eq "6"){
   . "$scriptPath\start-dashboard-proxy.ps1" | Tee-Object -file "$scriptPath\logs\$optionSelected-Outputlogs.txt"
 }
 elseif ($optionSelected -eq "7"){
+  write-output "<---------STARTING SCRIPT---------->`n"   
+  . "$scriptPath\start-azure-dashboard.ps1" | Tee-Object -file "$scriptPath\logs\$optionSelected-Outputlogs.txt"
+}
+elseif ($optionSelected -eq "0"){
   write-output "<---------STARTING SCRIPT---------->`n"
   . "$scriptPath\tear-down-local.ps1" | Tee-Object -file "$scriptPath\logs\$optionSelected-Outputlogs.txt"
 }

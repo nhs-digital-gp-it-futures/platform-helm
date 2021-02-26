@@ -84,11 +84,9 @@ In order to launch or update the system to the latest built images or chosen con
 ### PS
 
 ```Powershell
-./launch-or-update-local.ps1
-# or to run without getting the latest development chart versions (i.e. run with versions coming from builds or master branches)
-./launch-or-update-local.ps1 -l #(or -latest false)
-# or to run using configuration and local files only - no updates will be performed
-./launch-or-update-local.ps1 -r #(or -useRemote false)
+.\launch-helper.ps1
+# Select option 1 for Master Branch of code
+# Select option 2 for Development Branch of code
 ```
 
 The script will start [all services available on these ports](../README.md#configuration-overview) on localhost, or update them if they are running.
@@ -169,5 +167,5 @@ In order to tear down the system, simply run the appropriate tear down script.
 ### PS
 
 ```Powershell
-.\tear-down-local.ps1
+.\launch-helper.ps1 0
 ```

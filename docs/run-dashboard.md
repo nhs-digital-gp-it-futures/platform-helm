@@ -23,7 +23,7 @@ From a terminal at the root of the repository, run one of the following scripts 
 ### Powershell
 
 ```powershell
-.\start-dashboard-proxy.ps1
+.\launch-helper.ps1 6
 ```
 
 The address of the dashboard will be copied to your clipboard. To browse to the dashboard paste the copied URL into a browser.
