@@ -71,20 +71,28 @@ helm dependency update src/buyingcatalogue
 
 In order to launch or update the system to the latest built images or chosen config, simply run the appropriate launch script. It will run until torn down, even being restarted automatically once kubernetes is running again after a system restart.
 
-### Bash
-
-```bash
-./launch-or-update-local.sh
-# or to run without getting the latest development chart versions (i.e. run with versions that are coming from builds on master branches)
-./launch-or-update-local.sh -l false #(or --latest false)
-# or to run using configuration and local files only - no updates will be performed
-./launch-or-update-local.sh -r false #(or --useRemote false)
-```
-
 ### PS
 
 ```Powershell
 .\launch-helper.ps1
+# Select option 1 for Master Branch of code
+# Select option 2 for Development Branch of code
+```
+
+### Bash - Unix
+
+```bash
+./src/scripts/bash-nix/launch-or-update-local.sh
+# or to run without getting the latest development chart versions (i.e. run with versions that are coming from builds on master branches)
+./src/scripts/bash-nix/launch-or-update-local.sh -l false #(or --latest false)
+# or to run using configuration and local files only - no updates will be performed
+./src/scripts/bash-nix/launch-or-update-local.sh -r false #(or --useRemote false)
+```
+
+### Bash - Mac
+
+```Powershell
+.\launch-mac.sh
 # Select option 1 for Master Branch of code
 # Select option 2 for Development Branch of code
 ```

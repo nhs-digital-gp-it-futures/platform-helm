@@ -71,6 +71,12 @@ if [[ "$context" != "docker-desktop" ]]; then
   exit 1
 fi
 
+if [ -d "./$chart/tmpcharts" ]; then 
+  >&2 echo "Directory ./$chart/tmpcharts exists."
+  mv ./$chart/tmpcharts/* ./$chart/charts
+  rm -d ./$chart/tmpcharts
+fi
+
 echo -e "# Switches Selected for run are: \n#"
 if [[ "$useRemote" != "false" ]]; then
   echo -e "# Use Remote Repo for Updates\t\t(change with -r false)"

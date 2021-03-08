@@ -25,7 +25,7 @@ pb-ac-tests:
 
 7) Set `allure` `enabled` flag to true
 
-8) Run `launch-or-update-local.sh|ps1`
+8) Browse to ./src/scripts/<OS> and Run `launch-or-update-local.sh|ps1`
 
 9) Open Allure (<https://host.docker.internal/allure-docker-service/projects/default/reports/latest/index.html> on Windows, <https://docker.for.mac.localhost/allure-docker-service/projects/default/reports/latest/index.html> on Mac)
 
