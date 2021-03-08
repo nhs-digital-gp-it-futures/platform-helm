@@ -59,12 +59,18 @@ Resources on the cluster are limited, so please try not to create too many envir
 Create a branch & push it
 
 ```bash
-git checkout -b feature/<story-id>-<my-feature> # e.g. git checkout -b feature/12345-dummy-branch
+git checkout master
+git pull
+git checkout -b feature/ticketnumber-branch-name
+git push -u origin feature/ticketnumber-branch-name:feature/ticketnumber-branch-name
 ```
 
-Next run launch-helper.ps1 selecting either option 3 or 4
+Next run launch-helper.ps1 selecting either option 3 or 4 (3 = master, 4 = development)
+
+Once it has completed commit the changes to github:
 
 ```bash
+git commit -a -m "enter a meaningful commit message"
 git push
 ```
 ## Viewing Deployment

@@ -75,6 +75,23 @@ if ($helmRepoList.name -notcontains "gpitfuturesdevacr")
     exit 1
 }
 
+# Check for Missing templates from previous cancelled sessions
+if (get-childitem -path "$chart/tmpcharts" -ErrorAction SilentlyContinue)
+{
+    write-host "`nFound old temp charts -moving`n"
+    Move-Item -Path $chart/tmpcharts/* $chart/charts
+
+    if(get-childitem -path "$chart/tmpcharts" -ErrorAction SilentlyContinue)
+    {
+        write-host "`nUnable to clear tmp folder - exiting!`n"
+        start-sleep 10
+        exit 1
+    }
+    else {
+        Remove-Item -path $chart/tmpcharts
+    }
+}
+
 Clear-Host
 Write-Host "# Switches Selected for run are: `n"
 if (($useRemote -ne "false") -and ($r -eq $false)){
