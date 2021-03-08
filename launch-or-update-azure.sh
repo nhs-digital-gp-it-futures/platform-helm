@@ -198,7 +198,12 @@ then
 else #truncate to 63 chars && convert to lowercase to be DNS compliant
   namespace=$(echo "$namespace" | cut -c 1-63)
   namespace=$(echo "$namespace" | tr '[:upper:]' '[:lower:]')
-fi
+ fi
+
+ #Catch Namespace errors
+Disallowed = "*.*/*\*|*"
+ if  [ grep -q $Disallowed <<< $namespace ]; then
+echo "Disallowed Chars found in $featureNamespace"
 
 if [ -z ${dbServer+x} ] || [ -z ${saUserName+x} ] || [ -z ${saPassword+x} ]
 then   

@@ -16,5 +16,5 @@ src/scripts/*/logs/*.txt
 src/scripts/*/logs/*.tgz
 #.vs dir files
 */\.vs/*
-*vs
-*/vs
+.vs
+
