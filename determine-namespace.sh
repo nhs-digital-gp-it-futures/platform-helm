@@ -40,6 +40,7 @@ function calculateNamespaceFromBranchName {
     featureNamespace=$(echo "${branchName#${unwantedPrefix}}" | sed 's/feature[[:punct:]]/bc-/g')
 elif  [ grep -q $Disallowed <<< "$featureNamespace" ]; then 
 echo "Disallowed Chars found in $featureNamespace"
+exit 1 
   fi
 
   echo "$featureNamespace"
