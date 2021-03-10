@@ -139,7 +139,7 @@ jobs:
        fi
     displayName: 'namespace check'
 
-  - task: 
+  - task: HelmInstaller@1
     displayName: 'install helm'
     inputs:
       helmVersionToInstall: 'latest'
