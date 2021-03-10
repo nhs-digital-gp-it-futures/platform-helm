@@ -137,7 +137,8 @@ jobs:
            sleep 15;
            exit
        fi
-       
+    displayName: 'namespace check'
+
   - task: HelmInstaller@1
     displayName: 'install helm'
     inputs:
