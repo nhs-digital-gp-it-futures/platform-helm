@@ -139,7 +139,7 @@ jobs:
        fi
     displayName: 'namespace check'
 
-  - task: HelmInstaller@1
+  - task: 
     displayName: 'install helm'
     inputs:
       helmVersionToInstall: 'latest'
@@ -329,7 +329,7 @@ jobs:
           acrPassword=$(az acr credential show --name $acr --query passwords[0].value -o tsv)
           acrLoginSvr=$(az acr list --query "[?name=='$acr'].loginServer" -o tsv)
 
-          helm repo add $acr https://$acrLoginSvr/helm/v1/repo --username $acrUsername --password $acrPassword
+          helm repo add $acr https://$acrLoginSvr/helm/v3/repo --username $acrUsername --password $acrPassword
           helm repo add stable https://charts.helm.sh/stable/
           helm repo update
     name: addRepo
