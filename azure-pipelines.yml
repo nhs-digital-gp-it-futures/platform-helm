@@ -132,9 +132,9 @@ jobs:
      scriptLocation: 'inlineScript'
      inlineScript: |
           if [[ $namespace = +([[:alnum:]]) ]]; then
-           printf $namespace && echo "$namespace" is good;
+           printf "%s\n" $namespace && echo "$namespace" is good;
           else
-           printf $namespace && echo Disallowed Chars found in "$namespace";
+           printf "%s\n" $namespace && echo Disallowed Chars found in "$namespace";
            sleep 15;
            exit
           fi
