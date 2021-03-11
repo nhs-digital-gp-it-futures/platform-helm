@@ -123,22 +123,23 @@ jobs:
     displayName: Calculate PR Environment URL
     condition: and(succeeded(), eq(variables['Build.SourceBranchName'], 'merge'))
 
+
   - task: AzureCLI@2
+    displayName: 'namespace check'
     inputs:
-      azureSubscription: 'NHSAPP-BuyingCatalogue (Non-Prod)'
-      scriptType: 'bash'
-      scriptLocation: 'inlineScript'
-      failOnStandardError: true
-      inlineScript: |
-       if [[ $namespace = +([[:alnum:]]) ]]; then
+     azureSubscription: 'NHSAPP-BuyingCatalogue (Non-Prod)'
+     scriptType: 'bash'
+     scriptLocation: 'inlineScript'
+     inlineScript: |
+
+           if [[ $namespace = +([[:alnum:]]) ]]; then
            echo "$namespace is good";
-       else
+           else
            echo "Disallowed Chars found in $namespace";
            sleep 15;
            exit
-       fi
-    displayName: 'namespace check'
-
+           fi
+   
   - task: HelmInstaller@1
     displayName: 'install helm'
     inputs:
@@ -170,7 +171,7 @@ jobs:
       azureSubscription: 'NHSAPP-BuyingCatalogue (Non-Prod)'
       scriptType: 'bash'
       scriptLocation: 'inlineScript'
-      failOnStandardError: true
+      failOnStandardError: false
       inlineScript: |
           chartPackage=$(ls buyingcatalogue-*.tgz)
           echo "Chart Package $chartPackage"
