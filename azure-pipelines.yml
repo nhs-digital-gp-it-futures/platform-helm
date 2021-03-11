@@ -131,13 +131,13 @@ jobs:
      scriptType: 'bash'
      scriptLocation: 'inlineScript'
      inlineScript: |
-           if [[ ${namespace} = +([[:alnum:]]) ]]; then
-           echo "${namespace} is good";
-           else
-           echo "Disallowed Chars found in ${namespace}";
+          if [[ $namespace = +([[:alnum:]]) ]]; then
+           echo "$namespace" is good;
+          else
+           echo Disallowed Chars found in "$namespace";
            sleep 15;
            exit
-           fi
+          fi
    
   - task: HelmInstaller@1
     displayName: 'install helm'
