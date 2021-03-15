@@ -123,6 +123,21 @@ jobs:
     displayName: Calculate PR Environment URL
     condition: and(succeeded(), eq(variables['Build.SourceBranchName'], 'merge'))
    
+  - task: AzureCLI@2
+    inputs:
+      azureSubscription: 'NHSAPP-BuyingCatalogue (Non-Prod)'
+      scriptType: 'bash'
+      scriptLocation: 'inlineScript'
+      failOnStandardError: true
+      inlineScript: |
+        if [[ $namespace = +([[:alnum:]]) ]]; then
+           echo "$namespace is good";
+        else
+           echo "Disallowed Chars found in $namespace";
+           exit 1
+        fi
+    displayName: 'NameSpace Check'
+
   - task: HelmInstaller@1
     displayName: 'install helm'
     inputs:
@@ -301,21 +316,6 @@ jobs:
     name: DeployVars
     displayName: Set up environment variables for deployment
 
-  - task: AzureCLI@2
-    displayName: 'namespace check'
-    inputs:
-     azureSubscription: 'NHSAPP-BuyingCatalogue (Non-Prod)'
-     scriptType: 'bash'
-     scriptLocation: 'inlineScript'
-     inlineScript: |
-          if [[ $namespace = +([[:alnum:]]) ]]; then
-           printf "%s\n" $namespace && echo "$namespace" is good;
-          else
-           printf "%s\n" $namespace && echo Disallowed Chars found in "$namespace";
-           sleep 15;
-           exit
-          fi
-  
   - task: AzureCLI@2
     inputs:
       azureSubscription: 'NHSAPP-BuyingCatalogue (Non-Prod)'
