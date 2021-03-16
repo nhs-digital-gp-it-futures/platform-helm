@@ -130,7 +130,7 @@ jobs:
       scriptLocation: 'inlineScript'
       failOnStandardError: true
       inlineScript: |
-        if ! [[ "$namespace" =~ ^[a-zA-Z0-9]+$ ]]; then
+        if [[ "$namespace" =~ ^[a-zA-Z0-9]+$ ]]; then
            echo "$namespace is good";
         else
            echo "Disallowed Chars found in $namespace";
