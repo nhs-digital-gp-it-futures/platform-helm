@@ -24,7 +24,6 @@ If (!($optionSelected)) {
 
 write-output "`nYou have chosen ($optionSelected) - this will launch/quit in 5 seconds." 
 write-output "CTRL-C now if this is incorrect...`n"
-start-sleep 5
 
 Write-Host "Starting dashboard proxy"
 
