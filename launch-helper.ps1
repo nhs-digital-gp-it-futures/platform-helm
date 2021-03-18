@@ -65,12 +65,9 @@ elseif ($optionSelected -eq "5"){
     $optionSelected2 = Read-Host "Q: Do you want to download Remote Files from Azure Container Repository? (Yes/No)"
   }
 
-  #"Debug - Option2: $optionSelected2"
-
   if ("no","No","NO","n","N" -contains $optionSelected2){
-    $switch=" -r"
-
-    #"Debug - Switch is $switch"
+    write-output "<---------STARTING SCRIPT---------->`n"
+    . "$scriptPath\launch-or-update-local.ps1" -r $false | Tee-Object -file "$scriptPath\logs\$optionSelected-Outputlogs.txt" -Append
   }
   else {
     $optionSelected3=Read-Host -Prompt "Q: Do you want to download updated versions of the Charts? (Yes/No)"
@@ -81,12 +78,9 @@ elseif ($optionSelected -eq "5"){
       $optionSelected3 = Read-Host "Q: Do you want to download updated versions of the Charts? (Yes/No)"
     }
 
-    #"Debug - Option3: $optionSelected3"
-
     if ("no","No","NO","n","N" -contains $optionSelected3){
-      $switch=" -u"
-      
-      #"Debug - Switch is $switch"
+      write-output "<---------STARTING SCRIPT---------->`n"
+      . "$scriptPath\launch-or-update-local.ps1" -u $false | Tee-Object -file "$scriptPath\logs\$optionSelected-Outputlogs.txt" -Append
     }
     else {
       $optionSelected4=Read-Host -Prompt "Q: Do you want to download Development Versions from the Repository? (Yes/No)"
@@ -97,22 +91,16 @@ elseif ($optionSelected -eq "5"){
         $optionSelected4 = Read-Host "Q: Do you want to download Development Versions from the Repository? (Yes/No)"
       }
 
-      #"Debug - Option4: $optionSelected4"
-
       if ("no","No","NO","n","N" -contains $optionSelected4){
-        $switch=" -l"
-        #"Debug - Switch is $switch"
+        write-output "<---------STARTING SCRIPT---------->`n"
+        . "$scriptPath\launch-or-update-local.ps1" | Tee-Object -file "$scriptPath\logs\$optionSelected-Outputlogs.txt" -Append
       }
       else {
-        $switch=""
-        #"Debug - Switch is $switch"
+        write-output "<---------STARTING SCRIPT---------->`n"
+        . "$scriptPath\launch-or-update-local.ps1" -l $true | Tee-Object -file "$scriptPath\logs\$optionSelected-Outputlogs.txt" -Append
       }
     }
   }
-
-  write-output "<---------STARTING SCRIPT---------->`n"
-  #write-host "Final Switch is: $switch"
-  . "$scriptPath\launch-or-update-local.ps1"$switch | Tee-Object -file "$scriptPath\logs\$optionSelected-Outputlogs.txt"
 }
 elseif ($optionSelected -eq "6"){
   write-output "<---------STARTING SCRIPT---------->`n"   
