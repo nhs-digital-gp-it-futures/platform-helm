@@ -93,11 +93,11 @@ elseif ($optionSelected -eq "5"){
 
       if ("no","No","NO","n","N" -contains $optionSelected4){
         write-output "<---------STARTING SCRIPT---------->`n"
-        . "$scriptPath\launch-or-update-local.ps1" | Tee-Object -file "$scriptPath\logs\$optionSelected-Outputlogs.txt" -Append
+        . "$scriptPath\launch-or-update-local.ps1" -l $true | Tee-Object -file "$scriptPath\logs\$optionSelected-Outputlogs.txt" -Append
       }
       else {
         write-output "<---------STARTING SCRIPT---------->`n"
-        . "$scriptPath\launch-or-update-local.ps1" -l $true | Tee-Object -file "$scriptPath\logs\$optionSelected-Outputlogs.txt" -Append
+        . "$scriptPath\launch-or-update-local.ps1" | Tee-Object -file "$scriptPath\logs\$optionSelected-Outputlogs.txt" -Append
       }
     }
   }
