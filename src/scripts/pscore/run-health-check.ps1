@@ -6,7 +6,7 @@ if ($context -ne "docker-desktop") {
     exit 1
 }
 
-$nsCheck = kubectl get namespace buyingcatalogues
+$nsCheck = kubectl get namespace buyingcatalogue
 if (!($nsCheck)) {
     Write-Host "Namespace does not exist"
     exit 1
@@ -27,11 +27,12 @@ foreach ($pod in $clusterStatus) {
     $podStatus.podLogs = $pod
     $podStatus.terminatedStatus = $pod.status.containerStatuses.state.terminated.reason
 
-    $clusterArray += [pscustomobject]$podStatus
+    if ($podStatus.terminatedStatus -ne "Completed") {
+        $clusterArray += [pscustomobject]$podStatus
+    }
 }
 
-### Command Retained here to get full status ###
-# $clusterArray | select name,healthy,state,terminatedStatus,restartCount | ft -AutoSize
+$clusterArray | select name,healthy,state,restartCount | ft -AutoSize
 
 foreach ($line in $clusterArray) {
     if (($line.healthy -ne $True) -or ($line.status -ne $True)) {
@@ -42,4 +43,4 @@ foreach ($line in $clusterArray) {
     }
 }
 
-write-host "`nTailed logs written to $scriptPath\logs"
+write-host "Any (Tailed) logs for unhealthy components will be written to $scriptPath\logs"
