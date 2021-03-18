@@ -25,7 +25,7 @@ If ($optionSelected -eq $null){
 
   write-output "x: To quit script`n"
 
-  $optionSelected=Read-Host -Prompt "Select Option from choices above: "
+  $optionSelected=Read-Host -Prompt "Select Option from choices above"
 } 
 
 write-output "`nYou have chosen ($optionSelected) - this will launch/quit in 5 seconds." 
@@ -55,12 +55,65 @@ elseif ($optionSelected -eq "4"){
   write-output "<---------STARTING SCRIPT---------->`n"
   . "$scriptPath\update-chart-versions.ps1" -v development | Tee-Object -file "$scriptPath\logs\$optionSelected-Outputlogs.txt"
 }
-# elseif ($optionSelected -eq "5"){
-#   kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/v2.0.0/aio/deploy/recommended.yaml
-#   start-sleep 10
-#   write-output "<---------STARTING SCRIPT---------->`n"
-#   . "$scriptPath\start-dashboard-proxy.ps1" | Tee-Object -file "$scriptPath\logs\$optionSelected-Outputlogs.txt"
-# }
+elseif ($optionSelected -eq "5"){
+  write-output "`n--- Advanced Local Launch ---"   
+  $optionSelected2=Read-Host -Prompt "Q: Do you want to download Remote Files from Azure Container Repository (Yes/No)"
+  
+  while("yes","no","Yes","No","YES","NO","y","n","N" -notcontains $optionSelected2)
+  {
+    write-host "Answer not recognised..." 
+    $optionSelected2 = Read-Host "Q: Do you want to download Remote Files from Azure Container Repository? (Yes/No)"
+  }
+
+  #"Debug - Option2: $optionSelected2"
+
+  if ("no","No","NO","n","N" -contains $optionSelected2){
+    $switch=" -r"
+
+    #"Debug - Switch is $switch"
+  }
+  else {
+    $optionSelected3=Read-Host -Prompt "Q: Do you want to download updated versions of the Charts? (Yes/No)"
+    
+    while("yes","no","Yes","No","YES","NO","y","n","N" -notcontains $optionSelected3)
+    {
+      write-host "Answer not recognised..." 
+      $optionSelected3 = Read-Host "Q: Do you want to download updated versions of the Charts? (Yes/No)"
+    }
+
+    #"Debug - Option3: $optionSelected3"
+
+    if ("no","No","NO","n","N" -contains $optionSelected3){
+      $switch=" -u"
+      
+      #"Debug - Switch is $switch"
+    }
+    else {
+      $optionSelected4=Read-Host -Prompt "Q: Do you want to download Development Versions from the Repository? (Yes/No)"
+      
+      while("yes","no","Yes","No","YES","NO","y","n","N" -notcontains $optionSelected4)
+      {
+        write-host "Answer not recognised..." 
+        $optionSelected4 = Read-Host "Q: Do you want to download Development Versions from the Repository? (Yes/No)"
+      }
+
+      #"Debug - Option4: $optionSelected4"
+
+      if ("no","No","NO","n","N" -contains $optionSelected4){
+        $switch=" -l"
+        #"Debug - Switch is $switch"
+      }
+      else {
+        $switch=""
+        #"Debug - Switch is $switch"
+      }
+    }
+  }
+
+  write-output "<---------STARTING SCRIPT---------->`n"
+  #write-host "Final Switch is: $switch"
+  . "$scriptPath\launch-or-update-local.ps1"$switch | Tee-Object -file "$scriptPath\logs\$optionSelected-Outputlogs.txt"
+}
 elseif ($optionSelected -eq "6"){
   write-output "<---------STARTING SCRIPT---------->`n"   
   . "$scriptPath\start-dashboard-proxy.ps1" | Tee-Object -file "$scriptPath\logs\$optionSelected-Outputlogs.txt"
