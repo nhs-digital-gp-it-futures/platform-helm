@@ -79,7 +79,7 @@ elseif ($optionSelected -eq "9"){
   write-output "`nwait 30 seconds before starting deploy...`n"
   start-sleep 30
   write-output "<---------STARTING SCRIPT---------->`n"
-  . "$scriptPath\launch-or-update-local.ps1" | Tee-Object -file "$scriptPath\logs\$optionSelected-Outputlogs.txt"
+  . "$scriptPath\launch-or-update-local.ps1" | Tee-Object -file "$scriptPath\logs\$optionSelected-Outputlogs.txt" -Append
 }
 elseif ($optionSelected -eq "0"){
   write-output "<---------STARTING SCRIPT---------->`n"
