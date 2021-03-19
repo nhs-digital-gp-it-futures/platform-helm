@@ -59,39 +59,39 @@ elseif ($optionSelected -eq "5"){
   write-output "`n--- Advanced Local Launch ---"   
   $optionSelected2=Read-Host -Prompt "Q: Do you want to download Remote Files from Azure Container Repository (Yes/No)"
   
-  while("yes","no","Yes","No","YES","NO","y","n","N" -notcontains $optionSelected2)
+  while("yes","no","y","n" -notcontains $optionSelected2)
   {
     write-host "Answer not recognised..." 
     $optionSelected2 = Read-Host "Q: Do you want to download Remote Files from Azure Container Repository? (Yes/No)"
   }
 
-  if ("no","No","NO","n","N" -contains $optionSelected2){
+  if ("no","n" -contains $optionSelected2){
     write-output "<---------STARTING SCRIPT---------->`n"
     . "$scriptPath\launch-or-update-local.ps1" -r $false | Tee-Object -file "$scriptPath\logs\$optionSelected-Outputlogs.txt" -Append
   }
   else {
     $optionSelected3=Read-Host -Prompt "Q: Do you want to download updated versions of the Charts? (Yes/No)"
     
-    while("yes","no","Yes","No","YES","NO","y","n","N" -notcontains $optionSelected3)
+    while("yes","no","y","n" -notcontains $optionSelected3)
     {
       write-host "Answer not recognised..." 
       $optionSelected3 = Read-Host "Q: Do you want to download updated versions of the Charts? (Yes/No)"
     }
 
-    if ("no","No","NO","n","N" -contains $optionSelected3){
+    if ("no","n" -contains $optionSelected3){
       write-output "<---------STARTING SCRIPT---------->`n"
       . "$scriptPath\launch-or-update-local.ps1" -u $false | Tee-Object -file "$scriptPath\logs\$optionSelected-Outputlogs.txt" -Append
     }
     else {
       $optionSelected4=Read-Host -Prompt "Q: Do you want to download Development Versions from the Repository? (Yes/No)"
       
-      while("yes","no","Yes","No","YES","NO","y","n","N" -notcontains $optionSelected4)
+      while("yes","no","y","n" -notcontains $optionSelected4)
       {
         write-host "Answer not recognised..." 
         $optionSelected4 = Read-Host "Q: Do you want to download Development Versions from the Repository? (Yes/No)"
       }
 
-      if ("no","No","NO","n","N" -contains $optionSelected4){
+      if ("no","n" -contains $optionSelected4){
         write-output "<---------STARTING SCRIPT---------->`n"
         . "$scriptPath\launch-or-update-local.ps1" -l $true | Tee-Object -file "$scriptPath\logs\$optionSelected-Outputlogs.txt" -Append
       }

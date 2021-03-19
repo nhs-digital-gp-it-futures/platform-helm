@@ -145,15 +145,6 @@ $siteStatus.link = "http://$($siteStatus.url):$($siteStatus.port)"
 $siteStatus.functional=Test-NetConnection -ComputerName $siteStatus.url -Port $siteStatus.port | select-object -ExpandProperty TcpTestSucceeded
 $URLStatus += [pscustomobject]$siteStatus
 
-# REDIS doesn't work
-# $siteStatus = @{}
-# $siteStatus.url = "localhost"
-# $siteStatus.port = 8181
-# $siteStatus.name = "REDIS" 
-# $siteStatus.link = "http://$($siteStatus.url):$($siteStatus.port)"
-# $siteStatus.functional=Test-NetConnection -ComputerName $siteStatus.url -Port $siteStatus.port | select -ExpandProperty TcpTestSucceeded
-# $URLStatus += [pscustomobject]$siteStatus
-
 write-host "--- URL Status ---"
 $URLStatus | select-object name, link, functional | format-table -AutoSize 
 
