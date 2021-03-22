@@ -40,8 +40,7 @@ function calculateNamespaceFromBranchName {
     featureNamespace=$(echo "${branchName#${unwantedPrefix}}" | sed 's/feature[[:punct:]]/bc-/g' | tr '[:upper:]' '[:lower:]' | sed 's/[^a-zA-Z0-9-]//g')
   fi
 
-  #echo "$featureNamespace"
-  echo "##vso[task.logissue type=warning]The Dynamic Environment URL will be: https://bc-$featureNamespace.dev.buyingcatalogue.digital.nhs.uk"
+  #echo "Namespace will be: $featureNamespace"
   return 0
 }
 
@@ -56,4 +55,5 @@ else
 fi
 
 echo "namespace=$namespace"
+echo "##vso[task.logissue type=warning]The Dynamic Environment URL will be: https://$namespace.dev.buyingcatalogue.digital.nhs.uk"
 echo "##vso[task.setvariable variable=Namespace;isOutput=true]$namespace"
