@@ -108,11 +108,11 @@ jobs:
     inputs:
       versionSpec: '5.x'
 
-  - bash: |
-        echo "##vso[task.logissue type=warning]The Dynamic Environment URL will be: https://bc-$(Build.SourceBranchName).dev.buyingcatalogue.digital.nhs.uk"
-    name: environmentURL
-    displayName: Calculate Environment URL
-    condition: and(succeeded(), ne(variables['Build.SourceBranchName'], 'merge'))
+  # - bash: |
+  #       echo "##vso[task.logissue type=warning]The Dynamic Environment URL will be: https://bc-$(Build.SourceBranchName).dev.buyingcatalogue.digital.nhs.uk"
+  #   name: environmentURL
+  #   displayName: Calculate Environment URL
+  #   condition: and(succeeded(), ne(variables['Build.SourceBranchName'], 'merge'))
 
   - bash: |
         echo "Branch Name is: $(System.PullRequest.SourceBranch)"
