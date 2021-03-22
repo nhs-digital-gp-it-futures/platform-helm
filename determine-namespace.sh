@@ -40,7 +40,7 @@ function calculateNamespaceFromBranchName {
     featureNamespace=$(echo "${branchName#${unwantedPrefix}}" | sed 's/feature[[:punct:]]/bc-/g' | tr '[:upper:]' '[:lower:]' | sed 's/[^a-zA-Z0-9-]//g')
   fi
 
-  #echo "Namespace will be: $featureNamespace"
+  echo "$featureNamespace"
   return 0
 }
 
