@@ -159,7 +159,7 @@ pb:
     loginEnabled : "true"
     useCapabilitiesSelector: "true"
     showCovid19: "true"
-    showDFOCVC: "false"
+    showDfocvc: "false"
 
 admin: 
   enabled: true
