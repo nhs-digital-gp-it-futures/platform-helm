@@ -7,7 +7,6 @@
 param(
         [Parameter()] 
         [string]$chart="src/buyingcatalogue",
-#        [Parameter(Mandatory)]  
         [ValidateSet('master','development')]
         [string]$v='master',
         [Parameter()]
