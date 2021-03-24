@@ -122,6 +122,10 @@ elseif ($optionSelected -eq "9"){
   write-output "<---------STARTING SCRIPT---------->`n"
   . "$scriptPath\launch-or-update-local.ps1" | Tee-Object -file "$scriptPath\logs\$optionSelected-Outputlogs.txt" -Append
 }
+elseif ($optionSelected -eq "31"){
+  write-output "<---------STARTING SCRIPT---------->`n"
+  . "$scriptPath\update-chart-versions.ps1" -pbonly | Tee-Object -file "$scriptPath\logs\$optionSelected-Outputlogs.txt"
+}
 elseif ($optionSelected -eq "0"){
   write-output "<---------STARTING SCRIPT---------->`n"
   . "$scriptPath\tear-down-local.ps1" | Tee-Object -file "$scriptPath\logs\$optionSelected-Outputlogs.txt"
