@@ -73,7 +73,7 @@ dependencies:
   repository: "@gpitfuturesdevacr"
 - name: pb
   condition: pb.enabled
-  version: 2.0.58
+  version: 2.0.62-PullRequest0387.3
   repository: "@gpitfuturesdevacr"
 - name: admin
   condition: admin.enabled
