@@ -111,8 +111,23 @@ elseif ($optionSelected -eq "7"){
   . "$scriptPath\start-azure-dashboard.ps1" | Tee-Object -file "$scriptPath\logs\$optionSelected-Outputlogs.txt"
 }
 elseif ($optionSelected -eq "8"){
-  write-output "<---------STARTING SCRIPT---------->`n"   
-  . "$scriptPath\run-health-check.ps1" | Tee-Object -file "$scriptPath\logs\$optionSelected-Outputlogs.txt"
+  write-output "`n--- Health Check Script ---"   
+  $optionSelected2=Read-Host -Prompt "Q: Do you want to run quick local cluster health check? (Yes/No)"
+  
+  while("yes","no","y","n" -notcontains $optionSelected2)
+  {
+    write-host "Answer not recognised..." 
+    $optionSelected2 = Read-Host "Q: Do you want to run local cluster quick health check? (Yes/No)"
+  }
+
+  if ("no","n" -contains $optionSelected2){
+    write-output "<---------STARTING SCRIPT---------->`n"   
+    . "$scriptPath\run-health-check.ps1" | Tee-Object -file "$scriptPath\logs\$optionSelected-Outputlogs.txt"
+  }
+  else {
+    write-output "<---------STARTING SCRIPT---------->`n"   
+    . "$scriptPath\run-health-check.ps1" -q | Tee-Object -file "$scriptPath\logs\$optionSelected-Outputlogs.txt"
+  }
 }
 elseif ($optionSelected -eq "9"){
   write-output "<---------STARTING SCRIPT---------->`n"   
