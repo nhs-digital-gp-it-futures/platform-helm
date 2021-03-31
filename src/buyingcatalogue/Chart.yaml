@@ -29,11 +29,11 @@ dependencies:
   version: ~0.1.0
 - name: bapi-db-deploy
   condition: bapi-db-deploy.enabled
-  version: 2.1.31
+  version: 2.1.32
   repository: "@gpitfuturesdevacr"
 - name: bapi
   condition: bapi.enabled
-  version: 2.1.31
+  version: 2.1.32
   repository: "@gpitfuturesdevacr"
 - name: dapi
   condition: dapi.enabled
