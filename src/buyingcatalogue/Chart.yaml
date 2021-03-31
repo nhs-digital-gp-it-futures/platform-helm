@@ -29,27 +29,27 @@ dependencies:
   version: ~0.1.0
 - name: bapi-db-deploy
   condition: bapi-db-deploy.enabled
-  version: 2.1.19
+  version: 2.1.32
   repository: "@gpitfuturesdevacr"
 - name: bapi
   condition: bapi.enabled
-  version: 2.1.19
+  version: 2.1.32
   repository: "@gpitfuturesdevacr"
 - name: dapi
   condition: dapi.enabled
-  version: 2.0.20
+  version: 2.0.24
   repository: "@gpitfuturesdevacr"
 - name: isapi
   condition: isapi.enabled
-  version: 2.0.26
+  version: 2.0.38
   repository: "@gpitfuturesdevacr"
 - name: isapi-db-deploy
   condition: isapi-db-deploy.enabled
-  version: 2.0.26
+  version: 2.0.38
   repository: "@gpitfuturesdevacr"
 - name: oapi
   condition: oapi.enabled
-  version: 2.0.26
+  version: 2.0.38
   repository: "@gpitfuturesdevacr"
 - name: ordapi
   condition: ordapi.enabled
@@ -61,27 +61,27 @@ dependencies:
   repository: "@gpitfuturesdevacr"
 - name: email
   condition: email.enabled
-  version: 2.0.26
+  version: 2.0.38
   repository: "@gpitfuturesdevacr"
 - name: file-loader
   condition: file-loader.enabled
-  version: 2.0.20
+  version: 2.0.24
   repository: "@gpitfuturesdevacr"
 - name: mp
   condition: mp.enabled
-  version: 2.0.48
+  version: 2.0.53
   repository: "@gpitfuturesdevacr"
 - name: pb
   condition: pb.enabled
-  version: 2.0.63
+  version: 2.0.76
   repository: "@gpitfuturesdevacr"
 - name: admin
   condition: admin.enabled
-  version: 2.0.42
+  version: 2.0.45
   repository: "@gpitfuturesdevacr"
 - name: of
   condition: of.enabled
-  version: 1.24.24
+  version: 1.24.31
   repository: "@gpitfuturesdevacr"
 - name: redis
   condition: redis.enabled
@@ -92,19 +92,19 @@ dependencies:
   version: ~0.1.0
 - name: pb-ac-tests
   condition: pb-ac-tests.enabled
-  version: 2.0.14
+  version: 2.0.16
   repository: "@gpitfuturesdevacr"
 - name: mp-ac-tests
   condition: mp-ac-tests.enabled
-  version: 2.0.14
+  version: 2.0.15
   repository: "@gpitfuturesdevacr"
 - name: admin-ac-tests
   condition: admin-ac-tests.enabled
-  version: 2.1.15
+  version: 2.1.16
   repository: "@gpitfuturesdevacr"
 - name: of-ac-tests
   condition: of-ac-tests.enabled
-  version: 3.0.7
+  version: 3.0.9
   repository: "@gpitfuturesdevacr"
 - name: allure
   condition: allure.enabled
