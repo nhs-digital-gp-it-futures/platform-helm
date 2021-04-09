@@ -336,7 +336,7 @@ jobs:
               --client-secret=$(srt-clientsecret) \
               --db-user-pass=$(srt-sqldevdbpass) \
               -f "azure-dev.yaml" \
-              --helm-upgrade-args "--set pb-ac-tests.testFilter=SmokeTest --set admin-ac-tests.testFilter=SmokeTest --set mp-ac-tests.testFilter=SmokeTest --set of-ac-tests.enabled=true --set of-ac-tests.testFilter=SmokeTest"
+              --helm-upgrade-args "--set pb-ac-tests.testFilter=SmokeTest --set admin-ac-tests.testFilter=SmokeTest --set mp-ac-tests.testFilter=SmokeTest --set of-ac-tests.enabled=true --set of-ac-tests.testFilter=SmokeTest --set pb.featureFlags.showDfocvc=false"
       name: deploySystem
       displayName: Deploy System
 
@@ -488,7 +488,7 @@ jobs:
               --client-secret=$(srt-clientsecret) \
               --db-user-pass=$(srt-sqldevdbpass) \
               -f "azure-dev.yaml" \
-              --helm-upgrade-args "--set pb-ac-tests.testFilter= --set admin-ac-tests.testFilter= --set mp-ac-tests.testFilter= --set of-ac-tests.enabled=true --set of-ac-tests.testFilter= --set pb.featureFlags.showDfocvc=true"
+              --helm-upgrade-args "--set pb-ac-tests.testFilter= --set admin-ac-tests.testFilter= --set mp-ac-tests.testFilter= --set of-ac-tests.enabled=true --set of-ac-tests.testFilter="
       name: deploySystem
       displayName: Deploy System
 
