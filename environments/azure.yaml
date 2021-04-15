@@ -160,6 +160,7 @@ pb:
     useCapabilitiesSelector: "true"
     showCovid19: "true"
     showDfocvc: "false"
+    showProxy: "false"
 
 admin: 
   enabled: true
