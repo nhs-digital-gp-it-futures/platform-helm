@@ -336,7 +336,7 @@ jobs:
               --client-secret=$(srt-clientsecret) \
               --db-user-pass=$(srt-sqldevdbpass) \
               -f "azure-dev.yaml" \
-              --helm-upgrade-args "--set pb-ac-tests.testFilter=SmokeTest --set admin-ac-tests.testFilter=SmokeTest --set mp-ac-tests.testFilter=SmokeTest --set of-ac-tests.enabled=true --set of-ac-tests.testFilter=SmokeTest --set pb.featureFlags.showDfocvc=false"
+              --helm-upgrade-args "--set pb-ac-tests.testFilter=SmokeTest --set admin-ac-tests.testFilter=SmokeTest --set mp-ac-tests.testFilter=SmokeTest --set of-ac-tests.enabled=true --set of-ac-tests.testFilter=SmokeTest"
       name: deploySystem
       displayName: Deploy System
 
