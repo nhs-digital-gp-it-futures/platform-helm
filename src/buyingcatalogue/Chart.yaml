@@ -29,59 +29,59 @@ dependencies:
   version: ~0.1.0
 - name: bapi-db-deploy
   condition: bapi-db-deploy.enabled
-  version: 2.1.42
+  version: 2.1.46
   repository: "@gpitfuturesdevacr"
 - name: bapi
   condition: bapi.enabled
-  version: 2.1.42
+  version: 2.1.46
   repository: "@gpitfuturesdevacr"
 - name: dapi
   condition: dapi.enabled
-  version: 2.0.28-PullRequest0081.2
+  version: 2.0.29-PullRequest0083.2
   repository: "@gpitfuturesdevacr"
 - name: isapi
   condition: isapi.enabled
-  version: 2.0.51-PullRequest0313.2
+  version: 2.0.52-PullRequest0317.5
   repository: "@gpitfuturesdevacr"
 - name: isapi-db-deploy
   condition: isapi-db-deploy.enabled
-  version: 2.0.51-PullRequest0313.2
+  version: 2.0.52-PullRequest0317.5
   repository: "@gpitfuturesdevacr"
 - name: oapi
   condition: oapi.enabled
-  version: 2.0.51-PullRequest0313.2
+  version: 2.0.52-PullRequest0317.5
   repository: "@gpitfuturesdevacr"
 - name: ordapi
   condition: ordapi.enabled
-  version: 3.0.57-PullRequest0404.23
+  version: 3.0.60-PullRequest0408.26
   repository: "@gpitfuturesdevacr"
 - name: ordapi-db-deploy
   condition: ordapi-db-deploy.enabled
-  version: 3.0.57-PullRequest0404.23
+  version: 3.0.60-PullRequest0408.26
   repository: "@gpitfuturesdevacr"
 - name: email
   condition: email.enabled
-  version: 2.0.51-PullRequest0313.2
+  version: 2.0.52-PullRequest0317.5
   repository: "@gpitfuturesdevacr"
 - name: file-loader
   condition: file-loader.enabled
-  version: 2.0.28-PullRequest0081.2
+  version: 2.0.29-PullRequest0083.2
   repository: "@gpitfuturesdevacr"
 - name: mp
   condition: mp.enabled
-  version: 2.0.68-PullRequest0359.2
+  version: 2.0.68-PullRequest0362.2
   repository: "@gpitfuturesdevacr"
 - name: pb
   condition: pb.enabled
-  version: 2.0.98-PullRequest0432.2
+  version: 2.0.99-PullRequest0436.2
   repository: "@gpitfuturesdevacr"
 - name: admin
   condition: admin.enabled
-  version: 2.0.64
+  version: 2.0.65-PullRequest0245.2
   repository: "@gpitfuturesdevacr"
 - name: of
   condition: of.enabled
-  version: 1.50.6-alpha.387
+  version: 1.50.6-alpha.391
   repository: "@gpitfuturesdevacr"
 - name: redis
   condition: redis.enabled
@@ -104,7 +104,7 @@ dependencies:
   repository: "@gpitfuturesdevacr"
 - name: of-ac-tests
   condition: of-ac-tests.enabled
-  version: 3.0.28
+  version: 3.0.30
   repository: "@gpitfuturesdevacr"
 - name: allure
   condition: allure.enabled
