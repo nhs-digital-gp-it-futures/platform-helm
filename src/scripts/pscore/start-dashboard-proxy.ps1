@@ -14,5 +14,6 @@ else {
     Set-Clipboard -Value $dashboardUrl
     Write-Host "Copied '$dashboardUrl' to your clip board"
 
+    start-process $dashboardUrl
     kubectl proxy
 }

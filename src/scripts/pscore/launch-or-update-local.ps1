@@ -42,9 +42,26 @@ $namespace="buyingcatalogue"
 $context = kubectl config current-context
 if ($context -ne "docker-desktop")
 {
-    write-host "Not running in the local context - please switch to docker desktop"
+    write-host "Not running in the local context - please switch to docker desktop" -ForegroundColor yellow
     write-host "Exiting...."
     start-sleep 5
+    exit 1
+}
+
+# Check docker is running 
+$docker = kubectl get nodes
+if (!($docker))
+{
+    write-host "`nDocker is not running on this computer - please investigate" -ForegroundColor red
+    write-host "Exiting...."
+    start-sleep 5
+    exit 1
+}
+
+# Check if Ingress is installed
+$helmDefaultNS=@(helm list -A -q)
+if ($helmDefaultNS -notcontains "bc") {
+    Write-Host "Ingress has not been setup yet - please set up this component first before continuing" -ForegroundColor red
     exit 1
 }
 
