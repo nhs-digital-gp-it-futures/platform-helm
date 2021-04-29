@@ -2,7 +2,7 @@ $optionSelected=$args[0]
 
 If ($optionSelected -eq $null) {
   write-output "`nAdvanced Options"
-  write-output "- a: For Advanced Options Menu"
+  write-output "- A: For Advanced Options Menu"
   
   write-output "`nLaunch and Update Buying Catalogue locally"
   write-output "- 1: Launch a copy of the Buying Catalogue locally (Master Branch)"
@@ -38,10 +38,10 @@ if ($optionSelected -eq "a" -or $optionSelected -eq "A") {
   write-host "`nUpdate Chart Versions"
   write-host "- 3: Update local chart versions (using Master Branch)"
   write-host "- 31: Update Public Browse chart version only (using Master Branch)" -ForegroundColor yellow
-  #write-host "- 32: Update chart version only - except ORDAPI components (using Master Branch)" -ForegroundColor yellow
+  write-host "- 32: Update chart version only - except ORDAPI components (using Master Branch)" -ForegroundColor yellow
   write-host "- 4: Update local chart versions (using Development Branch)"
   write-host "- 41: Update Public Browse chart version only (using Development Branch)" -ForegroundColor yellow
-  #write-host "- 42: Update chart version only - except ORDAPI components (using Development Branch)" -ForegroundColor yellow
+  write-host "- 42: Update chart version only - except ORDAPI components (using Development Branch)" -ForegroundColor yellow
   
   write-host "`nAdvanced Setup"
   write-host "- 51: Launch Local Cluster Startup Wizard" -ForegroundColor yellow
@@ -136,9 +136,17 @@ elseif ($optionSelected -eq "31"){
   write-output "<---------STARTING SCRIPT---------->`n"
   . "$scriptPath\update-chart-versions.ps1" -pbonly | Tee-Object -file "$scriptPath\logs\$optionSelected-Outputlogs.txt"
 }
+elseif ($optionSelected -eq "32"){
+  write-output "<---------STARTING SCRIPT---------->`n"
+  . "$scriptPath\update-chart-versions.ps1" -excludeComponent "ordapi" | Tee-Object -file "$scriptPath\logs\$optionSelected-Outputlogs.txt"
+}
 elseif ($optionSelected -eq "41"){
   write-output "<---------STARTING SCRIPT---------->`n"
   . "$scriptPath\update-chart-versions.ps1" -v development -pbonly | Tee-Object -file "$scriptPath\logs\$optionSelected-Outputlogs.txt"
+}
+elseif ($optionSelected -eq "42"){
+  write-output "<---------STARTING SCRIPT---------->`n"
+  . "$scriptPath\update-chart-versions.ps1" -v development -excludeComponent "ordapi" | Tee-Object -file "$scriptPath\logs\$optionSelected-Outputlogs.txt"
 }
 elseif ($optionSelected -eq "51"){
   write-output "`n--- Advanced Local Launch ---"   

@@ -10,7 +10,9 @@ param(
         [ValidateSet('master','development')]
         [string]$v='master',
         [Parameter()]
-        [switch]$pbOnly=$false
+        [switch]$pbOnly=$false,
+        [Parameter()]
+        [string]$excludeComponent
     )
 
 # Global Variables and return code
@@ -43,51 +45,45 @@ $latestChartVersions = helm search repo gpit $versionSource
 $masterChartVersions = helm search repo gpit
 $currentFile = @(Get-Content ./$chart/chart.yaml)
 
-foreach ($line in $currentFile)
-{
-    if ($pbOnly)
-    {
-        if ($line -eq "- name: pb")
-        {
+foreach ($line in $currentFile) {
+    if ($pbOnly) {
+        if ($line -eq "- name: pb") {
             $updatedPB = ($masterChartVersions -match "gpitfuturesdevacr/pb")[0].split("`t")[1] -replace " ", ""
             $currentFile[$index+2] = "  version: " + $updatedPB
         }
     }
-    else 
-    { 
-        if ($line.startswith("- name:"))
-        {
+    else { 
+        if ($line.startswith("- name:")) {
             $chartLine = @{}
             $chartLine.name = "$line" -replace "- name: "
             $chartLine.currentVersion = $currentFile[$index+2] -replace "  version: "
-            # Check if it exists in the repo
-            if (($latestChartVersions -match "gpitfuturesdevacr/"+$chartLine.name)[0])
-            {
-                $latestCompVersion = ($latestChartVersions -match "gpitfuturesdevacr/"+$chartLine.name)[0].split("`t")[1] -replace " ", ""
-                
-                if ($gitFlow -match $chartLine.name -or $latestCompVersion -gt 2)
-                {
-                    [string]$chartLine.latestVersion = $latestCompVersion
+            if ((!($excludeComponent)) -or $line -notlike "- name: $excludeComponent*") {
+                # Check if it exists in the repo
+                if (($latestChartVersions -match "gpitfuturesdevacr/"+$chartLine.name)[0]) {
+                    $latestCompVersion = ($latestChartVersions -match "gpitfuturesdevacr/"+$chartLine.name)[0].split("`t")[1] -replace " ", ""
+                    
+                    if ($gitFlow -match $chartLine.name -or $latestCompVersion -gt 2) {
+                        [string]$chartLine.latestVersion = $latestCompVersion
+                    }
+                    else {
+                        [string]$chartLine.latestVersion = ($masterChartVersions -match "gpitfuturesdevacr/"+$chartLine.name)[0].split("`t")[1] -replace " ", ""
+                    }
+                    
+                    if ($chartLine.latestVersion -ne $chartLine.currentVersion) {
+                        # Update desired version to latest for component
+                        $currentFile[$index+2]="  version: " + $chartLine.latestVersion
+                        $chartLine.updated = "True"
+                        $chartLine.updatedVersion = $currentFile[$index+2] -replace "  version: "
+                    }
+                    else {
+                        $chartLine.updated = "False"
+                    }
                 }
-                else 
-                {
-                    [string]$chartLine.latestVersion = ($masterChartVersions -match "gpitfuturesdevacr/"+$chartLine.name)[0].split("`t")[1] -replace " ", ""
-                }
-                
-                if ($chartLine.latestVersion -ne $chartLine.currentVersion)
-                {
-                    # Update desired version to latest for component
-                    $currentFile[$index+2]="  version: " + $chartLine.latestVersion
-                    $chartLine.updated = "True"
-                    $chartLine.updatedVersion = $currentFile[$index+2] -replace "  version: "
-                }
-                else 
-                {
+                else {
                     $chartLine.updated = "False"
                 }
             }
-            else 
-            {
+            else {
                 $chartLine.updated = "False"
             }
             $chartVersions += [pscustomobject]$chartLine | select name,currentVersion,latestVersion,updated,updatedVersion
