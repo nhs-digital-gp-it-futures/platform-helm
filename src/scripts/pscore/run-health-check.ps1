@@ -5,23 +5,84 @@ param(
     )
 
 $scriptPath=".\src\scripts\pscore"
-$context=kubectl config current-context
 
+# Check docker is current context
+$context=kubectl config current-context
 if ($context -ne "docker-desktop") {
-    Write-Host "$context is not a local context!"
+    Write-Host "ERROR: $context is not a local context!" -ForegroundColor yellow
+    write-host "Exiting...."
+    start-sleep 5
     exit 1
 }
 
+# Check docker is running 
+$docker = kubectl get nodes
+if (!($docker)) {
+    write-host "ERROR: Docker is not running on this computer - please investigate" -ForegroundColor red
+    write-host "Exiting...."
+    start-sleep 5
+    exit 1
+}
+
+# Check for functioning host.docker.internal redirect for Kubernetes
+$hostDockerInternal=Test-NetConnection -ComputerName host.docker.internal -Port 443 | select-object -ExpandProperty TcpTestSucceeded
+if ($hostDockerInternal -ne "True") {
+    write-host "ERROR: Critical Docker for Desktop Kubernetes port is not functioning - this usually requires re-installing Docker Desktop" -ForegroundColor red
+    write-host "Exiting...."
+    start-sleep 5
+    exit 1
+}
+
+# Check if Ingress is installed
+$helmDefaultNS=@(helm list -A -q)
+if ($helmDefaultNS -notcontains "bc") {
+    Write-Host "ERROR: Ingress has not been setup yet - please set up this component first before continuing" -ForegroundColor red
+    write-host "Exiting...."
+    start-sleep 5
+    exit 1
+}
+
+# Check if Namespace is deployed
 $nsCheck = kubectl get namespace buyingcatalogue
 if (!($nsCheck)) {
-    Write-Host "Namespace does not exist"
+    Write-Host "WARNING: Namespace does not exist" -ForegroundColor yellow
+    write-host "Exiting...."
+    start-sleep 5
     exit 1
 }
 
+# Check for ACR key
+$ACRkey=kubectl get secret regcredlocal --namespace buyingcatalogue
+if (!($ACRkey)) {
+    Write-Host "ERROR: Could not find ACR key - see: https://github.com/nhs-digital-gp-it-futures/platform-helm/blob/master/docs/k8s-private-registry.md" -ForegroundColor red
+    write-host "Exiting...."
+    start-sleep 5
+    exit 1
+}
+
+# Check ACR access
+$updateRepos=helm repo update | select-string -SimpleMatch "gpitfuturesdevacr"
+if ($updateRepos -notlike "...Successfully got an update*") {
+    Write-Host "ERROR: Could not connect to ACR - possible issue with ACR credentials added" -ForegroundColor red
+    write-host "Exiting...."
+    start-sleep 5
+    exit 1
+}
+
+# Check if cluster deployed
 $clusterStatus=kubectl get pods -n buyingcatalogue -o json | ConvertFrom-Json | select-object -expandproperty items
 if (!($clusterStatus)) {
-    Write-Host "Cluster has not been deployed yet"
+    Write-Host "WARNING: Cluster has not been deployed yet" -ForegroundColor yellow
+    write-host "Exiting...."
+    start-sleep 5
     exit 1
+}
+
+# Check if for missing performance affecting config 
+$WSLconfigFile=test-path -path "c:\users\$env:UserName\.wslconfig"
+if (!($WSLconfigFile)) {
+    Write-Host "INFO: WSL Config file not added which could affect performance and memory usage in WSL2 mode" -ForegroundColor white
+    Write-Host "INFO: For more info see: https://buyingcatalog.visualstudio.com/Buying%20Catalogue/_wiki/wikis/Wiki/311/Docker-desktop-hogs-resources-and-causes-performance-issues`n" -ForegroundColor white
 }
 
 $clusterArray = @()
