@@ -29,59 +29,59 @@ dependencies:
   version: ~0.1.0
 - name: bapi-db-deploy
   condition: bapi-db-deploy.enabled
-  version: 2.1.51
+  version: 2.1.52-PullRequest0437.2
   repository: "@gpitfuturesdevacr"
 - name: bapi
   condition: bapi.enabled
-  version: 2.1.51
+  version: 2.1.52-PullRequest0437.2
   repository: "@gpitfuturesdevacr"
 - name: dapi
   condition: dapi.enabled
-  version: 2.0.30
+  version: 2.0.31-PullRequest0084.2
   repository: "@gpitfuturesdevacr"
 - name: isapi
   condition: isapi.enabled
-  version: 2.0.56
+  version: 2.0.57-PullRequest0325.2
   repository: "@gpitfuturesdevacr"
 - name: isapi-db-deploy
   condition: isapi-db-deploy.enabled
-  version: 2.0.56
+  version: 2.0.57-PullRequest0325.2
   repository: "@gpitfuturesdevacr"
 - name: oapi
   condition: oapi.enabled
-  version: 2.0.56
+  version: 2.0.57-PullRequest0325.2
   repository: "@gpitfuturesdevacr"
 - name: ordapi
   condition: ordapi.enabled
-  version: 3.0.64
+  version: 3.0.65-PullRequest0418.2
   repository: "@gpitfuturesdevacr"
 - name: ordapi-db-deploy
   condition: ordapi-db-deploy.enabled
-  version: 3.0.64
+  version: 3.0.65-PullRequest0418.2
   repository: "@gpitfuturesdevacr"
 - name: email
   condition: email.enabled
-  version: 2.0.56
+  version: 2.0.57-PullRequest0325.2
   repository: "@gpitfuturesdevacr"
 - name: file-loader
   condition: file-loader.enabled
-  version: 2.0.30
+  version: 2.0.31-PullRequest0084.2
   repository: "@gpitfuturesdevacr"
 - name: mp
   condition: mp.enabled
-  version: 2.0.69-PullRequest0365.2
+  version: 2.0.69-PullRequest0366.2
   repository: "@gpitfuturesdevacr"
 - name: pb
   condition: pb.enabled
-  version: 2.0.102-PullRequest0441.2
+  version: 2.0.102-PullRequest0442.2
   repository: "@gpitfuturesdevacr"
 - name: admin
   condition: admin.enabled
-  version: 2.0.66
+  version: 2.0.67-PullRequest0250.2
   repository: "@gpitfuturesdevacr"
 - name: of
   condition: of.enabled
-  version: 1.50.6-alpha.394
+  version: 1.50.6-alpha.395
   repository: "@gpitfuturesdevacr"
 - name: redis
   condition: redis.enabled
@@ -100,7 +100,7 @@ dependencies:
   repository: "@gpitfuturesdevacr"
 - name: admin-ac-tests
   condition: admin-ac-tests.enabled
-  version: 2.1.18
+  version: 2.1.22
   repository: "@gpitfuturesdevacr"
 - name: of-ac-tests
   condition: of-ac-tests.enabled
