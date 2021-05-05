@@ -29,11 +29,11 @@ dependencies:
   version: ~0.1.0
 - name: bapi-db-deploy
   condition: bapi-db-deploy.enabled
-  version: 2.1.52-PullRequest0437.2
+  version: 2.1.54-PullRequest0439.14
   repository: "@gpitfuturesdevacr"
 - name: bapi
   condition: bapi.enabled
-  version: 2.1.52-PullRequest0437.2
+  version: 2.1.54-PullRequest0439.14
   repository: "@gpitfuturesdevacr"
 - name: dapi
   condition: dapi.enabled
@@ -41,27 +41,27 @@ dependencies:
   repository: "@gpitfuturesdevacr"
 - name: isapi
   condition: isapi.enabled
-  version: 2.0.57-PullRequest0325.2
+  version: 2.0.59-PullRequest0326.2
   repository: "@gpitfuturesdevacr"
 - name: isapi-db-deploy
   condition: isapi-db-deploy.enabled
-  version: 2.0.57-PullRequest0325.2
+  version: 2.0.59-PullRequest0326.2
   repository: "@gpitfuturesdevacr"
 - name: oapi
   condition: oapi.enabled
-  version: 2.0.57-PullRequest0325.2
+  version: 2.0.59-PullRequest0326.2
   repository: "@gpitfuturesdevacr"
 - name: ordapi
   condition: ordapi.enabled
-  version: 3.0.65-PullRequest0418.2
+  version: 3.0.65
   repository: "@gpitfuturesdevacr"
 - name: ordapi-db-deploy
   condition: ordapi-db-deploy.enabled
-  version: 3.0.65-PullRequest0418.2
+  version: 3.0.65
   repository: "@gpitfuturesdevacr"
 - name: email
   condition: email.enabled
-  version: 2.0.57-PullRequest0325.2
+  version: 2.0.59-PullRequest0326.2
   repository: "@gpitfuturesdevacr"
 - name: file-loader
   condition: file-loader.enabled
@@ -81,7 +81,7 @@ dependencies:
   repository: "@gpitfuturesdevacr"
 - name: of
   condition: of.enabled
-  version: 1.50.6-alpha.395
+  version: 1.50.6-alpha.397
   repository: "@gpitfuturesdevacr"
 - name: redis
   condition: redis.enabled
@@ -100,11 +100,11 @@ dependencies:
   repository: "@gpitfuturesdevacr"
 - name: admin-ac-tests
   condition: admin-ac-tests.enabled
-  version: 2.1.22
+  version: 2.1.23
   repository: "@gpitfuturesdevacr"
 - name: of-ac-tests
   condition: of-ac-tests.enabled
-  version: 3.0.30
+  version: 3.0.31
   repository: "@gpitfuturesdevacr"
 - name: allure
   condition: allure.enabled
