@@ -19,6 +19,7 @@ pb:
       appgw.ingress.kubernetes.io/appgw-ssl-certificate: dev-buying-catalogue-digital-nhs-uk
   featureFlags:
     showCovid19: "true"
+    showProxy: "true"
 
 admin: 
   ingress:
