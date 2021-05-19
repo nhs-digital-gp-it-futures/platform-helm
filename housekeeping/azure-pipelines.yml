@@ -327,7 +327,7 @@ jobs:
               -p $sqlDbAdminPass \
               --base-path "master.dev.buyingcatalogue.digital.nhs.uk" \
               -w true \
-              -s "/p:DatabaseEdition=Standard /p:DatabaseServiceObjective=S0 /p:BlockOnPossibleDataLoss=True" \
+              -s "/p:DatabaseEdition=Standard /p:DatabaseServiceObjective=S0 /p:BlockOnPossibleDataLoss=False" \
               -a "$saConnectionString" \
               -i "$appgwPip" \
               -r $redisHost \
