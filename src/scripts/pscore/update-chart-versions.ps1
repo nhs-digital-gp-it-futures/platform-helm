@@ -22,8 +22,7 @@ $versionSource = If ($v -eq "master") {$null} Else {"--devel"}
 $gitFlow=@(
     "isapi",
     "isapi-db-deploy",
-    "oapi",
-    "of"
+    "oapi"
 )
 #write-host $gitFlow
 
