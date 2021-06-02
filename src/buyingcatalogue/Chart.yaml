@@ -81,7 +81,7 @@ dependencies:
   repository: "@gpitfuturesdevacr"
 - name: of
   condition: of.enabled
-  version: 2.0.12
+  version: 2.0.13-PullRequest0689.2
   repository: "@gpitfuturesdevacr"
 - name: redis
   condition: redis.enabled
