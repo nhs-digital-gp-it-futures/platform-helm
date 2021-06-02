@@ -198,7 +198,9 @@ of:
         paths: 
           - /order*
     tls: []  
-  baseUri: "/order"  
+  baseUri: "/order"
+  featureFlags:
+    showProxy: "false"
 
 redis:
   enabled: false
