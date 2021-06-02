@@ -29,6 +29,8 @@ of:
   ingress:
     annotations: 
       appgw.ingress.kubernetes.io/appgw-ssl-certificate: dev-buying-catalogue-digital-nhs-uk
+  featureFlags:
+    showProxy: "false"
 
 redis-commander:
   ingress:
