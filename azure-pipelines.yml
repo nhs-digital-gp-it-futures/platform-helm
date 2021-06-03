@@ -404,7 +404,8 @@ jobs:
           --cookie-secret=$(srt-cookiesecret) \
           --client-secret=$(srt-clientsecret) \
           --db-user-pass=$(srt-sqldevdbpass) \
-          -f "azure-dev.yaml"
+          -f "azure-dev.yaml" \
+          --helm-upgrade-args "--set pb.featureFlags.showProxy=false --set of.featureFlags.showProxy=false"
     name: deploySystem
     displayName: Deploy System
 
