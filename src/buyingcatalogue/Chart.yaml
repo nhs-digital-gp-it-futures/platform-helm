@@ -29,15 +29,15 @@ dependencies:
   version: ~0.1.0
 - name: bapi-db-deploy
   condition: bapi-db-deploy.enabled
-  version: 2.1.64
+  version: 2.1.68
   repository: "@gpitfuturesdevacr"
 - name: bapi
   condition: bapi.enabled
-  version: 2.1.64
+  version: 2.1.68
   repository: "@gpitfuturesdevacr"
 - name: dapi
   condition: dapi.enabled
-  version: 2.0.33
+  version: 2.0.34
   repository: "@gpitfuturesdevacr"
 - name: isapi
   condition: isapi.enabled
@@ -53,11 +53,11 @@ dependencies:
   repository: "@gpitfuturesdevacr"
 - name: ordapi
   condition: ordapi.enabled
-  version: 3.0.90
+  version: 3.0.103
   repository: "@gpitfuturesdevacr"
 - name: ordapi-db-deploy
   condition: ordapi-db-deploy.enabled
-  version: 3.0.90
+  version: 3.0.103
   repository: "@gpitfuturesdevacr"
 - name: email
   condition: email.enabled
@@ -65,23 +65,23 @@ dependencies:
   repository: "@gpitfuturesdevacr"
 - name: file-loader
   condition: file-loader.enabled
-  version: 2.0.33
+  version: 2.0.35-PullRequest0096.2
   repository: "@gpitfuturesdevacr"
 - name: mp
   condition: mp.enabled
-  version: 2.0.91
+  version: 2.0.96-PullRequest0410.2
   repository: "@gpitfuturesdevacr"
 - name: pb
   condition: pb.enabled
-  version: 2.0.135
+  version: 2.0.141-PullRequest0497.2
   repository: "@gpitfuturesdevacr"
 - name: admin
   condition: admin.enabled
-  version: 2.0.90
+  version: 2.0.95-PullRequest0298.2
   repository: "@gpitfuturesdevacr"
 - name: of
   condition: of.enabled
-  version: 2.0.13-PullRequest0689.2
+  version: 2.0.22
   repository: "@gpitfuturesdevacr"
 - name: redis
   condition: redis.enabled
