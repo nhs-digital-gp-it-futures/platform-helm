@@ -29,11 +29,11 @@ dependencies:
   version: ~0.1.0
 - name: bapi-db-deploy
   condition: bapi-db-deploy.enabled
-  version: 2.1.69
+  version: 2.1.70
   repository: "@gpitfuturesdevacr"
 - name: bapi
   condition: bapi.enabled
-  version: 2.1.69
+  version: 2.1.70
   repository: "@gpitfuturesdevacr"
 - name: dapi
   condition: dapi.enabled
@@ -73,7 +73,7 @@ dependencies:
   repository: "@gpitfuturesdevacr"
 - name: pb
   condition: pb.enabled
-  version: 2.0.149
+  version: 2.0.150
   repository: "@gpitfuturesdevacr"
 - name: admin
   condition: admin.enabled
