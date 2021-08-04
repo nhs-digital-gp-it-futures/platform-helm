@@ -594,7 +594,7 @@ of:
     key: "cookie-secret"
   featureFlags:
     additionalServicesRecipients: "false"
-  feedbackLinkUrl: "https://forms.office.com/Pages/ResponsePage.aspx?id=Hwf2UP67GkCIA2c3SOYp4nDHKEWnXcFHiqdJhf0fCJtUNDNFRUFZVFU5RkRQTEpWU0RQVlVXMUpRQi4u"
+  feedbackLinkUrl: "https://feedback.digital.nhs.uk/jfe/form/SV_3C4ClYbvjUg7veK"
   serviceDependencies:
     isapi: 
       name: "bc-buyingcatalogue"
