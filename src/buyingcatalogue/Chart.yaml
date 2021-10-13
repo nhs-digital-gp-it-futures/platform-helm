@@ -69,7 +69,7 @@ dependencies:
   repository: "@gpitfuturesdevacr"
 - name: mp
   condition: mp.enabled
-  version: 2.0.124
+  version: 2.0.125
   repository: "@gpitfuturesdevacr"
 - name: pb
   condition: pb.enabled
